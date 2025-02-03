@@ -1,16 +1,15 @@
 # Overview
 Just going to brain dump for now, we can make this more formal later.
 
-We will be using a combination of linear and sapling to speed up the code contribution
-and task delegation prcoess.
+We will be using sapling to speed up the code contribution process.
 
 I recommend reading the [sapling getting started guide](https://sapling-scm.com/docs/introduction/getting-started)
-But the main thing you need to remember are 
+But the main things you need to remember are:
 1. To initially get the branch on your computer use `sl clone <link>` where link
-is the https: link of the repo (note HTTPS not SSH)
+is the https: link of the repo (⚠️ note: HTTPS not SSH)
 2. run `sl web` from the directory of the repo to launch the pretty intuitive sapling web ui
 3. be sure to add the tag associated with your linear task to the commit message it will start with S28
-4. Do no overcommit. amend work related to a single task to existing commit 
+4. Do not overcommit. Amend work related to a single task to existing commit
 
 # Important Links
 - Team milestones (team assignments): https://github.com/StanfordCS194/win25-Team29/milestones
@@ -33,6 +32,11 @@ This is an [Expo](https://expo.dev) project created with [`create-expo-app`](htt
    ```bash
     npx expo start
    ```
+3. Start Convex
+
+   ```bash
+   npx convex dev
+   ```
 
 In the output, you'll find options to open the app in a
 
@@ -44,6 +48,7 @@ In the output, you'll find options to open the app in a
 You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
 
 ## Get a fresh project
+⚠️ NOTE: Kenny already did this
 
 When you're ready, run:
 
