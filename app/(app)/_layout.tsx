@@ -12,7 +12,7 @@ export default function AppLayout() {
 
       <Unauthenticated>
             {/* For now, change the below value to the path to the desired screen in order to view it*/}
-        <Redirect href="/new-user-auth" />
+        <Redirect href="/existing-user-auth" />
       </Unauthenticated>
 
       <Authenticated>

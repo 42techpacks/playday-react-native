@@ -3,7 +3,7 @@ previously-submitted phone number.
 */
 
 import { View, Text, Alert } from "react-native";
-import RegisterButton from "../components/register-button";
+import RegisterButton from "../components/auth-inputs/register-button";
 import OTPInput from "../components/otp"
 import { Authenticated } from "convex/react";
 import { Redirect } from "expo-router";
