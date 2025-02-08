@@ -1,16 +1,18 @@
-import { Text, View } from "react-native";
-import SignOutButton from "../../components/sign-out-button";
-export default function Index() {
+import SignOutButton from "../../components/auth-inputs/sign-out-button";
+import { ThemedText } from "@/components/ThemedText";
+import { ThemedView } from "@/components/ThemedView";
+// The actual index since folder names with () are not added to url paths
+export default function HomeScreen() {
   return (
-    <View
+    <ThemedView
       style={{
         flex: 1,
         justifyContent: "center",
         alignItems: "center",
       }}
     >
-      <Text>Hello world</Text>
+      <ThemedText> Hello World! </ThemedText>
       <SignOutButton />
-    </View>
+    </ThemedView>
   );
 }

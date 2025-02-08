@@ -6,13 +6,14 @@ import React from "react";
 export default function AppLayout() {
   return (
     <>
+      {/*//TODO(kenny): Use a splash screen here instead*/}
       <AuthLoading>
         <Text>Loading...</Text>
       </AuthLoading>
 
       <Unauthenticated>
-            {/* For now, change the below value to the path to the desired screen in order to view it*/}
-        <Redirect href="/existing-user-auth" />
+        {/* For now, change the below value to the path to the desired screen in order to view it*/}
+        <Redirect href="/(auth)" />
       </Unauthenticated>
 
       <Authenticated>
@@ -20,6 +21,7 @@ export default function AppLayout() {
           <Stack.Screen name="index" />
         </Stack>
       </Authenticated>
+      {/*If none of the above is mounted convex has fucked up */}
     </>
   );
 }

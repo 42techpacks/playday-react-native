@@ -3,12 +3,13 @@ phone number in order to create an account. There is also an option to redirect 
 */
 
 import { View, Text, Alert } from "react-native";
-import RegisterButton from "../components/auth-inputs/register-button";
-import UsernameInput from "../components/username-input";
-import PhoneNumberInput from "../components/auth-inputs/phone-number-input"
+import RegisterButton from "@/components/auth-inputs/register-button";
+import UsernameInput from "@/components/auth-inputs/username-input";
+import PhoneNumberInput from "@/components/auth-inputs/phone-number-input"
 import { Authenticated } from "convex/react";
 import { Redirect } from "expo-router";
 import React, { useState } from "react";
+import { TextInput } from "react-native-gesture-handler";
 
 const NewUserScreen: React.FC = () => {
   const [text, setText] = useState('');
@@ -20,9 +21,6 @@ const NewUserScreen: React.FC = () => {
 
   return (
     <>
-      <Authenticated>
-        <Redirect href="/" />
-      </Authenticated>
 
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
         <Text style={{ fontSize: 24, marginBottom: 10 }}>finyl</Text>
@@ -31,8 +29,8 @@ const NewUserScreen: React.FC = () => {
       <UsernameInput
           label=""
           placeholder="Username"
-          value={text} 
-          onChangeText={setText} 
+          value={text}
+          onChangeText={setText}
       />
       <PhoneNumberInput
         label="Phone Number"
