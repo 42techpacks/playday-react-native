@@ -14,6 +14,7 @@ const secureStore = {
   removeItem: SecureStore.deleteItemAsync,
 };
 
+//TODO(kenny): Add navigation protection... figure out wtf that is
 export default function RootLayout() {
   return (
     <ConvexAuthProvider
@@ -24,6 +25,8 @@ export default function RootLayout() {
           : undefined
       }
     >
+      {/*It is imperative that <Slot/> is mounted before any navigation events
+        are triggered. Otherwise, a runtime error will be thrown */}
       <Slot />
     </ConvexAuthProvider>
   );
