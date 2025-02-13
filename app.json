@@ -5,11 +5,11 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "myapp",
+    "scheme": "com-npckenny-musically",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true,
+      "supportsTablet": false,
       "bundleIdentifier": "com.npckenny.musically",
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false
@@ -38,7 +38,15 @@
           "backgroundColor": "#ffffff"
         }
       ],
-      "expo-secure-store"
+      "expo-secure-store",
+      [
+        "../expo-spotify-sdk/app.plugin.js",
+        {
+          "host": "spotify-login-callback",
+          "scheme": "com-npckenny-musically",
+          "clientID": "3c67fc60e59e4cb3b5dca98ec0c08cb6"
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true
