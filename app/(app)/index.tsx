@@ -1,3 +1,4 @@
+import SpoitifyAuthButton from "@/components/spotify/spotify-auth-button";
 import SignOutButton from "../../components/auth-inputs/sign-out-button";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
@@ -13,6 +14,7 @@ export default function HomeScreen() {
     >
       <ThemedText> Hello World! </ThemedText>
       <SignOutButton />
+      <SpoitifyAuthButton />
     </ThemedView>
   );
 }

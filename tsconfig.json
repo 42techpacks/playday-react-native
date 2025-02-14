@@ -3,6 +3,8 @@
   "compilerOptions": {
     "strict": true,
     "paths": {
+      "expo-spotify-sdk": ["../expo-spotify-sdk/src/index"],
+      "expo-spotify-sdk/*": ["../expo-spotify-sdk/src/*"],
       "@/*": [
         "./*"
       ]
