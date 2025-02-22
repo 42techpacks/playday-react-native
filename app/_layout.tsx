@@ -27,7 +27,7 @@ export default function RootLayout() {
     >
       {/*It is imperative that <Slot/> is mounted before any navigation events
         are triggered. Otherwise, a runtime error will be thrown */}
-      <Slot />
+      <Slot/>
     </ConvexAuthProvider>
   );
 }
