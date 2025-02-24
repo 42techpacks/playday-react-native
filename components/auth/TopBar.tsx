@@ -3,16 +3,16 @@ import { View, Image, StyleSheet } from "react-native";
 
 export default function TopBar() {
   return (
-    <View style={styles.container}>
+    <View style={styles.topBar}>
       {/* Logo on the very left */}
       <Image
-        source={require("@/assets/auth/logo.png")} // Replace with your actual logo path
+        source={require("@/assets/auth/logo.png")}
         style={styles.logo}
         resizeMode="contain"
       />
       {/* Static info icon on the very right */}
       <Image
-        source={require("@/assets/auth/info.png")} // Replace with your actual info icon path
+        source={require("@/assets/auth/info.png")}
         style={styles.infoIcon}
         resizeMode="contain"
       />
@@ -21,25 +21,23 @@ export default function TopBar() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    // position: 'absolute',
-    // top: 0,
-    // left: 0,
-    // right: 0,
-    // height: 80,
+  topBar: {
+    display: "flex",
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    backgroundColor: "#fff",
+    backgroundColor: "none",
+    width: "100%",
+    paddingBottom: 10,
   },
+
   logo: {
-    width: 100, // Doubled from original size
-    height: 55, // Doubled from original size
-    marginLeft: 10, // Now flush against the left edge
+    width: 100,
+    height: 25,
   },
+
   infoIcon: {
-    width: 25, // Doubled from original size
-    height: 25, // Doubled from original size
-    marginRight: 16, // Maintains right spacing
+    width: 25,
+    height: 25,
   },
 });

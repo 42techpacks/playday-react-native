@@ -1,6 +1,10 @@
 import { useState } from "react";
-import { Text, StyleSheet, Image } from "react-native";
+import { Text, StyleSheet, Image, Dimensions } from "react-native";
 import { ThemedView } from "@/components/ThemedView";
+
+const { width } = Dimensions.get("window");
+const DISC_SIZE = width * 0.6; // Adjusted to be 60% of screen width
+const CENTER_HOLE_RADIUS = DISC_SIZE * 0.05; // Center hole is 5% of the CD size
 
 export default function VinylImage() {
   return (
@@ -10,7 +14,8 @@ export default function VinylImage() {
           source={require("../../assets/feed/sex-on-the-beach-dj-assault.png")}
           style={styles.vinylSongImage}
         />
-        <Text style={{ backgroundColor: "none" }}>Vinyl Image</Text>
+        {/* CD Center Hole */}
+        <ThemedView style={styles.vinylHole} />
       </ThemedView>
     </ThemedView>
   );
@@ -45,5 +50,14 @@ const styles = StyleSheet.create({
   vinylSongImage: {
     width: "100%",
     height: "100%",
+  },
+  vinylHole: {
+    position: "absolute",
+    width: CENTER_HOLE_RADIUS * 2,
+    height: CENTER_HOLE_RADIUS * 2,
+    backgroundColor: "#fff", // Simulates the hole
+    borderRadius: CENTER_HOLE_RADIUS,
+    borderWidth: 1.5, // Reduced slightly for a more realistic effect
+    borderColor: "#888",
   },
 });
