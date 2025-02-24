@@ -1,54 +1,70 @@
-/* OTP authentication screen
-*/
-
 import { ThemedView } from "@/components/ThemedView";
 import { ThemedText } from "@/components/ThemedText";
-import { Button, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
+import { StyleSheet, TextInput, View, TouchableOpacity } from "react-native";
 import { useState } from "react";
-import SignInButton from "@/components/sign-in-button";
-import { Link } from "expo-router";
-import React from "react";
+import { useAction } from "convex/react";
+import { api } from "@/convex/_generated/api";
+import { useRouter, useLocalSearchParams } from "expo-router";
 
 export default function OTPScreen() {
-  const [number, onChangeNumber] = useState("");
+  const { phone } = useLocalSearchParams();
+  const phoneNumber = Array.isArray(phone) ? phone[0] : phone;
+  const [otp, setOtp] = useState("");
+  const [verified, setVerified] = useState(false);
+  const verifyOtp = useAction(api.auth.verifyOtp);
+  const router = useRouter();
+
+  const formatPhoneNumber = (number: string) => {
+    if (!number.startsWith("+1")) {
+      return `+1${number.replace(/\D/g, "")}`; // Add the +1 sign back so Twilio is happy
+    }
+    return number;
+  };
+
+  const handleVerifyOtp = async () => {
+    try {
+      const formattedNumber = formatPhoneNumber(phoneNumber); // Reformat the number before sending
+      const response = await verifyOtp({ phoneNumber: formattedNumber, otp });
+  
+      if (response.success) {
+        alert(response.message);
+        setVerified(true);
+      } else {
+        alert("Invalid OTP. Try again.");
+      }
+    } catch (error) {
+      alert("OTP verification failed. Are you sure you know how to read numbers, doofus?");
+      console.error(error);
+    }
+  };
+
   return (
     <ThemedView style={styles.container}>
-      <View style={styles.logoContainer}>
-        <ThemedText type="subtitle" style={styles.text}>
-          logo
-        </ThemedText>
-      </View>
+      <ThemedText type="title"> Enter OTP</ThemedText>
+      <TextInput
+        style={styles.input}
+        onChangeText={setOtp}
+        value={otp}
+        placeholder="Enter OTP"
+        placeholderTextColor="#666"
+        keyboardType="numeric"
+      />
 
-      <View style={styles.largeBox}></View>
+      <TouchableOpacity onPress={handleVerifyOtp} style={styles.buttonContainer}>
+        <ThemedText type="link"> Verify OTP</ThemedText>
+      </TouchableOpacity>
 
-      <View style={styles.content}>
-        <ThemedText type="title"> We sent you a verification code</ThemedText>
-        <TextInput
-          style={styles.input}
-          onChangeText={onChangeNumber}
-          value={number}
-          placeholder="OTP"
-          placeholderTextColor="#666"
-          keyboardType="numeric"
-        />
-        <ThemedText type="subtitle">
-          TODO: actually implement otp auth
-        </ThemedText>
+      {verified && (
+        <>
+          <TouchableOpacity onPress={() => router.push("/welcome/back")} style={styles.buttonContainer}>
+            <ThemedText> Login </ThemedText>
+          </TouchableOpacity>
 
-        <View style={styles.buttonContainer}>
-          <Link href="/welcome/back">
-            <ThemedText style={styles.buttonText}> Go through login flow</ThemedText>
-          </Link>
-        </View>
-
-        <View style={styles.buttonContainer}>
-          <Link href="/register/music-auth">
-            <ThemedText style={styles.buttonText}> Go through register flow</ThemedText>
-          </Link>
-        </View>
-      </View>
-
-      <View style={styles.circle}></View>
+          <TouchableOpacity onPress={() => router.push("/register/music-auth")} style={styles.buttonContainer}>
+            <ThemedText> Register </ThemedText>
+          </TouchableOpacity>
+        </>
+      )}
     </ThemedView>
   );
 }

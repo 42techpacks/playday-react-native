@@ -10,7 +10,7 @@ import FeedOverlayView from "@/components/feed/FeedOverlayView";
 // import { useHasPostedToday } from "@/hooks/usePostStatus";
 
 export default function FeedScreen() {
-  const hasPosted = false;
+  const hasPosted = true;
 
   return (
     <View style={{ flex: 1 }}>
