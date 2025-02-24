@@ -1,15 +1,17 @@
-import { useSpotifyAuthentication } from "@/hooks/useSpotifyAuthentication";
-import { isAvailable } from "expo-spotify-sdk";
-import { useState } from "react";
-import { Alert, StyleSheet, Button, View } from "react-native";
+import {
+  useSpotifyActions,
+  useSpotifyToken,
+  useSpotifyAuthentication,
+} from "@/hooks/useSpotify";
+import { Button } from "react-native";
 
-export default function SpoitifyAuthButton() {
-  const [authToken, setAuthToken] = useState("unknown");
+export default function SpotifyAuthButton() {
   const { authenticateAsync } = useSpotifyAuthentication();
+  const { setAccessToken } = useSpotifyActions();
+  const currentToken = useSpotifyToken();
 
   async function handleAuthenticatePress() {
     try {
-      setAuthToken("unknown");
       const session = await authenticateAsync({
         scopes: [
           "ugc-image-upload",
@@ -33,15 +35,20 @@ export default function SpoitifyAuthButton() {
         ],
       });
 
-      setAuthToken(session.accessToken);
+      setAccessToken(session.accessToken);
     } catch (error) {
       if (error instanceof Error) {
-        Alert.alert("Error", error.message);
+        // You might want to use a proper error handling mechanism here
+        setAccessToken(null);
+        console.error(error.message);
       }
     }
   }
 
   return (
-    <Button onPress={handleAuthenticatePress} title="Authenticate w/ Spotify" />
+    <Button
+      onPress={handleAuthenticatePress}
+      title={currentToken ? "Connected to Spotify" : "Authenticate w/ Spotify"}
+    />
   );
 }

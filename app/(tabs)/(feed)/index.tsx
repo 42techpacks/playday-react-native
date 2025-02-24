@@ -1,5 +1,12 @@
-import { Image, StyleSheet, Platform, View, Text } from "react-native";
-
+import {
+  Image,
+  StyleSheet,
+  Platform,
+  View,
+  Text,
+  Pressable,
+} from "react-native";
+import { Link } from "expo-router";
 import { HelloWave } from "@/components/HelloWave";
 import ParallaxScrollView from "@/components/ParallaxScrollView";
 import { ThemedText } from "@/components/ThemedText";
@@ -42,16 +49,27 @@ export default function FeedScreen() {
           </ThemedText>
           <SignOutButton />
           <SpoitifyAuthButton />
+          <Link href="/create-modal" asChild>
+            <Pressable style={styles.button}>
+              <ThemedText> Create Post </ThemedText>
+            </Pressable>
+          </Link>
         </ThemedView>
       </ParallaxScrollView>
-      {!hasPosted && (
-        <FeedOverlayView/>
-      )}
+      {!hasPosted && <FeedOverlayView />}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
+  button: {
+    backgroundColor: "#666",
+    paddingVertical: 16,
+    paddingHorizontal: 32,
+    borderRadius: 8,
+    width: "80%",
+    alignItems: "center",
+  },
   titleContainer: {
     flexDirection: "row",
     alignItems: "center",

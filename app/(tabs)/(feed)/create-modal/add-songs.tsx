@@ -1,80 +1,96 @@
 import { View, TextInput, StyleSheet, FlatList, Pressable } from "react-native";
 import { Text } from "react-native";
-import { Link, useRouter } from "expo-router";
-import { useState } from "react";
+import { Link } from "expo-router";
+import { useState, useEffect } from "react";
+import { useSpotifySearch } from "@/hooks/useSpotify";
+import { SpotifyTrack } from "@/lib/spotify";
 
-export type Song = {
-  id: string;
-  title: string;
-  artist: string;
+export type Song = SpotifyTrack & {
   selected?: boolean;
 };
 
 export default function AddSongsScreen() {
-  const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
-  const [songs, setSongs] = useState<Song[]>([
-    {
-      id: "1",
-      title: "Sex on the Beach",
-      artist: "DJ Assault",
-      selected: false,
-    },
-    { id: "2", title: "Bounce Dat G*", artist: "DJ Funk", selected: false },
-    { id: "3", title: "Swit Urgo", artist: "Overmono", selected: false },
-    { id: "4", title: "Helmet", artist: "Steve Lacy", selected: false },
-    {
-      id: "5",
-      title: "ARE WE STILL FRIENDS?",
-      artist: "Tyler, The Creator",
-      selected: false,
-    },
-    { id: "6", title: "Within", artist: "Daft Punk", selected: false },
-    { id: "7", title: "Midnight City", artist: "M83", selected: false },
-    { id: "8", title: "Redbone", artist: "Childish Gambino", selected: false },
-    { id: "9", title: "Get Lucky", artist: "Daft Punk", selected: false },
-    { id: "10", title: "Alright", artist: "Kendrick Lamar", selected: false },
-    { id: "11", title: "Dancing On My Own", artist: "Robyn", selected: false },
-    {
-      id: "12",
-      title: "Don't Stop Believin'",
-      artist: "Journey",
-      selected: false,
-    },
-  ]);
+  const debouncedQuery = useDebounce(searchQuery, 300);
+  const {
+    data: searchResults,
+    isLoading,
+    error,
+  } = useSpotifySearch(debouncedQuery);
+
+  useEffect(() => {
+    if (searchResults) {
+      console.log("Search results:", searchResults.length);
+    }
+    if (error) {
+      console.error("Search error:", error);
+    }
+  }, [searchResults, error]);
+
+  const [selectedSongs, setSelectedSongs] = useState<Set<string>>(new Set());
 
   const toggleSongSelection = (id: string) => {
-    setSongs(
-      songs.map((song) =>
-        song.id === id ? { ...song, selected: !song.selected } : song
-      )
-    );
+    setSelectedSongs((prev) => {
+      const newSet = new Set(prev);
+      if (newSet.has(id)) {
+        newSet.delete(id);
+      } else if (newSet.size < 6) {
+        newSet.add(id);
+      }
+      return newSet;
+    });
   };
+
+  const songs =
+    searchResults?.map((track) => ({
+      ...track,
+      selected: selectedSongs.has(track.id),
+    })) || [];
 
   return (
     <View style={styles.container}>
-      <TextInput style={styles.searchInput} placeholder="Search" />
-
-      <FlatList
-        data={songs}
-        keyExtractor={(item) => item.id}
-        contentContainerStyle={styles.listContent}
-        renderItem={({ item }) => (
-          <Pressable
-            style={styles.songItem}
-            onPress={() => toggleSongSelection(item.id)}
-          >
-            <View style={styles.songInfo}>
-              <Text style={styles.songTitle}>{item.title}</Text>
-              <Text style={styles.artistName}>{item.artist}</Text>
-            </View>
-            <Text style={styles.addButton}>+</Text>
-          </Pressable>
-        )}
+      <TextInput
+        style={styles.searchInput}
+        placeholder="Search songs on Spotify"
+        value={searchQuery}
+        onChangeText={setSearchQuery}
+        autoCapitalize="none"
+        autoCorrect={false}
       />
 
+      {isLoading ? (
+        <View style={styles.centered}>
+          <Text>Loading...</Text>
+        </View>
+      ) : (
+        <FlatList
+          data={songs}
+          keyExtractor={(item) => item.id}
+          contentContainerStyle={styles.listContent}
+          renderItem={({ item }) => (
+            <Pressable
+              style={[
+                styles.songItem,
+                item.selected && styles.selectedSongItem,
+              ]}
+              onPress={() => toggleSongSelection(item.id)}
+            >
+              <View style={styles.songInfo}>
+                <Text style={styles.songTitle}>{item.name}</Text>
+                <Text style={styles.artistName}>
+                  {item.artists.map((a) => a.name).join(", ")}
+                </Text>
+              </View>
+              <Text style={styles.addButton}>{item.selected ? "✓" : "+"}</Text>
+            </Pressable>
+          )}
+        />
+      )}
+
       <View style={styles.footer}>
-        <Text style={styles.selectedCount}>0/6 Songs Selected</Text>
+        <Text style={styles.selectedCount}>
+          {selectedSongs.size}/6 Songs Selected
+        </Text>
         <Link href="../" asChild>
           <Pressable style={styles.doneButton}>
             <Text style={styles.doneButtonText}>Done</Text>
@@ -156,4 +172,28 @@ const styles = StyleSheet.create({
     color: "#000",
     fontSize: 16,
   },
+  centered: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  selectedSongItem: {
+    backgroundColor: "#f0f0f0",
+  },
 });
+
+function useDebounce<T>(value: T, delay: number): T {
+  const [debouncedValue, setDebouncedValue] = useState<T>(value);
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedValue(value);
+    }, delay);
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [value, delay]);
+
+  return debouncedValue;
+}
