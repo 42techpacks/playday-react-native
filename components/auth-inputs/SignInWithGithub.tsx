@@ -5,7 +5,7 @@ import { Button, Platform } from "react-native";
 
 const redirectTo = makeRedirectUri();
 
-export default function SignInButton() {
+export default function SignInWithGithub() {
   const { signIn } = useAuthActions();
   const handleSignIn = async () => {
     console.log("handling sign in")

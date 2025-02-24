@@ -6,16 +6,16 @@ const DISC_SIZE = width * 0.6; // Adjusted to be 60% of screen width
 const CENTER_HOLE_RADIUS = DISC_SIZE * 0.05; // Center hole is 5% of the CD size
 
 // Update the type of `imageUri` to support both `string` and `number` (for `require`)
-const CDDisc: React.FC<{ imageUri: string | number }> = ({ imageUri }) => {
+export default function CDDisc({ imageUri }: { imageUri: string | number }) {
   return (
     <View style={styles.container}>
       {/* CD Outer Circle */}
       <View style={styles.cdOuter}>
         {/* CD Cover Image */}
-        <Image 
+        <Image
           source={imageUri} // Allow both local and remote images
-          style={styles.image} 
-          resizeMode="cover" 
+          style={styles.image}
+          resizeMode="cover"
         />
 
         {/* CD Center Hole */}
@@ -23,7 +23,7 @@ const CDDisc: React.FC<{ imageUri: string | number }> = ({ imageUri }) => {
       </View>
     </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -56,9 +56,3 @@ const styles = StyleSheet.create({
     borderColor: "#888",
   },
 });
-
-export default CDDisc;
-
-
-
-

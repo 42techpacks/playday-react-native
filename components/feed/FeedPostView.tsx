@@ -1,11 +1,11 @@
 import { useState } from "react";
 import { Text, StyleSheet, Image } from "react-native";
-import { ThemedView } from "../ThemedView";
-import { IconSymbol } from "../ui/IconSymbol.ios";
+import { ThemedView } from "@/components/ThemedView";
+import { IconSymbol } from "@/components/ui/IconSymbol.ios";
 import LinearGradient from "react-native-linear-gradient";
 import VinylImage from "./VinylImage";
 import SongView from "./SongView";
-import { ThemedText } from "../ThemedText";
+import { ThemedText } from "@/components/ThemedText";
 import CommentInput from "./CommentInput";
 
 const songs = [

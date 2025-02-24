@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { Text, StyleSheet, Pressable, Button, Image } from "react-native";
-import { ThemedView } from "../ThemedView";
+import { Text, StyleSheet, Image } from "react-native";
+import { ThemedView } from "@/components/ThemedView";
 import LinearGradient from "react-native-linear-gradient";
 
 interface SongViewProps {

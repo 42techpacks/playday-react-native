@@ -1,7 +1,7 @@
 import { StyleSheet } from "react-native";
 import { ThemedView } from "@/components/ThemedView";
 import { ThemedText } from "@/components/ThemedText";
-import SignInButton from "@/components/sign-in-button";
+import SignInWithGithub from "@/components/auth-inputs/SignInWithGithub";
 
 export default function WelcomeToScreen() {
   return (
@@ -10,7 +10,7 @@ export default function WelcomeToScreen() {
       <ThemedText type="subtitle">
         Github Oauth until we implement actual otp auth
       </ThemedText>
-      <SignInButton />
+      <SignInWithGithub />
     </ThemedView>
   );
 }

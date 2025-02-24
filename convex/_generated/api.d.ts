@@ -16,6 +16,8 @@ import type {
 import type * as auth from "../auth.js";
 import type * as daylists from "../daylists.js";
 import type * as http from "../http.js";
+import type * as otp_TwilioSDK from "../otp/TwilioSDK.js";
+import type * as otp_TwilioVerify from "../otp/TwilioVerify.js";
 
 /**
  * A utility for referencing Convex functions in your app's API.
@@ -29,6 +31,8 @@ declare const fullApi: ApiFromModules<{
   auth: typeof auth;
   daylists: typeof daylists;
   http: typeof http;
+  "otp/TwilioSDK": typeof otp_TwilioSDK;
+  "otp/TwilioVerify": typeof otp_TwilioVerify;
 }>;
 export declare const api: FilterApi<
   typeof fullApi,

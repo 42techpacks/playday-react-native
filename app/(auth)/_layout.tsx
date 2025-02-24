@@ -11,6 +11,8 @@ export default function AuthLayout() {
       </Authenticated>
       <Stack>
         <Stack.Screen name="index" options={{ title: "Landing Page" }} />
+        <Stack.Screen name="identify/phone" options={{ title: "Phone" }} />
+        <Stack.Screen name="identify/otp" options={{ title: "OTP" }} />
       </Stack>
     </>
   );

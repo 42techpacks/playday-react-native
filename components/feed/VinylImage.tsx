@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Text, StyleSheet, Image } from "react-native";
-import { ThemedView } from "../ThemedView";
+import { ThemedView } from "@/components/ThemedView";
 
 export default function VinylImage() {
   return (

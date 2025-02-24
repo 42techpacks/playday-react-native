@@ -1,8 +1,6 @@
-import { useState } from "react";
-import { Text, StyleSheet, Pressable, TextInput } from "react-native";
-import { ThemedView } from "../ThemedView";
-import { ThemedText } from "../ThemedText";
-import { IconSymbol } from "../ui/IconSymbol.ios";
+import { StyleSheet, TextInput } from "react-native";
+import { ThemedView } from "@/components/ThemedView";
+import { IconSymbol } from "@/components/ui/IconSymbol.ios";
 
 export default function CommentInput() {
   return (

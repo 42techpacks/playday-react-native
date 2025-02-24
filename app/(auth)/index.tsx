@@ -1,7 +1,7 @@
 /* This is the landing page.*/
 import { Link, useRouter } from "expo-router";
-import TopBar from "./TopBar";
-import CDDisc from "./CDDisc";
+import TopBar from "../../components/auth/TopBar";
+import CDDisc from "@/components/auth/CDDisc";
 import { useFonts } from "expo-font";
 import {
   TextInput,
@@ -11,53 +11,42 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   ScrollView,
+  Pressable,
 } from "react-native";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { useState } from "react";
 import { useAction } from "convex/react";
 import { api } from "@/convex/_generated/api";
-import { SafeAreaView, StyleSheet, Text, TouchableOpacity, Animated } from "react-native";
-
-
 import {
- 
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  Animated,
 } from "react-native";
 
+import {} from "react-native";
 
 export default function LandingScreen() {
   const [fontsLoaded] = useFonts({
-    "Helvetica-Regular": require("./Helvetica.ttf"),
+    "Helvetica-Regular": require("@/assets/fonts/Helvetica.ttf"),
   });
 
   const cards = [
-    require('./Steve-Lacy-Gemini-Rights.png'),
-    require('./tyler_the_creator.png'),
-    require('./travis_scott.png'),
-    require('./dj_assault.png'),
-    require('./migos.png')
+    require("@/assets/auth/Steve-Lacy-Gemini-Rights.png"),
+    require("@/assets/auth/tyler_the_creator.png"),
+    require("@/assets/auth/travis_scott.png"),
+    require("@/assets/auth/dj_assault.png"),
+    require("@/assets/auth/migos.png"),
   ];
   const [isSideBySide, setIsSideBySide] = useState(false);
   const [animation] = useState(new Animated.Value(0)); // Animated value for transitions
 
-
-  const [number, setNumber] = useState("");
-  const sendOtp = useAction(api.auth.sendOtp);
-  const router = useRouter();
-
-  const handleSendOtp = async () => {
-    try {
-      await sendOtp({ phoneNumber: number });
-      router.push(`/identify/otp?phone=${number}`); // Pass number to OTP page
-    } catch (error) {
-      alert("Failed to send OTP. Try again.");
-      console.error(error);
-    }
-  };
   const toggleView = () => {
     Animated.timing(animation, {
-      toValue: isSideBySide ? 0 : 1,  // Toggle between 0 (stacked) and 1 (side-by-side)
-      duration: 500,  // Transition duration in ms
+      toValue: isSideBySide ? 0 : 1, // Toggle between 0 (stacked) and 1 (side-by-side)
+      duration: 500, // Transition duration in ms
       useNativeDriver: true,
     }).start();
     setIsSideBySide((prev) => !prev);
@@ -68,100 +57,90 @@ export default function LandingScreen() {
       {/* Top Bar */}
       <TopBar />
 
-      {/* Main Header Text 
-      <ThemedText type="title" style={styles.header}>
-        Discover the sound of the day
-      </ThemedText>
-      <ThemedText type="subtitle" style={styles.subtitle}>
-        Listen, curate, and share your favorite music.
-      </ThemedText>
-      */}
-
-<SafeAreaView style={styles.container2}>
-      {/* Button to toggle view 
-      <TouchableOpacity style={styles.button} onPress={toggleView}>
-          <Text style={styles.buttonText}>{isSideBySide ? "Show Stack" : "Show Side by Side"}</Text>
-      </TouchableOpacity>*/}
-
-      {/* Cards container */}
-      <Animated.View
-        style={[
-          styles.cardContainer,
-          isSideBySide ? styles.sideBySide : styles.stacked,
-        ]}
-      >
-        {cards.map((imageUri, index) => (
-          <Animated.View
-            key={index}
-            style={[
-              styles.card,
-              isSideBySide
-                ? {
-                    marginHorizontal: 0,  // No space between cards for overlap
-                    transform: [
-                      {
-                        translateX: animation.interpolate({
-                          inputRange: [0, 1],
-                          outputRange: [0, index * -50],  // Cards slide out with increasing offset
-                        }),
-                      },
-                      {
-                        scale: animation.interpolate({
-                          inputRange: [0, 1],
-                          outputRange: [1, 1],  // No scaling, but you can adjust if needed
-                        }),
-                      },
-                    ],
-                    opacity: animation.interpolate({
-                      inputRange: [0, 1],
-                      outputRange: [1, 1], // Keep opacity consistent during transition
-                    }),
-                    zIndex: cards.length - index,  // Ensure the top card is on top
-                  }
-                : {
-                    position: "absolute", // Absolute positioning for stacked effect
-                    opacity: animation.interpolate({
-                      inputRange: [0, 1],
-                      outputRange: [1, 0.5], // Fade effect as it stacks
-                    }),
-                    zIndex: cards.length - index, // Ensuring the top card is on top
-                    transform: [
-                      {
-                        translateX: animation.interpolate({
-                          inputRange: [0, 1],
-                          outputRange: [
-                            index === 0 ? 10 : index === 1 ? 20 : index === 2 ? 30 : index === 3 ? 40 : index === 4 ? 50 : 0,  // Apply increasing offset by +20 for each card
-                            index * 250,  // Cards slide to the right (250px per card)
-                          ],
-                        }),
-                      },
-                    ],
-                  },
-            ]}
-          >
-            <CDDisc imageUri={imageUri} />
-          </Animated.View>
-        ))}
-      </Animated.View>
-    </SafeAreaView>
+      <SafeAreaView style={styles.container2}>
+        <Animated.View
+          style={[
+            styles.cardContainer,
+            isSideBySide ? styles.sideBySide : styles.stacked,
+          ]}
+        >
+          {cards.map((imageUri, index) => (
+            <Animated.View
+              key={index}
+              style={[
+                styles.card,
+                isSideBySide
+                  ? {
+                      marginHorizontal: 0, // No space between cards for overlap
+                      transform: [
+                        {
+                          translateX: animation.interpolate({
+                            inputRange: [0, 1],
+                            outputRange: [0, index * -50], // Cards slide out with increasing offset
+                          }),
+                        },
+                        {
+                          scale: animation.interpolate({
+                            inputRange: [0, 1],
+                            outputRange: [1, 1], // No scaling, but you can adjust if needed
+                          }),
+                        },
+                      ],
+                      opacity: animation.interpolate({
+                        inputRange: [0, 1],
+                        outputRange: [1, 1], // Keep opacity consistent during transition
+                      }),
+                      zIndex: cards.length - index, // Ensure the top card is on top
+                    }
+                  : {
+                      position: "absolute", // Absolute positioning for stacked effect
+                      opacity: animation.interpolate({
+                        inputRange: [0, 1],
+                        outputRange: [1, 0.5], // Fade effect as it stacks
+                      }),
+                      zIndex: cards.length - index, // Ensuring the top card is on top
+                      transform: [
+                        {
+                          translateX: animation.interpolate({
+                            inputRange: [0, 1],
+                            outputRange: [
+                              index === 0
+                                ? 10
+                                : index === 1
+                                  ? 20
+                                  : index === 2
+                                    ? 30
+                                    : index === 3
+                                      ? 40
+                                      : index === 4
+                                        ? 50
+                                        : 0, // Apply increasing offset by +20 for each card
+                              index * 250, // Cards slide to the right (250px per card)
+                            ],
+                          }),
+                        },
+                      ],
+                    },
+              ]}
+            >
+              <CDDisc imageUri={imageUri} />
+            </Animated.View>
+          ))}
+        </Animated.View>
+      </SafeAreaView>
 
       {/* Everything below this will be pushed to the bottom */}
-        <ThemedText type="subtitle" style={styles.subtext}>
-          Please include +1 at the beginning of your number.
-        </ThemedText>
-        <TextInput
-          style={styles.input}
-          onChangeText={setNumber}
-          value={number}
-          placeholder="Enter Phone Number"
-          placeholderTextColor="#666"
-          keyboardType="phone-pad"
-        />
-        <TouchableOpacity onPress={handleSendOtp} style={styles.buttonContainer}>
+      <ThemedText type="subtitle" style={styles.subtext}>
+        Listen, curate, and share your favorite music.
+      </ThemedText>
+      <ThemedText type="title">Discover the sounds of the day</ThemedText>
+      <Link href="/identify/phone" asChild>
+        <TouchableOpacity style={styles.buttonContainer}>
           <ThemedText type="link" style={styles.buttonText}>
-            Sign In
+            Sign in with phone number
           </ThemedText>
         </TouchableOpacity>
+      </Link>
     </ThemedView>
   );
 }
@@ -171,7 +150,7 @@ const styles = StyleSheet.create({
     flex: 1,
     // Align items in the center horizontally
     alignItems: "center",
-    justifyContent: "flex-start"
+    justifyContent: "flex-start",
   },
   container2: {
     flex: 1,
@@ -179,7 +158,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     marginTop: 200,
-    marginRight: 50
+    marginRight: 50,
   },
   header: {
     marginTop: 100, // Optional spacing from the top
@@ -217,15 +196,14 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     backgroundColor: "#000", // Solid black background
-    borderRadius: 25,        // Makes it pill-shaped
+    borderRadius: 25, // Makes it pill-shaped
     paddingVertical: 9,
     paddingHorizontal: 50,
     alignItems: "center",
     justifyContent: "center",
     width: "90%",
     height: 45,
-    marginBottom: 500
-    
+    marginBottom: 500,
   },
   buttonText: {
     fontFamily: "Helvetica-Regular",
@@ -239,7 +217,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     zIndex: 10, // Ensure the button stays on top of the cards
   },
- 
+
   cardContainer: {
     justifyContent: "center",
     alignItems: "center",
@@ -256,7 +234,7 @@ const styles = StyleSheet.create({
   },
   card: {
     alignItems: "center",
-    width: 250,  // Adjust width as needed
+    width: 250, // Adjust width as needed
     height: 300, // Adjust height as needed
     overflow: "hidden", // Ensures the content fits properly without overflow
   },
