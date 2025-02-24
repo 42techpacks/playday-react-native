@@ -27,7 +27,6 @@ export const spotifyApi = {
         },
       }
     );
-    console.log("response", response);
 
     if (!response.ok) {
       throw new Error("Failed to search tracks");

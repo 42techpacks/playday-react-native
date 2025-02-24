@@ -1,15 +1,24 @@
 import { View, TextInput, StyleSheet, FlatList, Pressable } from "react-native";
 import { Text } from "react-native";
-import { Link } from "expo-router";
-import { useState, useEffect } from "react";
+import { Link, useRouter, useLocalSearchParams } from "expo-router";
+import { useState, useEffect, useMemo } from "react";
 import { useSpotifySearch } from "@/hooks/useSpotify";
 import { SpotifyTrack } from "@/lib/spotify";
+
+export type DaylistSong = {
+  id: string;
+  name: string;
+  artists: { name: string }[];
+  selected?: boolean;
+};
 
 export type Song = SpotifyTrack & {
   selected?: boolean;
 };
 
 export default function AddSongsScreen() {
+  const router = useRouter();
+  const params = useLocalSearchParams<{ songs?: string }>();
   const [searchQuery, setSearchQuery] = useState("");
   const debouncedQuery = useDebounce(searchQuery, 300);
   const {
@@ -18,16 +27,21 @@ export default function AddSongsScreen() {
     error,
   } = useSpotifySearch(debouncedQuery);
 
-  useEffect(() => {
-    if (searchResults) {
-      console.log("Search results:", searchResults.length);
+  // Parse existing songs from params
+  const existingSongs: DaylistSong[] = useMemo(() => {
+    if (!params.songs) return [];
+    try {
+      return JSON.parse(params.songs);
+    } catch (e) {
+      console.error("Failed to parse existing songs:", e);
+      return [];
     }
-    if (error) {
-      console.error("Search error:", error);
-    }
-  }, [searchResults, error]);
+  }, [params.songs]);
 
-  const [selectedSongs, setSelectedSongs] = useState<Set<string>>(new Set());
+  // Track selected song IDs
+  const [selectedSongs, setSelectedSongs] = useState<Set<string>>(() =>
+    new Set(existingSongs.map(song => song.id))
+  );
 
   const toggleSongSelection = (id: string) => {
     setSelectedSongs((prev) => {
@@ -41,11 +55,31 @@ export default function AddSongsScreen() {
     });
   };
 
-  const songs =
-    searchResults?.map((track) => ({
-      ...track,
-      selected: selectedSongs.has(track.id),
-    })) || [];
+  // Map search results to DaylistSong format
+  const searchSongs: DaylistSong[] = useMemo(() =>
+    searchResults?.map(track => ({
+      id: track.id,
+      name: track.name,
+      artists: track.artists.map(a => ({ name: a.name }))
+    })) || [],
+  [searchResults]);
+
+  const handleDone = () => {
+    // Combine existing and search songs, filtering by selected IDs
+    const allSongs = [...existingSongs, ...searchSongs];
+    const uniqueSongs = allSongs.filter((song, index) =>
+      selectedSongs.has(song.id) &&
+      allSongs.findIndex(s => s.id === song.id) === index
+    );
+
+    router.dismissTo({
+      pathname: "/create-modal",
+      params: { songs: JSON.stringify(uniqueSongs) }
+    });
+  };
+
+  // Show search results if searching, otherwise show existing songs
+  const displaySongs = searchQuery ? searchSongs : existingSongs;
 
   return (
     <View style={styles.container}>
@@ -64,24 +98,24 @@ export default function AddSongsScreen() {
         </View>
       ) : (
         <FlatList
-          data={songs}
+          data={displaySongs}
           keyExtractor={(item) => item.id}
           contentContainerStyle={styles.listContent}
-          renderItem={({ item }) => (
+          renderItem={({ item: song }) => (
             <Pressable
               style={[
                 styles.songItem,
-                item.selected && styles.selectedSongItem,
+                selectedSongs.has(song.id) && styles.selectedSongItem,
               ]}
-              onPress={() => toggleSongSelection(item.id)}
+              onPress={() => toggleSongSelection(song.id)}
             >
               <View style={styles.songInfo}>
-                <Text style={styles.songTitle}>{item.name}</Text>
+                <Text style={styles.songTitle}>{song.name}</Text>
                 <Text style={styles.artistName}>
-                  {item.artists.map((a) => a.name).join(", ")}
+                  {song.artists.map((a) => a.name).join(", ")}
                 </Text>
               </View>
-              <Text style={styles.addButton}>{item.selected ? "✓" : "+"}</Text>
+              <Text style={styles.addButton}>{selectedSongs.has(song.id) ? "✓" : "+"}</Text>
             </Pressable>
           )}
         />
@@ -91,11 +125,9 @@ export default function AddSongsScreen() {
         <Text style={styles.selectedCount}>
           {selectedSongs.size}/6 Songs Selected
         </Text>
-        <Link href="../" asChild>
-          <Pressable style={styles.doneButton}>
-            <Text style={styles.doneButtonText}>Done</Text>
-          </Pressable>
-        </Link>
+        <Pressable style={styles.doneButton} onPress={handleDone}>
+          <Text style={styles.doneButtonText}>Done</Text>
+        </Pressable>
       </View>
     </View>
   );

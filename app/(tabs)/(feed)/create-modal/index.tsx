@@ -6,30 +6,39 @@ import {
   Text,
   FlatList,
 } from "react-native";
-import { Link, useRouter } from "expo-router";
-import { useState } from "react";
-import { Song } from "./add-songs";
+import { Link, useRouter, useLocalSearchParams } from "expo-router";
+import { useState, useEffect } from "react";
+import { DaylistSong } from "./add-songs";
+import { useMutation } from "convex/react";
+import { api } from "@/convex/_generated/api";
 
 export default function CreatePostScreen() {
   const router = useRouter();
-  const [songs, setSongs] = useState<Song[]>([
-    {
-      id: "1",
-      title: "Sex on the Beach",
-      artist: "DJ Assault",
-      selected: false,
-    },
-    { id: "2", title: "Bounce Dat G*", artist: "DJ Funk", selected: false },
-    { id: "3", title: "Swit Urgo", artist: "Overmono", selected: false },
-    { id: "4", title: "Helmet", artist: "Steve Lacy", selected: false },
-    {
-      id: "5",
-      title: "ARE WE STILL FRIENDS?",
-      artist: "Tyler, The Creator",
-      selected: false,
-    },
-    { id: "6", title: "Within", artist: "Daft Punk", selected: false },
-  ]);
+  const params = useLocalSearchParams<{ songs?: string }>();
+  const [caption, setCaption] = useState("");
+  const createDaylist = useMutation(api.daylists.create);
+  const [songs, setSongs] = useState<DaylistSong[]>([]);
+
+  useEffect(() => {
+    if (params.songs) {
+      try {
+        const newSongs = JSON.parse(params.songs) as DaylistSong[];
+        setSongs(newSongs);
+      } catch (e) {
+        console.error("Failed to parse songs:", e);
+      }
+    }
+  }, [params.songs]);
+
+  const handleShare = async () => {
+    await createDaylist({
+      caption,
+      songs: songs.map(({ id, name, artists }) => ({ id, name, artists })),
+    });
+    router.dismissTo({
+      pathname: "/",
+    });
+  };
 
   return (
     <View style={styles.container}>
@@ -40,9 +49,15 @@ export default function CreatePostScreen() {
           <View style={styles.innerCircle} />
         </View>
         <View style={styles.songControlsContainer}>
-          <Text style={styles.songCount}>6/6 Songs</Text>
+          <Text style={styles.songCount}>{songs.length}/6 Songs</Text>
           <View style={styles.spacer} />
-          <Link href="/create-modal/add-songs" asChild>
+          <Link
+            href={{
+              pathname: "/create-modal/add-songs",
+              params: { songs: JSON.stringify(songs) },
+            }}
+            asChild
+          >
             <Pressable style={styles.addButton}>
               <View style={styles.addButtonContainer}>
                 <Text style={styles.addButtonText}>Add Songs</Text>
@@ -58,15 +73,14 @@ export default function CreatePostScreen() {
         renderItem={({ item }) => (
           <Pressable
             style={styles.songItem}
-            onPress={() => console.log("pressed")}
+            onPress={() => console.log("song in create modal list pressed")}
           >
             <View style={styles.songInfo}>
               <Text style={styles.songTitle}>
-                {item.title} •{" "}
-                <Text style={styles.artistName}>{item.artist}</Text>
+                {item.name} •{" "}
+                <Text style={styles.artistName}>{item.artists[0].name}</Text>
               </Text>
             </View>
-            {/* <Text style={styles.addButton}>+</Text> */}
           </Pressable>
         )}
       />
@@ -77,13 +91,20 @@ export default function CreatePostScreen() {
           placeholder="Enter a caption..."
           multiline
           numberOfLines={4}
+          value={caption}
+          onChangeText={setCaption}
         />
 
-        <Link href={"../"} asChild>
-          <Pressable style={styles.shareButton}>
-            <Text style={styles.shareButtonText}>Share</Text>
-          </Pressable>
-        </Link>
+        <Pressable
+          style={[
+            styles.shareButton,
+            songs.length === 0 && styles.disabledButton,
+          ]}
+          onPress={handleShare}
+          disabled={songs.length === 0}
+        >
+          <Text style={styles.shareButtonText}>Share</Text>
+        </Pressable>
       </View>
     </View>
   );
@@ -199,5 +220,8 @@ const styles = StyleSheet.create({
   artistName: {
     color: "#666",
     fontWeight: "normal",
+  },
+  disabledButton: {
+    opacity: 0.5,
   },
 });

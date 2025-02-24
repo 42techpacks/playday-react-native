@@ -7,7 +7,7 @@ export default function AuthLayout() {
   return (
     <>
       <Authenticated>
-        <Redirect href="/(tabs)" />
+        <Redirect href="/(tabs)/(feed)" />
       </Authenticated>
       <Stack>
         <Stack.Screen name="index" options={{ title: "Landing Page" }} />

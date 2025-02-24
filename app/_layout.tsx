@@ -22,19 +22,19 @@ const secureStore = {
 export default function RootLayout() {
   useReactQueryDevTools(queryClient);
   return (
-    <QueryClientProvider client={queryClient}>
-      <ConvexAuthProvider
-        client={convex}
-        storage={
-          Platform.OS === "android" || Platform.OS === "ios"
-            ? secureStore
-            : undefined
-        }
-      >
+    <ConvexAuthProvider
+      client={convex}
+      storage={
+        Platform.OS === "android" || Platform.OS === "ios"
+          ? secureStore
+          : undefined
+      }
+    >
+      <QueryClientProvider client={queryClient}>
         {/*It is imperative that <Slot/> is mounted before any navigation events
           are triggered. Otherwise, a runtime error will be thrown */}
         <Slot />
-      </ConvexAuthProvider>
-    </QueryClientProvider>
+      </QueryClientProvider>
+    </ConvexAuthProvider>
   );
 }
