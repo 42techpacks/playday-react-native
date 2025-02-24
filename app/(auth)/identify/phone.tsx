@@ -1,41 +1,43 @@
-/* This is the screen where users enter their phone number to sign in.*/
-
-import { StyleSheet, TextInput, View } from "react-native";
+import { StyleSheet, TextInput, View, TouchableOpacity, KeyboardAvoidingView, Platform } from "react-native";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
-import { Link } from "expo-router";
 import { useState } from "react";
+import { useAction } from "convex/react";
+import { api } from "@/convex/_generated/api";
+import { useRouter } from "expo-router";
 
 export default function PhoneScreen() {
-  const [number, onChangeNumber] = useState("");
+  const [number, setNumber] = useState("");
+  const sendOtp = useAction(api.auth.sendOtp);
+  const router = useRouter();
+
+  const handleSendOtp = async () => {
+    try {
+      await sendOtp({ phoneNumber: number });
+      router.push(`/identify/otp?phone=${number}`); // Pass number to OTP page
+    } catch (error) {
+      alert("Failed to send OTP. Try again.");
+      console.error(error);
+    }
+  };
 
   return (
     <ThemedView style={styles.container}>
-            <View style={styles.circle}></View>
-      
-       <View style={styles.logoContainer}>
-              <ThemedText type="subtitle" style={styles.text}>
-                logo
-              </ThemedText>
-            </View>
-        <View style={styles.largeBox}></View>
-
-      <ThemedText type="title"> Enter Your Phone number</ThemedText>
+      <ThemedText type="title"> Enter Your Phone Number</ThemedText>
+      <ThemedText type="subtitle" style={styles.subtext}>
+        Please include +1 at the beginning of your number.
+      </ThemedText>
       <TextInput
         style={styles.input}
-        onChangeText={onChangeNumber}
+        onChangeText={setNumber}
         value={number}
         placeholder="Enter Phone Number"
         placeholderTextColor="#666"
         keyboardType="phone-pad"
       />
-      <Link href="/identify/otp" replace={true}>
-        {" "}
-        <View style={styles.buttonContainer}>
-        <ThemedText type="link"> Sign In</ThemedText>   
-        </View>
-
-      </Link>
+      <TouchableOpacity onPress={handleSendOtp} style={styles.buttonContainer}>
+        <ThemedText type="link"> Sign In</ThemedText>
+      </TouchableOpacity>
     </ThemedView>
   );
 }
@@ -44,68 +46,37 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: "center",
-    justifyContent: "flex-end", 
-    paddingBottom: 200, 
-    paddingTop: 100,
+    justifyContent: "center",
+    paddingTop: 50, 
+  },
+  title: {
+    marginBottom: 20,
   },
   input: {
-    height: 40,
-    margin: 12,
+    height: 50,
+    width: "80%",
     borderWidth: 1,
-    padding: 10,
-  },
-
-  buttonContainer: {
-    backgroundColor: 'white',
+    borderColor: "#ccc",
     borderRadius: 10,
-    borderWidth: 1,
-    borderColor: 'black',
-    paddingVertical: 12,
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: 250, 
+    paddingHorizontal: 10,
+    marginBottom: 20,
   },
-
-  largeBox: {
-    position: 'absolute', 
-    top: '30%', 
-    width: 250, 
-    height: 250, 
-    backgroundColor: 'white',
-    borderRadius: 20, 
-    borderWidth: 2,
-    borderColor: 'black',
-    justifyContent: 'center',
+  buttonContainer: {
+    backgroundColor: 'black',
+    borderRadius: 10,
+    paddingVertical: 15,
+    paddingHorizontal: 30,
     alignItems: 'center',
-    zIndex: 1, 
-  },
-  logoContainer: {
-    position: 'absolute',
-    top: 20,
-    left: 20, 
-    width: 100, 
-    height: 40, 
-    backgroundColor: 'white', 
-    borderRadius: 10, 
-    borderWidth: 2,
-    borderColor: 'black',
     justifyContent: 'center',
-    alignItems: 'center',
-    zIndex: 2, 
   },
-  text: {
+  buttonText: {
+    color: 'white',
+    fontWeight: 'bold',
+  },
+  subtext: {
+    fontSize: 14,
+    color: "#666",
+    marginTop: 5,
     marginBottom: 10,
-  },
-  circle: {
-    position: 'absolute',
-    top: 20, 
-    right: 20, 
-    width: 40, 
-    height: 40, 
-    borderRadius: 20, 
-    borderWidth: 2,
-    borderColor: 'black',
-    backgroundColor: 'white', 
-    zIndex: 3, 
-  },
+  },  
 });
