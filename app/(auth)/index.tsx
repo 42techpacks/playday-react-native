@@ -1,33 +1,167 @@
 /* This is the landing page.*/
-
-import { StyleSheet, View } from "react-native";
-import { ThemedView } from "@/components/ThemedView";
+import { Link, useRouter } from "expo-router";
+import TopBar from "./TopBar";
+import CDDisc from "./CDDisc";
+import { useFonts } from "expo-font";
+import {
+  TextInput,
+  View,
+  KeyboardAvoidingView,
+  Platform,
+  TouchableWithoutFeedback,
+  Keyboard,
+  ScrollView,
+} from "react-native";
 import { ThemedText } from "@/components/ThemedText";
-import { Link } from "expo-router";
+import { ThemedView } from "@/components/ThemedView";
+import { useState } from "react";
+import { useAction } from "convex/react";
+import { api } from "@/convex/_generated/api";
+import { SafeAreaView, StyleSheet, Text, TouchableOpacity, Animated } from "react-native";
+
+
+import {
+ 
+} from "react-native";
+
 
 export default function LandingScreen() {
+  const [fontsLoaded] = useFonts({
+    "Helvetica-Regular": require("./Helvetica.ttf"),
+  });
+
+  const cards = [
+    require('./Steve-Lacy-Gemini-Rights.png'),
+    require('./tyler_the_creator.png'),
+    require('./travis_scott.png'),
+    require('./dj_assault.png'),
+    require('./migos.png')
+  ];
+  const [isSideBySide, setIsSideBySide] = useState(false);
+  const [animation] = useState(new Animated.Value(0)); // Animated value for transitions
+
+
+  const [number, setNumber] = useState("");
+  const sendOtp = useAction(api.auth.sendOtp);
+  const router = useRouter();
+
+  const handleSendOtp = async () => {
+    try {
+      await sendOtp({ phoneNumber: number });
+      router.push(`/identify/otp?phone=${number}`); // Pass number to OTP page
+    } catch (error) {
+      alert("Failed to send OTP. Try again.");
+      console.error(error);
+    }
+  };
+  const toggleView = () => {
+    Animated.timing(animation, {
+      toValue: isSideBySide ? 0 : 1,  // Toggle between 0 (stacked) and 1 (side-by-side)
+      duration: 500,  // Transition duration in ms
+      useNativeDriver: true,
+    }).start();
+    setIsSideBySide((prev) => !prev);
+  };
+
   return (
     <ThemedView style={styles.container}>
-      <View style={styles.logoContainer}>
-        <ThemedText type="subtitle" style={styles.text}>
-          logo
-        </ThemedText>
-      </View>
+      {/* Top Bar */}
+      <TopBar />
 
-      <View style={styles.largeBox}></View>
-
-      <ThemedText type="title" style={styles.text}> The landing page. </ThemedText>
-      <ThemedText type="subtitle" style={styles.text}>
-        See Figma for what it should look like
+      {/* Main Header Text 
+      <ThemedText type="title" style={styles.header}>
+        Discover the sound of the day
       </ThemedText>
+      <ThemedText type="subtitle" style={styles.subtitle}>
+        Listen, curate, and share your favorite music.
+      </ThemedText>
+      */}
 
-      <Link href="/identify/phone">
-        <View style={styles.buttonContainer}>
-          <ThemedText style={styles.buttonText}> Sign In With Phone Number </ThemedText>
-        </View>
-      </Link>
+<SafeAreaView style={styles.container2}>
+      {/* Button to toggle view 
+      <TouchableOpacity style={styles.button} onPress={toggleView}>
+          <Text style={styles.buttonText}>{isSideBySide ? "Show Stack" : "Show Side by Side"}</Text>
+      </TouchableOpacity>*/}
 
-      <View style={styles.circle}></View>
+      {/* Cards container */}
+      <Animated.View
+        style={[
+          styles.cardContainer,
+          isSideBySide ? styles.sideBySide : styles.stacked,
+        ]}
+      >
+        {cards.map((imageUri, index) => (
+          <Animated.View
+            key={index}
+            style={[
+              styles.card,
+              isSideBySide
+                ? {
+                    marginHorizontal: 0,  // No space between cards for overlap
+                    transform: [
+                      {
+                        translateX: animation.interpolate({
+                          inputRange: [0, 1],
+                          outputRange: [0, index * -50],  // Cards slide out with increasing offset
+                        }),
+                      },
+                      {
+                        scale: animation.interpolate({
+                          inputRange: [0, 1],
+                          outputRange: [1, 1],  // No scaling, but you can adjust if needed
+                        }),
+                      },
+                    ],
+                    opacity: animation.interpolate({
+                      inputRange: [0, 1],
+                      outputRange: [1, 1], // Keep opacity consistent during transition
+                    }),
+                    zIndex: cards.length - index,  // Ensure the top card is on top
+                  }
+                : {
+                    position: "absolute", // Absolute positioning for stacked effect
+                    opacity: animation.interpolate({
+                      inputRange: [0, 1],
+                      outputRange: [1, 0.5], // Fade effect as it stacks
+                    }),
+                    zIndex: cards.length - index, // Ensuring the top card is on top
+                    transform: [
+                      {
+                        translateX: animation.interpolate({
+                          inputRange: [0, 1],
+                          outputRange: [
+                            index === 0 ? 10 : index === 1 ? 20 : index === 2 ? 30 : index === 3 ? 40 : index === 4 ? 50 : 0,  // Apply increasing offset by +20 for each card
+                            index * 250,  // Cards slide to the right (250px per card)
+                          ],
+                        }),
+                      },
+                    ],
+                  },
+            ]}
+          >
+            <CDDisc imageUri={imageUri} />
+          </Animated.View>
+        ))}
+      </Animated.View>
+    </SafeAreaView>
+
+      {/* Everything below this will be pushed to the bottom */}
+        <ThemedText type="subtitle" style={styles.subtext}>
+          Please include +1 at the beginning of your number.
+        </ThemedText>
+        <TextInput
+          style={styles.input}
+          onChangeText={setNumber}
+          value={number}
+          placeholder="Enter Phone Number"
+          placeholderTextColor="#666"
+          keyboardType="phone-pad"
+        />
+        <TouchableOpacity onPress={handleSendOtp} style={styles.buttonContainer}>
+          <ThemedText type="link" style={styles.buttonText}>
+            Sign In
+          </ThemedText>
+        </TouchableOpacity>
     </ThemedView>
   );
 }
@@ -35,66 +169,95 @@ export default function LandingScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    // Align items in the center horizontally
     alignItems: "center",
-    justifyContent: "flex-end", 
-    paddingBottom: 200, 
-    paddingTop: 100,
+    justifyContent: "flex-start"
   },
-  logoContainer: {
-    position: 'absolute',
-    top: 20,
-    left: 20, 
-    width: 100, 
-    height: 40, 
-    backgroundColor: 'white', 
-    borderRadius: 10, 
-    borderWidth: 2,
-    borderColor: 'black',
-    justifyContent: 'center',
-    alignItems: 'center',
-    zIndex: 2, 
+  container2: {
+    flex: 1,
+    // Align items in the center horizontally
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: 200,
+    marginRight: 50
   },
-  largeBox: {
-    position: 'absolute', 
-    top: '30%', 
-    width: 250, 
-    height: 250, 
-    backgroundColor: 'white',
-    borderRadius: 20, 
-    borderWidth: 2,
-    borderColor: 'black',
-    justifyContent: 'center',
-    alignItems: 'center',
-    zIndex: 1, 
-  },
-  text: {
+  header: {
+    marginTop: 100, // Optional spacing from the top
     marginBottom: 10,
+    fontFamily: "Helvetica-Regular",
+    fontSize: 20,
+  },
+  subtitle: {
+    marginBottom: 10,
+    fontFamily: "Helvetica-Regular",
+    fontSize: 15,
+  },
+  bottomSection: {
+    // This pushes the bottom section down, leaving the header and subtitle up top
+    marginBottom: "auto",
+    alignItems: "center",
+    width: "10%",
+  },
+  subtext: {
+    fontSize: 14,
+    color: "#666",
+    marginTop: 139,
+    marginBottom: 10,
+    fontFamily: "Helvetica-Regular",
+  },
+  input: {
+    height: 45,
+    width: "90%",
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 25,
+    paddingHorizontal: 10,
+    marginBottom: 10,
+    fontFamily: "Helvetica-Regular",
   },
   buttonContainer: {
-    backgroundColor: 'white',
-    borderRadius: 10,
-    borderWidth: 1,
-    borderColor: 'black',
-    paddingVertical: 12,
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: 250, 
+    backgroundColor: "#000", // Solid black background
+    borderRadius: 25,        // Makes it pill-shaped
+    paddingVertical: 9,
+    paddingHorizontal: 50,
+    alignItems: "center",
+    justifyContent: "center",
+    width: "90%",
+    height: 45,
+    marginBottom: 500
+    
   },
   buttonText: {
-    fontFamily: 'Helvetica',
-    color: 'blue',
-    textAlign: 'center',
+    fontFamily: "Helvetica-Regular",
+    color: "white",
+    textAlign: "center",
   },
-  circle: {
-    position: 'absolute',
-    top: 20, 
-    right: 20, 
-    width: 40, 
-    height: 40, 
-    borderRadius: 20, 
-    borderWidth: 2,
-    borderColor: 'black',
-    backgroundColor: 'white', 
-    zIndex: 3, 
+  button: {
+    backgroundColor: "#007BFF",
+    padding: 10,
+    borderRadius: 5,
+    marginBottom: 20,
+    zIndex: 10, // Ensure the button stays on top of the cards
+  },
+ 
+  cardContainer: {
+    justifyContent: "center",
+    alignItems: "center",
+    width: "100%",
+    flex: 1, // Ensure the container takes the full height
+  },
+  sideBySide: {
+    flexDirection: "row", // Cards displayed horizontally
+    justifyContent: "center", // Center the cards horizontally
+  },
+  stacked: {
+    position: "relative", // Cards will be stacked using absolute positioning
+    flexDirection: "row", // Stack the cards horizontally
+  },
+  card: {
+    alignItems: "center",
+    width: 250,  // Adjust width as needed
+    height: 300, // Adjust height as needed
+    overflow: "hidden", // Ensures the content fits properly without overflow
   },
 });

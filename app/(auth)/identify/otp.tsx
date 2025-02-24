@@ -5,6 +5,21 @@ import { useState } from "react";
 import { useAction } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { useRouter, useLocalSearchParams } from "expo-router";
+import TopBar from "../TopBar";
+import CDDisc from "../CDDisc";
+import { Link,  } from "expo-router";
+
+import { useFonts } from "expo-font";
+import {
+
+  KeyboardAvoidingView,
+  Platform,
+  TouchableWithoutFeedback,
+  Keyboard,
+  ScrollView,
+} from "react-native";
+
+import { SafeAreaView, Text,  Animated } from "react-native";
 
 export default function OTPScreen() {
   const { phone } = useLocalSearchParams();
@@ -13,6 +28,16 @@ export default function OTPScreen() {
   const [verified, setVerified] = useState(false);
   const verifyOtp = useAction(api.auth.verifyOtp);
   const router = useRouter();
+  const [isSideBySide, setIsSideBySide] = useState(false);
+  const [animation] = useState(new Animated.Value(0)); // Animated value for transitions
+
+  const cards = [
+    require('../Steve-Lacy-Gemini-Rights.png'),
+    require('../tyler_the_creator.png'),
+    require('../travis_scott.png'),
+    require('../dj_assault.png'),
+    require('../migos.png')
+  ];
 
   const formatPhoneNumber = (number: string) => {
     if (!number.startsWith("+1")) {
@@ -38,9 +63,79 @@ export default function OTPScreen() {
     }
   };
 
+  
   return (
-    <ThemedView style={styles.container}>
-      <ThemedText type="title"> Enter OTP</ThemedText>
+    
+    <ThemedView style={styles.container2}>
+      <TopBar/>
+      <SafeAreaView style={styles.discContainer}>
+      {/* Button to toggle view 
+      <TouchableOpacity style={styles.button} onPress={toggleView}>
+          <Text style={styles.buttonText}>{isSideBySide ? "Show Stack" : "Show Side by Side"}</Text>
+      </TouchableOpacity>*/}
+
+      {/* Cards container */}
+      <Animated.View
+        style={[
+          styles.cardContainer,
+          isSideBySide ? styles.sideBySide : styles.stacked,
+        ]}
+      >
+        {cards.map((imageUri, index) => (
+          <Animated.View
+            key={index}
+            style={[
+              styles.card,
+              isSideBySide
+                ? {
+                    marginHorizontal: 0,  // No space between cards for overlap
+                    transform: [
+                      {
+                        translateX: animation.interpolate({
+                          inputRange: [0, 1],
+                          outputRange: [0, index * -50],  // Cards slide out with increasing offset
+                        }),
+                      },
+                      {
+                        scale: animation.interpolate({
+                          inputRange: [0, 1],
+                          outputRange: [1, 1],  // No scaling, but you can adjust if needed
+                        }),
+                      },
+                    ],
+                    opacity: animation.interpolate({
+                      inputRange: [0, 1],
+                      outputRange: [1, 1], // Keep opacity consistent during transition
+                    }),
+                    zIndex: cards.length - index,  // Ensure the top card is on top
+                  }
+                : {
+                    position: "absolute", // Absolute positioning for stacked effect
+                    opacity: animation.interpolate({
+                      inputRange: [0, 1],
+                      outputRange: [1, 0.5], // Fade effect as it stacks
+                    }),
+                    zIndex: cards.length - index, // Ensuring the top card is on top
+                    transform: [
+                      {
+                        translateX: animation.interpolate({
+                          inputRange: [0, 1],
+                          outputRange: [
+                            index === 0 ? 10 : index === 1 ? 20 : index === 2 ? 30 : index === 3 ? 40 : index === 4 ? 50 : 0,  // Apply increasing offset by +20 for each card
+                            index * 250,  // Cards slide to the right (250px per card)
+                          ],
+                        }),
+                      },
+                    ],
+                  },
+            ]}
+          >
+            <CDDisc imageUri={imageUri} />
+          </Animated.View>
+        ))}
+      </Animated.View>
+    </SafeAreaView>
+
       <TextInput
         style={styles.input}
         onChangeText={setOtp}
@@ -51,7 +146,7 @@ export default function OTPScreen() {
       />
 
       <TouchableOpacity onPress={handleVerifyOtp} style={styles.buttonContainer}>
-        <ThemedText type="link"> Verify OTP</ThemedText>
+        <ThemedText type="link" style={styles.buttonText}> Verify OTP</ThemedText>
       </TouchableOpacity>
 
       {verified && (
@@ -70,40 +165,31 @@ export default function OTPScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: {
+discContainer: {
+  flex: 1,
+  // Align items in the center horizontally
+  alignItems: "center",
+  justifyContent: "flex-start",
+  marginTop: 55,
+  marginRight: 300
+},
+  container2: {
     flex: 1,
     alignItems: "center",
-    justifyContent: "flex-start", 
+    justifyContent: "center",
+    marginBottom: 1, 
     padding: 20,
     position: 'relative',
+    borderRadius: 25,   
+
   },
-  logoContainer: {
-    position: 'absolute',
-    top: 20,
-    left: 20,
-    width: 100,
-    height: 40,
-    backgroundColor: 'white',
-    borderRadius: 10,
-    borderWidth: 2,
-    borderColor: 'black',
-    justifyContent: 'center',
-    alignItems: 'center',
-    zIndex: 2,
+  container: {
+    flex: 1,
+    // Align items in the center horizontally
+    alignItems: "center",
+    justifyContent: "flex-start"
   },
-  largeBox: {
-    position: 'absolute',
-    top: '20%', 
-    width: 250,
-    height: 250,
-    backgroundColor: 'white',
-    borderRadius: 20,
-    borderWidth: 2,
-    borderColor: 'black',
-    justifyContent: 'center',
-    alignItems: 'center',
-    zIndex: 1,
-  },
+  
   content: {
     marginTop: 400,
     alignItems: 'center',
@@ -117,19 +203,19 @@ const styles = StyleSheet.create({
     width: 250,
   },
   buttonContainer: {
-    backgroundColor: 'white',
-    borderRadius: 10,
-    borderWidth: 1,
-    borderColor: 'black',
-    paddingVertical: 12,
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: 250,
-    marginBottom: 15,
+    backgroundColor: "#000", // Solid black background
+    borderRadius: 25,        // Makes it pill-shaped
+    paddingVertical: 9,
+    paddingHorizontal: 50,
+    alignItems: "center",
+    justifyContent: "center",
+    width: "90%",
+    height: 45,
+    marginBottom: 275
   },
   buttonText: {
     fontFamily: 'Helvetica',
-    color: 'blue',
+    color: 'white',
     textAlign: 'center',
   },
   circle: {

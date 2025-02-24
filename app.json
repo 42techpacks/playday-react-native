@@ -46,7 +46,8 @@
           "scheme": "com-npckenny-musically",
           "clientID": "3c67fc60e59e4cb3b5dca98ec0c08cb6"
         }
-      ]
+      ],
+      "expo-font"
     ],
     "experiments": {
       "typedRoutes": true
