@@ -11,6 +11,11 @@ import { useState, useEffect } from "react";
 import { DaylistSong } from "./add-songs";
 import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
+import { ThemedView } from "@/components/ThemedView";
+import CDDisc from "@/components/auth/CDDisc";
+import GlassmorphismButton from "@/components/GlassmorphismButton";
+import GlassmorphismTextInput from "@/components/GlassmorphismTextInput";
+import GlassmorphismView from "@/components/GlassmorphismView";
 
 export default function CreatePostScreen() {
   const router = useRouter();
@@ -40,32 +45,48 @@ export default function CreatePostScreen() {
     });
   };
 
-  return (
-    <View style={styles.container}>
-      <Text style={styles.date}>January 25th, 2025</Text>
+  const vinylSpacing = 250;
 
-      <View style={styles.albumContainer}>
-        <View style={styles.albumArt}>
-          <View style={styles.innerCircle} />
-        </View>
-        <View style={styles.songControlsContainer}>
-          <Text style={styles.songCount}>{songs.length}/6 Songs</Text>
-          <View style={styles.spacer} />
-          <Link
-            href={{
-              pathname: "/create-modal/add-songs",
-              params: { songs: JSON.stringify(songs) },
-            }}
-            asChild
-          >
-            <Pressable style={styles.addButton}>
-              <View style={styles.addButtonContainer}>
-                <Text style={styles.addButtonText}>Add Songs</Text>
-              </View>
-            </Pressable>
-          </Link>
-        </View>
+  return (
+    <ThemedView style={styles.createModal}>
+      {/* IMAGES: CDs */}
+      <GlassmorphismView viewStyle={styles.createModalImages}>
+        <Text style={styles.createModalDate}>January 25th, 2025</Text>
+        <ThemedView
+          style={[styles.createModalCdContainer, { marginLeft: vinylSpacing }]}
+        >
+          <CDDisc
+            imageUri={require("@/assets/auth/dj_assault.png")}
+            marginLeft={vinylSpacing}
+          />
+          <CDDisc
+            imageUri={require("@/assets/auth/dj_assault.png")}
+            marginLeft={vinylSpacing}
+          />
+        </ThemedView>
+      </GlassmorphismView>
+
+      {/* SONG CONTROLS: Count + Add Songs Button */}
+      <View style={styles.songControlsContainer}>
+        <Text style={styles.songCount}>{songs.length}/6</Text>
+        <Link
+          href={{
+            pathname: "/create-modal/add-songs",
+            params: { songs: JSON.stringify(songs) },
+          }}
+          asChild
+        >
+          <GlassmorphismButton
+            onPress={() => console.log("Add Songs pressed")}
+            label="Add Songs"
+            sfSymbol="plus"
+            buttonColor="black"
+            disabled={false}
+          />
+        </Link>
       </View>
+
+      {/* SONGS: Flatlist of songs added */}
       <FlatList
         data={songs}
         keyExtractor={(item) => item.id}
@@ -85,54 +106,64 @@ export default function CreatePostScreen() {
         )}
       />
 
-      <View style={styles.footer}>
-        <TextInput
-          style={styles.caption}
-          placeholder="Enter a caption..."
-          multiline
-          numberOfLines={4}
+      {/* FOOTER: Description Input + Share Button */}
+      <View style={styles.createModalFooter}>
+        <GlassmorphismTextInput
           value={caption}
+          placeholder="Add a description..."
           onChangeText={setCaption}
+          numLines={4}
         />
-
-        <Pressable
-          style={[
-            styles.shareButton,
-            songs.length === 0 && styles.disabledButton,
-          ]}
-          onPress={handleShare}
-          disabled={songs.length === 0}
-        >
-          <Text style={styles.shareButtonText}>Share</Text>
-        </Pressable>
+        <GlassmorphismButton
+          label="Share"
+          disabled={false}
+          onPress={() => console.log("user shared")}
+          buttonColor="white"
+          sfSymbol="paperplane"
+          textSize={20}
+          buttonHeight={65}
+        />
       </View>
-    </View>
+    </ThemedView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  createModal: {
     flex: 1,
     backgroundColor: "#fff",
     padding: 16,
+    gap: 20,
   },
-  date: {
+  createModalDate: {
     fontSize: 16,
     color: "#000",
-    marginBottom: 20,
-  },
-  footer: {
     position: "absolute",
-    bottom: 110,
-    left: 16,
-    right: 16,
+    right: 18,
+    top: 15,
   },
-  albumContainer: {
+  createModalFooter: {
+    display: "flex",
+    gap: 20,
+    paddingBottom: 20,
+  },
+  createModalImages: {
+    display: "flex",
+    width: "100%",
+    justifyContent: "center",
     alignItems: "center",
-    marginVertical: 20,
-    gap: 12,
+    borderRadius: 25,
   },
-  albumArt: {
+  createModalCdContainer: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "center",
+    height: 400,
+    width: 400,
+    alignItems: "center",
+    backgroundColor: "none",
+  },
+  cdArt: {
     width: 280,
     height: 280,
     borderRadius: 140,
@@ -141,63 +172,17 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-  innerCircle: {
-    width: 20,
-    height: 20,
-    borderRadius: 10,
-    backgroundColor: "#000",
-  },
   songControlsContainer: {
+    display: "flex",
     flexDirection: "row",
     alignItems: "center",
+    justifyContent: "space-between",
     width: "100%",
   },
-  spacer: {
-    flex: 1,
-  },
   songCount: {
-    fontSize: 16,
+    fontSize: 24,
+    fontWeight: 400,
     color: "#000",
-  },
-  addButton: {
-    backgroundColor: "#fff",
-    borderWidth: 1,
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-    borderRadius: 4,
-  },
-  addButtonContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 8,
-  },
-  addButtonText: {
-    fontSize: 16,
-    color: "#000",
-    fontWeight: "500",
-  },
-  caption: {
-    borderWidth: 1,
-    borderColor: "#000",
-    backgroundColor: "#fff",
-    borderRadius: 4,
-    padding: 12,
-    height: 100,
-    textAlignVertical: "top",
-    marginTop: 20,
-  },
-  shareButton: {
-    backgroundColor: "#fff",
-    padding: 16,
-    borderRadius: 4,
-    alignItems: "center",
-    marginTop: 20,
-    borderWidth: 1,
-    borderColor: "#000",
-  },
-  shareButtonText: {
-    color: "#000",
-    fontSize: 16,
   },
   songItem: {
     padding: 12,
@@ -220,8 +205,5 @@ const styles = StyleSheet.create({
   artistName: {
     color: "#666",
     fontWeight: "normal",
-  },
-  disabledButton: {
-    opacity: 0.5,
   },
 });

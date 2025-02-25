@@ -25,17 +25,24 @@ export default function CDDisc({
 
   const dynamicStyles = StyleSheet.create({
     cdOuter: {
-      width: discSize,
-      height: discSize,
-      borderRadius: discSize / 2,
-      overflow: "hidden",
+      display: "flex",
       justifyContent: "center",
       alignItems: "center",
+
+      width: discSize,
+      height: discSize,
+
+      borderRadius: discSize / 2,
+      overflow: "hidden",
       borderWidth: 2,
       borderColor: "#aaa",
       position: "relative",
     },
     image: {
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+
       width: discSize,
       height: discSize,
       borderRadius: discSize / 2,

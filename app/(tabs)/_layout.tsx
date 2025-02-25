@@ -37,6 +37,7 @@ export default function TabLayout() {
               ios: {
                 // Use a transparent background on iOS to show the blur effect
                 position: "absolute",
+                paddingTop: 5,
               },
               default: {},
             }),
@@ -54,9 +55,13 @@ export default function TabLayout() {
           <Tabs.Screen
             name="explore"
             options={{
-              title: "Explore",
+              title: "Profile",
               tabBarIcon: ({ color }) => (
-                <IconSymbol size={28} name="paperplane.fill" color={color} />
+                <IconSymbol
+                  size={28}
+                  name="person.crop.circle.fill"
+                  color={color}
+                />
               ),
             }}
           />

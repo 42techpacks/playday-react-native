@@ -13,6 +13,7 @@ interface GlassmorphismTextInputProps {
   value: string;
   placeholder: string;
   iconUrl?: NodeRequire;
+  numLines?: number;
 }
 
 export default function GlassmorphismTextInput({
@@ -20,6 +21,7 @@ export default function GlassmorphismTextInput({
   value,
   placeholder,
   iconUrl,
+  numLines,
 }: GlassmorphismTextInputProps) {
   return (
     <LinearGradient
@@ -27,6 +29,7 @@ export default function GlassmorphismTextInput({
         styles.phoneScreenInput,
         styles.glassmorphismCardFill,
         styles.glassmorphismCardBorder,
+        numLines && { height: numLines * 24 + 36 }, // Add dynamic height based on number of lines
       ]}
       locations={[0, 1]}
       colors={["rgba(255, 255, 255, 0.5)", "rgba(255, 255, 255, 0.2)"]}
@@ -36,12 +39,15 @@ export default function GlassmorphismTextInput({
       <View style={styles.inputContainer}>
         {iconUrl && <Image source={iconUrl} style={styles.icon} />}
         <TextInput
-          style={styles.input}
+          style={[styles.input, numLines && { height: numLines * 24 }]}
           onChangeText={onChangeText}
           value={value.toString()}
           placeholder={placeholder}
           placeholderTextColor="#000"
           keyboardType="phone-pad"
+          numberOfLines={numLines}
+          multiline={numLines ? true : false}
+          textAlignVertical="top"
         />
       </View>
     </LinearGradient>
@@ -56,22 +62,18 @@ const styles = StyleSheet.create({
   phoneScreenInput: {
     display: "flex",
     width: "100%",
-    justifyContent: "center",
+    justifyContent: "flex-start",
     alignItems: "center",
-
     borderRadius: 30,
     borderWidth: 1,
-    height: 60,
-    paddingLeft: 10,
-    paddingRight: 10,
+    minHeight: 60,
   },
 
   glassmorphismCardFill: {
     borderRadius: 25,
     width: "100%",
     gap: 10,
-    justifyContent: "center",
-
+    justifyContent: "flex-start",
     shadowColor: "rgba(0, 0, 0, 0.3)",
     shadowOffset: {
       width: 0,
@@ -90,8 +92,10 @@ const styles = StyleSheet.create({
   inputContainer: {
     display: "flex",
     flexDirection: "row",
-    alignItems: "center",
+    alignItems: "flex-start",
     justifyContent: "center",
+    width: "100%",
+    padding: 15, // Changed from individual paddings to uniform padding
   },
   icon: {
     width: 18,
@@ -103,5 +107,6 @@ const styles = StyleSheet.create({
     fontFamily: "Helvetica-Regular",
     fontSize: 16,
     flex: 1,
+    paddingRight: 5, // Added right padding to prevent text cutoff
   },
 });
