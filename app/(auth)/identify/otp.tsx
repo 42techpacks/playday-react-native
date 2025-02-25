@@ -1,12 +1,12 @@
 import { ThemedView } from "@/components/ThemedView";
 import { ThemedText } from "@/components/ThemedText";
-import { StyleSheet, TextInput, View, TouchableOpacity } from "react-native";
+import { StyleSheet, TouchableOpacity } from "react-native";
 import { useState } from "react";
 import { useLocalSearchParams } from "expo-router";
-import TopBar from "@/components/auth/TopBar";
 import CDDisc from "@/components/auth/CDDisc";
+import GlassmorphismTextInput from "@/components/GlassmorphismTextInput";
 
-import { SafeAreaView, Text, Animated } from "react-native";
+import { SafeAreaView } from "react-native";
 import { useAuthActions } from "@convex-dev/auth/dist/react";
 
 export default function OTPScreen() {
@@ -14,8 +14,6 @@ export default function OTPScreen() {
   const phoneNumber = Array.isArray(phone) ? phone[0] : phone;
   const [otp, setOtp] = useState("");
   const { signIn } = useAuthActions();
-  const [isSideBySide, setIsSideBySide] = useState(false);
-  const [animation] = useState(new Animated.Value(0)); // Animated value for transitions
 
   const cards = [
     require("@/assets/auth/Steve-Lacy-Gemini-Rights.png"),
@@ -41,170 +39,156 @@ export default function OTPScreen() {
     });
   };
 
+  const vinylSpacing = 60;
+
   return (
-    <ThemedView style={styles.container2}>
-      <TopBar />
+    <ThemedView style={styles.OTPScreenContainer}>
       <SafeAreaView style={styles.discContainer}>
-        {/* Cards container */}
-        <Animated.View
-          style={[
-            styles.cardContainer,
-            isSideBySide ? styles.sideBySide : styles.stacked,
-          ]}
-        >
-          {cards.map((imageUri, index) => (
-            <Animated.View
-              key={index}
-              style={[
-                styles.card,
-                isSideBySide
-                  ? {
-                      marginHorizontal: 0, // No space between cards for overlap
-                      transform: [
-                        {
-                          translateX: animation.interpolate({
-                            inputRange: [0, 1],
-                            outputRange: [0, index * -50], // Cards slide out with increasing offset
-                          }),
-                        },
-                        {
-                          scale: animation.interpolate({
-                            inputRange: [0, 1],
-                            outputRange: [1, 1], // No scaling, but you can adjust if needed
-                          }),
-                        },
-                      ],
-                      opacity: animation.interpolate({
-                        inputRange: [0, 1],
-                        outputRange: [1, 1], // Keep opacity consistent during transition
-                      }),
-                      zIndex: cards.length - index, // Ensure the top card is on top
-                    }
-                  : {
-                      position: "absolute", // Absolute positioning for stacked effect
-                      opacity: animation.interpolate({
-                        inputRange: [0, 1],
-                        outputRange: [1, 0.5], // Fade effect as it stacks
-                      }),
-                      zIndex: cards.length - index, // Ensuring the top card is on top
-                      transform: [
-                        {
-                          translateX: animation.interpolate({
-                            inputRange: [0, 1],
-                            outputRange: [
-                              index === 0
-                                ? 10
-                                : index === 1
-                                  ? 20
-                                  : index === 2
-                                    ? 30
-                                    : index === 3
-                                      ? 40
-                                      : index === 4
-                                        ? 50
-                                        : 0, // Apply increasing offset by +20 for each card
-                              index * 250, // Cards slide to the right (250px per card)
-                            ],
-                          }),
-                        },
-                      ],
-                    },
-              ]}
+        <ThemedView style={styles.OTPScreen}>
+          {/* HERO: Card + Text */}
+          <ThemedView style={styles.OTPScreenHero}>
+            {/* CARD:  Vinyls */}
+            <ThemedView
+              style={[styles.vinylContainer, { marginLeft: vinylSpacing }]}
             >
-              <CDDisc imageUri={imageUri} />
-            </Animated.View>
-          ))}
-        </Animated.View>
+              {cards.map((imageUri, index) => (
+                <CDDisc
+                  imageUri={imageUri}
+                  discSize={125}
+                  marginLeft={vinylSpacing}
+                />
+              ))}
+            </ThemedView>
+
+            {/* TEXT: Title + Subtitle */}
+            <ThemedView style={styles.OTPScreenText}>
+              <ThemedText type="title" style={styles.OTPScreenTitle}>
+                We sent you a verification code.
+              </ThemedText>
+              <ThemedText type="subtitle" style={styles.OTPScreenSubtitle}>
+                Enter the code sent to +1 407 747 0791.
+              </ThemedText>
+            </ThemedView>
+          </ThemedView>
+
+          {/* FORM: Input + Button */}
+          <ThemedView style={styles.OTPScreenForm}>
+            <GlassmorphismTextInput
+              placeholder="OTP Verification"
+              value={otp}
+              onChangeText={setOtp}
+              iconUrl={require("@/assets/auth/phone-icon.png")}
+            />
+            <TouchableOpacity
+              style={styles.buttonContainer}
+              onPress={handleVerifyOtp}
+            >
+              <ThemedText type="link" style={styles.buttonText}>
+                Next
+              </ThemedText>
+            </TouchableOpacity>
+            <ThemedText style={styles.OTPScreenDisclaimer}>
+              By continuing you confirm that you've read and accepted our Terms
+              and Privacy Policy.
+            </ThemedText>
+          </ThemedView>
+        </ThemedView>
       </SafeAreaView>
-
-      <TextInput
-        style={styles.input}
-        onChangeText={setOtp}
-        value={otp}
-        placeholder="Enter OTP"
-        placeholderTextColor="#666"
-        keyboardType="numeric"
-      />
-
-      <TouchableOpacity
-        onPress={handleVerifyOtp}
-        style={styles.buttonContainer}
-      >
-        <ThemedText type="link" style={styles.buttonText}>
-          {" "}
-          Verify OTP
-        </ThemedText>
-      </TouchableOpacity>
     </ThemedView>
   );
 }
 
 const styles = StyleSheet.create({
-  discContainer: {
-    flex: 1,
-    // Align items in the center horizontally
-    alignItems: "center",
-    justifyContent: "flex-start",
-    marginTop: 55,
-    marginRight: 300,
-  },
-  container2: {
-    flex: 1,
-    alignItems: "center",
+  OTPScreenContainer: {
+    display: "flex",
     justifyContent: "center",
-    marginBottom: 1,
-    padding: 20,
-    position: "relative",
-    borderRadius: 25,
-  },
-  container: {
-    flex: 1,
-    // Align items in the center horizontally
-    alignItems: "center",
-    justifyContent: "flex-start",
-  },
-
-  content: {
-    marginTop: 400,
     alignItems: "center",
     width: "100%",
+    height: "100%",
   },
-  input: {
-    height: 40,
-    margin: 12,
-    borderWidth: 1,
-    padding: 10,
-    width: 250,
+  discContainer: {
+    width: "100%",
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 200,
   },
+  OTPScreen: {
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+
+    width: 375,
+    height: "100%",
+    gap: 50,
+    paddingTop: 0,
+  },
+  OTPScreenHero: {
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+    width: "100%",
+    gap: 175,
+  },
+  OTPScreenText: {
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+    gap: "5px",
+    backgroundColor: "none",
+  },
+  OTPScreenTitle: {
+    fontWeight: 400,
+    fontSize: 21,
+  },
+  OTPScreenSubtitle: {
+    fontSize: 15,
+    fontWeight: 300,
+    color: "#000",
+    fontFamily: "Helvetica-Regular",
+  },
+  OTPScreenForm: {
+    width: "100%",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    gap: 20,
+  },
+  OTPScreenDisclaimer: {
+    fontSize: 12,
+    textAlign: "center",
+    fontWeight: 300,
+    color: "#8D8D8D",
+    lineHeight: "normal",
+  },
+
   buttonContainer: {
+    display: "flex",
+    width: "100%",
+    height: 65,
+
     backgroundColor: "#000", // Solid black background
-    borderRadius: 25, // Makes it pill-shaped
-    paddingVertical: 9,
-    paddingHorizontal: 50,
+    borderRadius: 50, // Makes it pill-shaped
+    paddingVertical: 20,
     alignItems: "center",
     justifyContent: "center",
-    width: "90%",
-    height: 45,
-    marginBottom: 275,
+    alignSelf: "stretch",
   },
+
   buttonText: {
-    fontFamily: "Helvetica",
+    fontFamily: "Helvetica-Regular",
     color: "white",
     textAlign: "center",
   },
-  circle: {
-    position: "absolute",
-    top: 20,
-    right: 20,
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    borderWidth: 2,
-    borderColor: "black",
-    backgroundColor: "white",
-    zIndex: 3,
-  },
-  text: {
-    marginBottom: 10,
+
+  vinylContainer: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
   },
 });

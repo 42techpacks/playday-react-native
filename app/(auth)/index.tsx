@@ -71,6 +71,8 @@ export default function PhoneScreen() {
     setIsSideBySide((prev) => !prev);
   };
 
+  const vinylSpacing = 250;
+
   return (
     <SafeAreaView
       style={{
@@ -106,78 +108,12 @@ export default function PhoneScreen() {
             {/* HERO: Card + Text */}
             <ThemedView style={styles.phoneScreenHero}>
               {/* CARD:  Vinyls */}
-              <ThemedView style={{ flex: 2, position: "relative" }}>
-                <Animated.View
-                  style={[
-                    styles.cardContainer,
-                    isSideBySide ? styles.sideBySide : styles.stacked,
-                  ]}
-                >
-                  {cards.map((imageUri, index) => (
-                    <Animated.View
-                      key={index}
-                      style={[
-                        styles.card,
-                        isSideBySide
-                          ? {
-                              marginHorizontal: 0, // No space between cards for overlap
-                              transform: [
-                                {
-                                  translateX: animation.interpolate({
-                                    inputRange: [0, 1],
-                                    outputRange: [0, index * -50], // Cards slide out with increasing offset
-                                  }),
-                                },
-                                {
-                                  scale: animation.interpolate({
-                                    inputRange: [0, 1],
-                                    outputRange: [1, 1], // No scaling, but you can adjust if needed
-                                  }),
-                                },
-                              ],
-                              opacity: animation.interpolate({
-                                inputRange: [0, 1],
-                                outputRange: [1, 1], // Keep opacity consistent during transition
-                              }),
-                              zIndex: cards.length - index, // Ensure the top card is on top
-                            }
-                          : {
-                              position: "absolute", // Absolute positioning for stacked effect
-                              left: "50%", // Center the cards
-                              marginLeft: -150, // Half of card width to center
-                              opacity: animation.interpolate({
-                                inputRange: [0, 1],
-                                outputRange: [1, 0.5], // Fade effect as it stacks
-                              }),
-                              zIndex: cards.length - index, // Ensuring the top card is on top
-                              transform: [
-                                {
-                                  translateX: animation.interpolate({
-                                    inputRange: [0, 1],
-                                    outputRange: [
-                                      index === 0
-                                        ? 10
-                                        : index === 1
-                                          ? 20
-                                          : index === 2
-                                            ? 30
-                                            : index === 3
-                                              ? 40
-                                              : index === 4
-                                                ? 50
-                                                : 0, // Apply increasing offset by +20 for each card
-                                      index * 250, // Cards slide to the right (250px per card)
-                                    ],
-                                  }),
-                                },
-                              ],
-                            },
-                      ]}
-                    >
-                      <CDDisc imageUri={imageUri} />
-                    </Animated.View>
-                  ))}
-                </Animated.View>
+              <ThemedView
+                style={[styles.vinylContainer, { marginLeft: vinylSpacing }]}
+              >
+                {cards.map((imageUri, index) => (
+                  <CDDisc marginLeft={vinylSpacing} imageUri={imageUri} />
+                ))}
               </ThemedView>
 
               {/* TEXT: Title + Subtitle */}
@@ -227,7 +163,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     width: 375,
     gap: 50,
-    paddingTop: 200,
+    paddingTop: 100,
   },
   phoneScreenHero: {
     display: "flex",
@@ -235,7 +171,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     width: "100%",
-    gap: 225,
+    gap: 125,
   },
   phoneScreenText: {
     display: "flex",
@@ -294,19 +230,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
 
-  sideBySide: {
-    flexDirection: "row", // Cards displayed horizontally
-    justifyContent: "center", // Center the cards horizontally
-  },
-
-  stacked: {
-    position: "relative", // Cards will be stacked using absolute positioning
-    flexDirection: "row", // Stack the cards horizontally
-  },
-
-  card: {
+  vinylContainer: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "center",
     alignItems: "center",
-    width: 250,
-    height: 300,
   },
 });

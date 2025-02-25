@@ -15,7 +15,7 @@ export default function AuthLayout() {
           name="index"
           options={{ headerTitle: (props) => <TopBar />, title: "Phone" }}
         />
-        <Stack.Screen name="identify/otp" options={{ title: "OTP" }} />
+        <Stack.Screen name="identify/otp" options={{ title: "" }} />
       </Stack>
     </>
   );
