@@ -1,9 +1,8 @@
-import { useState } from "react";
 import { Text, StyleSheet, Image } from "react-native";
 import { ThemedView } from "@/components/ThemedView";
 import { IconSymbol } from "@/components/ui/IconSymbol.ios";
 import LinearGradient from "react-native-linear-gradient";
-import VinylImage from "./VinylImage";
+import CDDisc from "../auth/CDDisc";
 import SongView from "./SongView";
 import { ThemedText } from "@/components/ThemedText";
 import CommentInput from "./CommentInput";
@@ -16,6 +15,16 @@ const songs = [
   { title: "ARE WE STILL FRIENDS?", artist: "Tyler, the Creator" },
   { title: "Within", artist: "Daft Punk" },
 ];
+
+const cds = [
+  require("@/assets/auth/Steve-Lacy-Gemini-Rights.png"),
+  require("@/assets/auth/tyler_the_creator.png"),
+  require("@/assets/auth/travis_scott.png"),
+  require("@/assets/auth/dj_assault.png"),
+  require("@/assets/auth/migos.png"),
+];
+
+const vinylSpacing = 250;
 
 export default function FeedPostView() {
   return (
@@ -36,13 +45,16 @@ export default function FeedPostView() {
         </ThemedView>
 
         {/* Post Songs */}
-        <ThemedView style={styles.feedPostVinyls}>
-          <VinylImage />
-          <VinylImage />
-          <VinylImage />
-          <VinylImage />
-          <VinylImage />
-          <VinylImage />
+        <ThemedView
+          style={[styles.feedPostVinyls, { marginLeft: vinylSpacing }]}
+        >
+          {cds.map((imageUri, index) => (
+            <CDDisc
+              imageUri={imageUri}
+              discSize={225}
+              marginLeft={vinylSpacing}
+            />
+          ))}
         </ThemedView>
 
         {/* Post Interactions */}
@@ -144,7 +156,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     width: 250,
-    marginLeft: 250,
     padding: 25,
   },
 
