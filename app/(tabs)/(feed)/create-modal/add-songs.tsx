@@ -2,8 +2,10 @@ import { View, TextInput, StyleSheet, FlatList, Pressable } from "react-native";
 import { Text } from "react-native";
 import { Link, useRouter, useLocalSearchParams } from "expo-router";
 import { useState, useEffect, useMemo } from "react";
-import { useSpotifySearch } from "@/hooks/useSpotify";
+import { useSpotifySearch } from "@/hooks/useSpotifyApis";
+import { useSpotifyAuth } from "@/hooks/useSpotifyAuth";
 import { SpotifyTrack } from "@/lib/spotify";
+import SpotifyAuthButton from "@/components/spotify/spotify-auth-button";
 
 export type DaylistSong = {
   id: string;
@@ -21,9 +23,10 @@ export default function AddSongsScreen() {
   const params = useLocalSearchParams<{ songs?: string }>();
   const [searchQuery, setSearchQuery] = useState("");
   const debouncedQuery = useDebounce(searchQuery, 300);
+  const { isAuthenticated, isLoading: authLoading } = useSpotifyAuth();
   const {
     data: searchResults,
-    isLoading,
+    isLoading: searchLoading,
     error,
   } = useSpotifySearch(debouncedQuery);
 
@@ -80,6 +83,17 @@ export default function AddSongsScreen() {
 
   // Show search results if searching, otherwise show existing songs
   const displaySongs = searchQuery ? searchSongs : existingSongs;
+  const isLoading = authLoading || searchLoading;
+
+  // If not authenticated, show auth button
+  if (!isAuthenticated && !authLoading) {
+    return (
+      <View style={styles.authContainer}>
+        <Text style={styles.authText}>Connect to Spotify to search for songs</Text>
+        <SpotifyAuthButton />
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
@@ -138,6 +152,18 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#fff",
     padding: 16,
+  },
+  authContainer: {
+    flex: 1,
+    backgroundColor: "#fff",
+    padding: 16,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  authText: {
+    fontSize: 16,
+    marginBottom: 20,
+    textAlign: "center",
   },
   closeButton: {
     position: "absolute",
@@ -213,7 +239,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#f0f0f0",
   },
 });
-
 function useDebounce<T>(value: T, delay: number): T {
   const [debouncedValue, setDebouncedValue] = useState<T>(value);
 
@@ -229,3 +254,4 @@ function useDebounce<T>(value: T, delay: number): T {
 
   return debouncedValue;
 }
+

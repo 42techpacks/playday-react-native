@@ -19,7 +19,14 @@ const schema = defineSchema({
         )
       })
     )
-  })
+  }),
+  spotifyTokens: defineTable({
+    userId: v.string(),
+    accessToken: v.string(),
+    refreshToken: v.string(),
+    expirationDate: v.number(), // Unix timestamp in milliseconds
+    lastUpdated: v.number(), // Unix timestamp in milliseconds
+  }).index("by_userId", ["userId"]),
 });
 
 export default schema;
