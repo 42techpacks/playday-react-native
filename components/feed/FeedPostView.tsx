@@ -65,6 +65,7 @@ export default function FeedPostView({ daylist }: FeedPostViewProps) {
         >
           {cds.map((imageUri, index) => (
             <CDDisc
+              key={index}
               imageUri={imageUri}
               discSize={225}
               marginLeft={vinylSpacing}
@@ -103,7 +104,11 @@ export default function FeedPostView({ daylist }: FeedPostViewProps) {
 
         <ThemedView style={styles.feedPostSongs}>
           {daylist.songs.map((song) => (
-            <SongView key={song.id} songTitle={song.name} artist={song.artists[0].name} />
+            <SongView
+              key={song.id}
+              songTitle={song.name}
+              artist={song.artists[0].name}
+            />
           ))}
         </ThemedView>
 
