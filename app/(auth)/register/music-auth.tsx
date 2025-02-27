@@ -3,6 +3,7 @@ import { ThemedView } from "@/components/ThemedView";
 import { ThemedText } from "@/components/ThemedText";
 import { Link } from "expo-router";
 import React from "react";
+import SpotifyAuthButton from "@/components/spotify/spotify-auth-button";
 
 export default function MusicServiceAuthScreen() {
   return (
@@ -17,9 +18,7 @@ export default function MusicServiceAuthScreen() {
 
       <View style={styles.content}>
         <View style={styles.buttonContainer}>
-          <ThemedText style={styles.buttonText}>
-            Login with Spotify - TODO
-          </ThemedText>
+          <SpotifyAuthButton />
         </View>
 
         <View style={styles.buttonContainer}>

@@ -1,4 +1,5 @@
 import { mutation, query } from "./_generated/server";
+import { getAuthUserId } from "@convex-dev/auth/server";
 import { v } from "convex/values";
 
 export const create = mutation({
@@ -10,33 +11,30 @@ export const create = mutation({
         name: v.string(),
         artists: v.array(
           v.object({
-            name: v.string()
+            name: v.string(),
           })
-        )
+        ),
       })
-    )
+    ),
   },
   handler: async (ctx, args) => {
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) {
+    const userId = await getAuthUserId(ctx);
+    if (!userId) {
       throw new Error("Unauthorized");
     }
 
     return await ctx.db.insert("daylists", {
-      userId: identity.subject,
+      userId,
       caption: args.caption,
       date: Date.now(),
-      songs: args.songs
+      songs: args.songs,
     });
-  }
+  },
 });
 
 export const list = query({
   args: {},
   handler: async (ctx) => {
-    return await ctx.db
-      .query("daylists")
-      .order("desc")
-      .take(10);
+    return await ctx.db.query("daylists").order("desc").take(10);
   },
 });

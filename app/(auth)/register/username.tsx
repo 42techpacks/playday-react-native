@@ -1,9 +1,17 @@
-import { StyleSheet, TextInput, View } from "react-native";
+import { Pressable, StyleSheet, TextInput, View, Text } from "react-native";
 import { ThemedView } from "@/components/ThemedView";
 import { ThemedText } from "@/components/ThemedText";
-import { Link } from "expo-router";
+import { Link, useRouter } from "expo-router";
+import { useState } from "react";
+import { api } from "@/convex/_generated/api";
+import { useMutation, useQuery } from "convex/react";
 
 export default function UsernameScreen() {
+  const [username, onChangeUsername] = useState("");
+  const regStatus = useQuery(api.auth.checkRegistrationStatus);
+  const addUsername = useMutation(api.auth.addUsername);
+  const router = useRouter();
+
   return (
     <ThemedView style={styles.container}>
       <View style={styles.logoContainer}>
@@ -25,17 +33,31 @@ export default function UsernameScreen() {
       <View style={styles.inputContainer}>
         <TextInput
           style={styles.input}
+          onChangeText={onChangeUsername}
+          value={username}
           placeholder="Enter username"
           placeholderTextColor="#666"
         />
       </View>
 
       {/* Next Link framed as a button */}
-      <Link href="/register/pfp">
-        <View style={styles.buttonContainer}>
-          <ThemedText style={styles.buttonText}>Next</ThemedText>
-        </View>
-      </Link>
+      <Pressable
+        style={styles.buttonContainer}
+        disabled={username.length < 2}
+        onPress={async () => {
+          await addUsername({ username });
+          router.push("/register/pfp");
+        }}
+      >
+        <Text
+          style={[
+            styles.buttonText,
+            { color: username.length < 2 ? "gray" : "blue" },
+          ]}
+        >
+          Next
+        </Text>
+      </Pressable>
     </ThemedView>
   );
 }
@@ -61,6 +83,10 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     zIndex: 2,
+  },
+  fixToText: {
+    flexDirection: "row",
+    justifyContent: "space-between",
   },
   circle: {
     position: "absolute",

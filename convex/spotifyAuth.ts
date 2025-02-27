@@ -3,6 +3,7 @@ import { v } from "convex/values";
 import { Id } from "./_generated/dataModel";
 import { action } from "./_generated/server";
 import { api } from "./_generated/api";
+import { getAuthUserId } from "@convex-dev/auth/server";
 
 // Function to save Spotify authentication tokens
 export const saveTokens = mutation({
@@ -13,12 +14,10 @@ export const saveTokens = mutation({
   },
   handler: async (ctx, args) => {
     // Get the authenticated user's identity
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) {
+    const userId = await getAuthUserId(ctx);
+    if (!userId) {
       throw new Error("User not authenticated");
     }
-
-    const userId = identity.tokenIdentifier;
     const now = Date.now();
 
     // Check if the user already has tokens stored
@@ -49,7 +48,9 @@ export const saveTokens = mutation({
 });
 
 // Helper function to refresh the access token
-async function refreshSpotifyToken(refreshToken: string): Promise<{ accessToken: string; expirationDate: number }> {
+async function refreshSpotifyToken(
+  refreshToken: string,
+): Promise<{ accessToken: string; expirationDate: number }> {
   // Your Spotify API credentials
   const clientId = process.env.SPOTIFY_CLIENT_ID;
   const clientSecret = process.env.SPOTIFY_CLIENT_SECRET;
@@ -59,12 +60,14 @@ async function refreshSpotifyToken(refreshToken: string): Promise<{ accessToken:
   }
 
   const tokenEndpoint = "https://accounts.spotify.com/api/token";
-  const authString = Buffer.from(`${clientId}:${clientSecret}`).toString("base64");
+  const authString = Buffer.from(`${clientId}:${clientSecret}`).toString(
+    "base64",
+  );
 
   const response = await fetch(tokenEndpoint, {
     method: "POST",
     headers: {
-      "Authorization": `Basic ${authString}`,
+      Authorization: `Basic ${authString}`,
       "Content-Type": "application/x-www-form-urlencoded",
     },
     body: new URLSearchParams({
@@ -118,12 +121,10 @@ export const getTokens = query({
   args: {},
   handler: async (ctx) => {
     // Get the authenticated user's identity
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) {
+    const userId = await getAuthUserId(ctx);
+    if (!userId) {
       throw new Error("User not authenticated");
     }
-
-    const userId = identity.tokenIdentifier;
 
     // Retrieve tokens from the database
     const tokens = await ctx.db

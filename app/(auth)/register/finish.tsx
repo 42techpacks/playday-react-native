@@ -2,28 +2,52 @@ import { StyleSheet, View } from "react-native";
 import { ThemedView } from "@/components/ThemedView";
 import { ThemedText } from "@/components/ThemedText";
 import { Link } from "expo-router";
+import { api } from "@/convex/_generated/api";
+import { useQuery } from "convex/react";
+import { SafeAreaView } from "react-native-safe-area-context";
+import CDDisc from "@/components/auth/CDDisc";
 
+const cards = [
+  require("@/assets/auth/Steve-Lacy-Gemini-Rights.png"),
+  require("@/assets/auth/tyler_the_creator.png"),
+  require("@/assets/auth/travis_scott.png"),
+  require("@/assets/auth/dj_assault.png"),
+  require("@/assets/auth/migos.png"),
+];
+const vinylSpacing = 250;
 export default function FinishScreen() {
+  const user = useQuery(api.auth.getCurrentUser);
   return (
-    <ThemedView style={styles.container}>
-      <View style={styles.logoContainer}>
-        <ThemedText type="subtitle">logo</ThemedText>
-      </View>
+    <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
+      <ThemedView style={styles.container}>
+        <ThemedView
+          style={[styles.vinylContainer, { marginLeft: vinylSpacing }]}
+        >
+          {cards.map((imageUri, index) => (
+            <CDDisc
+              key={index}
+              imageUri={imageUri}
+              marginLeft={vinylSpacing}
+            />
+          ))}
+        </ThemedView>
+        <ThemedText type="title">
+          Username
+        </ThemedText>
+        <ThemedText type="defaultSemiBold">
+          {user?.profile?.username}
+        </ThemedText>
+        <ThemedText type="title">
+          Spotify {!!user?.spotifyToken ? "✅ " : "❌"}
+        </ThemedText>
 
-      <View style={styles.circle}></View>
-
-      <View style={styles.largeBox}></View>
-
-      <ThemedText type="title" style={styles.finishText}>
-        Finish
-      </ThemedText>
-
-      <Link href="/register/onboard">
-        <View style={styles.buttonContainer}>
-          <ThemedText style={styles.buttonText}>Finish</ThemedText>
-        </View>
-      </Link>
-    </ThemedView>
+        <Link href="/register/onboard">
+          <View style={styles.buttonContainer}>
+            <ThemedText style={styles.buttonText}>Finish</ThemedText>
+          </View>
+        </Link>
+      </ThemedView>
+    </SafeAreaView>
   );
 }
 
@@ -35,6 +59,12 @@ const styles = StyleSheet.create({
     padding: 20,
     position: "relative",
   },
+  vinylContainer: {
+      display: "flex",
+      flexDirection: "row",
+      justifyContent: "center",
+      alignItems: "center",
+    },
   logoContainer: {
     position: "absolute",
     top: 20,

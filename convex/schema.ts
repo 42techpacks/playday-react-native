@@ -4,6 +4,18 @@ import { authTables } from "@convex-dev/auth/server";
 
 const schema = defineSchema({
   ...authTables,
+  users: defineTable({
+    name: v.optional(v.string()),
+    image: v.optional(v.string()),
+    email: v.optional(v.string()),
+    emailVerificationTime: v.optional(v.number()),
+    phone: v.optional(v.string()),
+    phoneVerificationTime: v.optional(v.number()),
+    isAnonymous: v.optional(v.boolean()),
+    // other "users" fields...
+    username: v.optional(v.string()),
+  }).index("by_username", ["username"]),
+
   daylists: defineTable({
     userId: v.string(),
     caption: v.string(),
@@ -14,11 +26,11 @@ const schema = defineSchema({
         name: v.string(),
         artists: v.array(
           v.object({
-            name: v.string()
-          })
-        )
-      })
-    )
+            name: v.string(),
+          }),
+        ),
+      }),
+    ),
   }),
   spotifyTokens: defineTable({
     userId: v.string(),

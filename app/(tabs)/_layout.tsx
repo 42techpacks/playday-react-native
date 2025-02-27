@@ -2,7 +2,7 @@ import { Tabs } from "expo-router";
 import React from "react";
 import { Platform } from "react-native";
 import { Authenticated, AuthLoading, Unauthenticated } from "convex/react";
-import { Stack, Redirect } from "expo-router";
+import { Redirect } from "expo-router";
 import { Text } from "react-native";
 
 import { HapticTab } from "@/components/HapticTab";
@@ -22,7 +22,7 @@ export default function TabLayout() {
       </AuthLoading>
 
       <Unauthenticated>
-        {/* For now, change the below value to the path to the desired screen in order to view it*/}
+        {/* Redirect unauthenticated users to auth flow */}
         <Redirect href="/(auth)" />
       </Unauthenticated>
 

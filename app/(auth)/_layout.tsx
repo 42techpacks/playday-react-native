@@ -1,22 +1,40 @@
 import { Authenticated, AuthLoading, Unauthenticated } from "convex/react";
-import { Stack, Redirect } from "expo-router";
+import { Stack } from "expo-router";
 import { Text } from "react-native";
-import React from "react";
+import React, { useEffect } from "react";
 import TopBar from "@/components/auth/TopBar";
+import { useQuery } from "convex/react";
+import { api } from "@/convex/_generated/api";
 
 export default function AuthLayout() {
   return (
     <>
+      <AuthLoading>
+        <Text>Loading...</Text>
+      </AuthLoading>
+
+      <Unauthenticated>
+        <Stack>
+          <Stack.Screen
+            name="index"
+            options={{ headerTitle: (props) => <TopBar />, title: "Phone" }}
+          />
+          <Stack.Screen name="identify/otp" options={{ title: "" }} />
+        </Stack>
+      </Unauthenticated>
+
       <Authenticated>
-        <Redirect href="/(tabs)/(feed)" />
+        <Stack>
+          <Stack.Screen
+            name="register/music-auth"
+            options={{ title: "Connect Music", headerBackVisible: false }}
+          />
+          <Stack.Screen
+            name="register/username"
+            options={{ title: "Create Username" }}
+          />
+        </Stack>
       </Authenticated>
-      <Stack>
-        <Stack.Screen
-          name="index"
-          options={{ headerTitle: (props) => <TopBar />, title: "Phone" }}
-        />
-        <Stack.Screen name="identify/otp" options={{ title: "" }} />
-      </Stack>
     </>
   );
 }

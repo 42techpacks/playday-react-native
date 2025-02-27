@@ -8,12 +8,10 @@ const redirectTo = makeRedirectUri();
 export default function SignInWithGithub() {
   const { signIn } = useAuthActions();
   const handleSignIn = async () => {
-    console.log("handling sign in")
     const { redirect } = await signIn("github", { redirectTo });
     if (Platform.OS === "web") {
       return;
     }
-    console.log(redirect)
     const result = await openAuthSessionAsync(redirect!.toString(), redirectTo);
     if (result.type === "success") {
       const { url } = result;

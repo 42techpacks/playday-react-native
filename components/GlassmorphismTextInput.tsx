@@ -21,7 +21,6 @@ export default function GlassmorphismTextInput({
   placeholder,
   iconUrl,
 }: GlassmorphismTextInputProps) {
-  console.log("icon", iconUrl);
   return (
     <LinearGradient
       style={[
