@@ -7,6 +7,21 @@ import SongView from "./SongView";
 import { ThemedText } from "@/components/ThemedText";
 import CommentInput from "./CommentInput";
 
+type DaylistDoc = {
+  userId: string;
+  caption: string;
+  date: number;
+  songs: Array<{
+    id: string;
+    name: string;
+    artists: Array<{ name: string }>;
+  }>;
+};
+
+type FeedPostViewProps = {
+  daylist: DaylistDoc;
+};
+
 const songs = [
   { title: "Sex on the Beach", artist: "DJ Assault" },
   { title: "Gem Lingo", artist: "Overmono" },
@@ -26,7 +41,7 @@ const cds = [
 
 const vinylSpacing = 250;
 
-export default function FeedPostView() {
+export default function FeedPostView({ daylist }: FeedPostViewProps) {
   return (
     <LinearGradient
       style={[styles.glassmorphismCardFill, styles.glassmorphismCardBorder]}
@@ -87,8 +102,8 @@ export default function FeedPostView() {
         </ThemedView>
 
         <ThemedView style={styles.feedPostSongs}>
-          {songs.map((song, index) => (
-            <SongView key={index} songTitle={song.title} artist={song.artist} />
+          {daylist.songs.map((song) => (
+            <SongView key={song.id} songTitle={song.name} artist={song.artists[0].name} />
           ))}
         </ThemedView>
 

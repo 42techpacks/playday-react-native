@@ -1,4 +1,4 @@
-import { mutation } from "./_generated/server";
+import { mutation, query } from "./_generated/server";
 import { v } from "convex/values";
 
 export const create = mutation({
@@ -17,7 +17,6 @@ export const create = mutation({
     )
   },
   handler: async (ctx, args) => {
-    console.log("in create");
     const identity = await ctx.auth.getUserIdentity();
     if (!identity) {
       throw new Error("Unauthorized");
@@ -30,4 +29,14 @@ export const create = mutation({
       songs: args.songs
     });
   }
+});
+
+export const list = query({
+  args: {},
+  handler: async (ctx) => {
+    return await ctx.db
+      .query("daylists")
+      .order("desc")
+      .take(10);
+  },
 });

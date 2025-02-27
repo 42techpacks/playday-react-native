@@ -6,6 +6,8 @@ import {
   Text,
   FlatList,
 } from "react-native";
+import { useQuery } from "convex/react";
+import { api } from "@/convex/_generated/api";
 
 import FeedOverlayView from "@/components/feed/FeedOverlayView";
 import FeedPostView from "@/components/feed/FeedPostView";
@@ -13,15 +15,24 @@ import FeedPostView from "@/components/feed/FeedPostView";
 
 export default function FeedScreen() {
   const hasPosted = true;
+  const daylists = useQuery(api.daylists.list);
+
+  if (!daylists) {
+    return (
+      <View style={styles.centered}>
+        <Text>Loading...</Text>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.feedScreen}>
       {/* Posts */}
       <FlatList
-        data={["kenny", "milo", "priyanka", "haoming"]}
+        data={daylists}
         contentContainerStyle={styles.feedPosts}
-        renderItem={({ item }) => <FeedPostView />}
-      ></FlatList>
+        renderItem={({ item }) => <FeedPostView daylist={item} />}
+      />
 
       {/* Daily Posting Feed Overlay */}
       {!hasPosted && <FeedOverlayView />}
@@ -43,5 +54,11 @@ const styles = StyleSheet.create({
     padding: 25,
     backgroundColor: "#FFFFFF",
     paddingBottom: 150,
+  },
+
+  centered: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
