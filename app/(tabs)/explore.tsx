@@ -24,24 +24,11 @@ export default function TabTwoScreen() {
         />
       }
     >
-      {/* User Account Actions */}
       <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Account Actions</ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <SignOutButton />
-        <SpoitifyAuthButton />
-        <Link href="/create-modal" asChild>
-          <Pressable style={styles.button}>
-            <Text style={styles.buttonText}>Create Post</Text>
-          </Pressable>
-        </Link>
-      </ThemedView>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Example App Explore</ThemedText>
+        <ThemedText type="title">Playday Explore</ThemedText>
       </ThemedView>
       <ThemedText>
-        This app includes example code to help you get started.
+        This is a useless screen we left in here cause 3 things looks better than 2 in the tab bar
       </ThemedText>
       <Collapsible title="File-based routing">
         <ThemedText>

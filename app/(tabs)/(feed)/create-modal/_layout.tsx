@@ -6,7 +6,7 @@ export default function CreateLayout() {
       <Stack.Screen
         name="index"
         options={{
-          title: "Create Post",
+          title: "Curate the Day",
         }}
       />
       <Stack.Screen

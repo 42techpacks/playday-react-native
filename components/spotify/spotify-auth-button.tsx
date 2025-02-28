@@ -50,10 +50,10 @@ export default function SpotifyAuthButton() {
         onPress={handleAuthenticatePress}
         title={
           registrationStatus?.hasSpotifyTokens
-            ? "Connected to Spotify"
+            ? "Already Connected to Spotify"
             : "Authenticate w/ Spotify"
         }
-        disabled={isLoading}
+        disabled={isLoading || registrationStatus?.hasSpotifyTokens}
       />
       {authError && (
         <ThemedText style={styles.errorText}>{authError}</ThemedText>
