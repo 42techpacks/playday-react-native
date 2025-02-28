@@ -1,12 +1,11 @@
 import { useState } from "react";
 import { Text, StyleSheet, Pressable } from "react-native";
-import { ThemedView } from "../ThemedView";
 import { IconSymbol } from "./ui/IconSymbol";
 import { SFSymbols6_0 } from "sf-symbols-typescript";
 import LinearGradient from "react-native-linear-gradient";
+import { ThemedView } from "@/app-example/components/ThemedView";
 
 interface GlassmorphismButtonProps {
-  onPress: () => void;
   label: string;
   sfSymbol: SFSymbols6_0;
   buttonColor: string;
@@ -20,8 +19,7 @@ const gradientColors = {
   white: ["rgba(255, 255, 255, 0.5)", "rgba(255, 255, 255, 0.2)"],
 };
 
-export default function GlassmorphismButton({
-  onPress,
+export default function GlassmorphismButtonView({
   label,
   sfSymbol,
   buttonColor,
@@ -31,6 +29,9 @@ export default function GlassmorphismButton({
 }: GlassmorphismButtonProps) {
   return (
     <LinearGradient
+      colors={
+        buttonColor === "black" ? gradientColors.black : gradientColors.white
+      }
       style={[
         buttonColor === "black"
           ? styles.glassmorphismButtonFillBlack
@@ -42,17 +43,10 @@ export default function GlassmorphismButton({
         buttonHeight ? { height: buttonHeight } : {},
       ]}
       locations={[0, 1]}
-      colors={
-        buttonColor === "black" ? gradientColors.black : gradientColors.white
-      }
       useAngle={true}
       angle={146.7}
     >
-      <Pressable
-        style={[styles.glassmorphismButton]}
-        onPress={onPress}
-        disabled={disabled}
-      >
+      <ThemedView style={[styles.glassmorphismButton]}>
         <IconSymbol
           name={sfSymbol}
           color={buttonColor === "black" ? "#FFF" : "#000"}
@@ -66,7 +60,7 @@ export default function GlassmorphismButton({
         >
           {label}
         </Text>
-      </Pressable>
+      </ThemedView>
     </LinearGradient>
   );
 }

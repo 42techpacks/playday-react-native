@@ -41,8 +41,17 @@ export function useSpotifyAuth() {
 
   // Mutation to refresh the token when needed
   const refreshTokenMutation = useMutation({
-    mutationFn: async ({ refreshToken, tokenId }: { refreshToken: string; tokenId?: Id<"spotifyTokens"> }) => {
-      return await convex.action(api.spotifyAuth.refreshToken, { refreshToken, tokenId });
+    mutationFn: async ({
+      refreshToken,
+      tokenId,
+    }: {
+      refreshToken: string;
+      tokenId?: Id<"spotifyTokens">;
+    }) => {
+      return await convex.action(api.spotifyAuth.refreshToken, {
+        refreshToken,
+        tokenId,
+      });
     },
     onSuccess: () => {
       // Invalidate the tokens query to fetch the updated tokens
@@ -52,7 +61,11 @@ export function useSpotifyAuth() {
 
   // Mutation to save tokens after initial authentication
   const saveTokensMutation = useMutation({
-    mutationFn: async (tokens: { accessToken: string; refreshToken: string; expirationDate: number }) => {
+    mutationFn: async (tokens: {
+      accessToken: string;
+      refreshToken: string;
+      expirationDate: number;
+    }) => {
       return await convex.mutation(api.spotifyAuth.saveTokens, tokens);
     },
     onSuccess: () => {
@@ -74,10 +87,12 @@ export function useSpotifyAuth() {
           tokenId: tokens.tokenId,
         });
         // After refresh, the query will be invalidated and re-fetched
-        const updatedTokens = queryClient.getQueryData<TokenResponse>(spotifyAuthKeys.tokens);
+        const updatedTokens = queryClient.getQueryData<TokenResponse>(
+          spotifyAuthKeys.tokens,
+        );
         return updatedTokens?.accessToken || null;
       } catch (error) {
-        console.error("Failed to refresh token:", error);
+        console.error("[useSpotifyAuth.ts] Failed to refresh token:", error);
         return null;
       }
     }

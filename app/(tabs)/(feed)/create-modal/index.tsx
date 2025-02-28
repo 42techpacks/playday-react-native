@@ -13,7 +13,7 @@ import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { ThemedView } from "@/components/ThemedView";
 import CDDisc from "@/components/auth/CDDisc";
-import GlassmorphismButton from "@/components/GlassmorphismButton";
+import GlassmorphismButtonView from "@/components/GlassmorphismButtonView";
 import GlassmorphismTextInput from "@/components/GlassmorphismTextInput";
 import GlassmorphismView from "@/components/GlassmorphismView";
 
@@ -76,13 +76,14 @@ export default function CreatePostScreen() {
           }}
           asChild
         >
-          <GlassmorphismButton
-            onPress={() => console.log("Add Songs pressed")}
-            label="Add Songs"
-            sfSymbol="plus"
-            buttonColor="black"
-            disabled={false}
-          />
+          <Pressable>
+            <GlassmorphismButtonView
+              label="Add Songs"
+              sfSymbol="plus"
+              buttonColor="black"
+              disabled={false}
+            />
+          </Pressable>
         </Link>
       </View>
 
@@ -114,15 +115,16 @@ export default function CreatePostScreen() {
           onChangeText={setCaption}
           numLines={4}
         />
-        <GlassmorphismButton
-          label="Share"
-          disabled={false}
-          onPress={() => console.log("user shared")}
-          buttonColor="white"
-          sfSymbol="paperplane"
-          textSize={20}
-          buttonHeight={65}
-        />
+        <Pressable onPress={handleShare}>
+          <GlassmorphismButtonView
+            label="Share"
+            disabled={false}
+            buttonColor="white"
+            sfSymbol="paperplane"
+            textSize={20}
+            buttonHeight={65}
+          />
+        </Pressable>
       </View>
     </ThemedView>
   );
