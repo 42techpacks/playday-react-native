@@ -3,7 +3,7 @@ import { Text, StyleSheet, Pressable } from "react-native";
 import { IconSymbol } from "./ui/IconSymbol";
 import { SFSymbols6_0 } from "sf-symbols-typescript";
 import LinearGradient from "react-native-linear-gradient";
-import { ThemedView } from "@/app-example/components/ThemedView";
+import { ThemedView } from "@/components/ThemedView";
 
 interface GlassmorphismButtonProps {
   label: string;

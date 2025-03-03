@@ -1,38 +1,59 @@
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, View, Pressable, TextStyle, Image} from "react-native";
 import { ThemedView } from "@/components/ThemedView";
 import { ThemedText } from "@/components/ThemedText";
-import { Link } from "expo-router";
 import React from "react";
 import SpotifyAuthButton from "@/components/spotify/spotify-auth-button";
+import CDDisc from "@/components/auth/CDDisc";
+import GlassmorphismView from "@/components/GlassmorphismView";
+import GlassmorphismButtonView from "@/components/GlassmorphismButtonView";
+import { useRouter } from "expo-router";
 
 export default function MusicServiceAuthScreen() {
+  const router = useRouter(); // ✅ Move useRouter() here
+
+  const handleSkip = () => {
+    router.push("/register/username"); // ✅ Correct navigation
+  };
+
   return (
     <ThemedView style={styles.container}>
-      <View style={styles.logoContainer}>
-        <ThemedText type="subtitle" style={styles.text}>
-          logo
-        </ThemedText>
+      <ThemedText type="title" style={styles.title}>Connect your existing library.</ThemedText>
+      <ThemedText type="subtitle" style={styles.subtitle}>Login with your music streaming provider.</ThemedText>
+
+      <View style={styles.CDView}>
+        <CDDisc imageUri={require("@/assets/auth/kali_uchis.png")} marginLeft={0}/>   
       </View>
-
-      <View style={styles.largeBox}></View>
-
-      <View style={styles.content}>
-        <View style={styles.buttonContainer}>
+           
+      <ThemedView style={styles.buttonScreen}>   
+        <GlassmorphismView viewStyle={styles.spotifyButton} disableBackground={true}>
           <SpotifyAuthButton />
-        </View>
-
-        <View style={styles.buttonContainer}>
-          <ThemedText style={styles.buttonText}>
-            Login with Apple Music - TODO
-          </ThemedText>
-        </View>
-
-        <Link href="/register/username">
-          <ThemedText type="link"> Next </ThemedText>
-        </Link>
-      </View>
-
-      <View style={styles.circle}></View>
+        </GlassmorphismView>
+               
+        <GlassmorphismView viewStyle={styles.appleButtonContainer} disableBackground={true}>
+          <View style={styles.logoContainer}>
+            <Image
+              source={require("@/assets/auth/apple_icon.png")}
+              resizeMode="contain"
+              style={styles.logo}
+                    />
+          </View>
+          <ThemedText style={styles.appleButtonText}>Login with Apple Music</ThemedText>
+        </GlassmorphismView>
+                
+        <Pressable style={styles.skipButton} onPress={handleSkip}>
+          <GlassmorphismButtonView
+            label = "Skip"
+            buttonColor="white"
+            sfSymbol="arrow.right"
+            disabled={false}
+            textSize={20}
+            buttonHeight={65}
+        /></Pressable>
+        <ThemedText style={styles.disclaimer}>
+          By continuing you confirm that you've read and accepted our
+          Terms and Privacy Policy.
+        </ThemedText>
+      </ThemedView>
     </ThemedView>
   );
 }
@@ -45,67 +66,69 @@ const styles = StyleSheet.create({
     padding: 20,
     position: "relative",
   },
-  logoContainer: {
-    position: "absolute",
-    top: 20,
-    left: 20,
-    width: 100,
-    height: 40,
-    backgroundColor: "white",
-    borderRadius: 10,
-    borderWidth: 2,
-    borderColor: "black",
-    justifyContent: "center",
-    alignItems: "center",
-    zIndex: 2,
-  },
-  largeBox: {
-    position: "absolute",
-    top: "20%",
-    width: 250,
-    height: 250,
-    backgroundColor: "white",
-    borderRadius: 20,
-    borderWidth: 2,
-    borderColor: "black",
-    justifyContent: "center",
-    alignItems: "center",
-    zIndex: 1,
-  },
-  content: {
-    marginTop: 400,
-    alignItems: "center",
+  title: {
+    fontWeight: 400,
+    fontSize: 21,
+    marginTop: 15
+ },
+  subtitle: {
+    fontSize: 15,
+    fontWeight: 300,
+    color: "#000",
+    fontFamily: "Helvetica-Regular",
+    marginBottom: 50
+},
+  buttonScreen: {
     width: "100%",
-  },
-  buttonContainer: {
-    backgroundColor: "white",
-    borderRadius: 10,
-    borderWidth: 1,
-    borderColor: "black",
-    paddingVertical: 12,
+    display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    width: 250,
-    marginTop: 20,
+    gap: 20,
+},
+  CDView:{
+    marginBottom: 75
   },
-  buttonText: {
-    fontFamily: "Helvetica",
-    color: "blue",
+  appleButtonContainer: {
+    display: "flex",
+    flexDirection: "row", // ✅ Keep logo and text in a row
+    alignItems: "center", // ✅ Ensures vertical centering
+    justifyContent: "center", // ✅ Ensures text is centered
+    width: "100%",
+    height: 65,
+    backgroundColor: "#E25E5E",
+    borderRadius: 50,
+    paddingHorizontal: 20, 
+    
+  },
+  appleButtonText: {
+    color: "white", 
+    fontSize: 20,
+    marginLeft: 40, // ✅ Moves text slightly to the right
+
+  },
+  skipButton: {
+    width: "100%",
+    height: 65
+  },
+  spotifyButton: {
+    width: "100%",
+    backgroundColor: "#0DAE40",
+    height: 65,
+    borderRadius: 50,
+ },
+  disclaimer: {
+    fontSize: 12,
     textAlign: "center",
+    fontWeight: 300,
+    color: "#8D8D8D",
+    lineHeight: 20,
+  } as TextStyle,
+  logo:{
+    alignItems: "center",
   },
-  text: {
-    marginBottom: 10,
-  },
-  circle: {
-    position: "absolute",
-    top: 20,
-    right: 20,
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    borderWidth: 2,
-    borderColor: "black",
-    backgroundColor: "white",
-    zIndex: 3,
-  },
+  logoContainer:{
+    position: "absolute", // Fix logo to the left
+    left: 30, // Keep the logo at the far left
+    alignItems: "center",
+  }
 });

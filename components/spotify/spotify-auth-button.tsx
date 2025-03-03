@@ -1,8 +1,7 @@
-import { Button, ActivityIndicator, View, StyleSheet } from "react-native";
+import { ActivityIndicator, View, StyleSheet, Pressable, Text, Image } from "react-native";
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { useSpotifyAuth } from "@/hooks/useSpotifyAuth";
-import { ThemedText } from "@/components/ThemedText";
 import { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 
@@ -20,7 +19,6 @@ export default function SpotifyAuthButton() {
       const success = await authenticateWithSpotify();
 
       if (success) {
-        // Invalidate all convex queries to trigger a re-fetch
         queryClient.invalidateQueries({ queryKey: ["convex"] });
       } else {
         setAuthError("Authentication failed. Please try again.");
@@ -37,27 +35,38 @@ export default function SpotifyAuthButton() {
     return (
       <View style={styles.container}>
         <ActivityIndicator size="small" color="#000" />
-        <ThemedText style={styles.loadingText}>
-          Connecting to Spotify...
-        </ThemedText>
+        <Text style={styles.loadingText}>Connecting to Spotify...</Text>
       </View>
     );
   }
 
   return (
     <View style={styles.container}>
-      <Button
+      <Pressable
         onPress={handleAuthenticatePress}
-        title={
-          registrationStatus?.hasSpotifyTokens
-            ? "Already Connected to Spotify"
-            : "Authenticate w/ Spotify"
-        }
+        style={[
+          styles.button,
+          (isLoading || registrationStatus?.hasSpotifyTokens) && styles.disabledButton,
+        ]}
         disabled={isLoading || registrationStatus?.hasSpotifyTokens}
-      />
-      {authError && (
-        <ThemedText style={styles.errorText}>{authError}</ThemedText>
-      )}
+      >
+        <View style={styles.buttonContent}>
+          <View style={styles.logoContainer}>
+            <Image
+              source={require("@/assets/auth/Spotify.png")}
+              resizeMode="contain"
+            />
+          </View>
+
+          <Text style={styles.buttonText}>
+            {registrationStatus?.hasSpotifyTokens
+              ? "Already Connected to Spotify"
+              : "Login with Spotify"}
+          </Text>
+        </View>
+      </Pressable>
+
+      {authError && <Text style={styles.errorText}>{authError}</Text>}
     </View>
   );
 }
@@ -66,6 +75,37 @@ const styles = StyleSheet.create({
   container: {
     width: "100%",
     alignItems: "center",
+  },
+  button: {
+    paddingVertical: 12,
+    paddingHorizontal: 10,
+    alignItems: "center",
+    width: "100%",
+    backgroundColor: "#0DAE40",
+    height: 65,
+    borderRadius: 50,
+  },
+  disabledButton: {
+    opacity: 0.5,
+  },
+  buttonContent: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    width: "100%",
+    position: "relative",
+    height: "100%"
+  },
+  logoContainer: {
+    position: "absolute",
+    left: 20,
+    height:"100%"
+  },
+  buttonText: {
+    color: "white",
+    fontSize: 20,
+    backgroundColor: "transparent",
+    marginLeft: 50
   },
   loadingText: {
     marginTop: 8,

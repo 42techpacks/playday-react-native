@@ -7,18 +7,20 @@ interface GlassmorphismViewProps {
   children: React.ReactNode;
   gradientStyle?: ViewStyle;
   viewStyle?: ViewStyle;
+  disableBackground?: boolean; 
 }
 
 export default function GlassmorphismView({
   children,
   gradientStyle,
   viewStyle,
+  disableBackground = false, // Default is false
 }: GlassmorphismViewProps) {
   return (
     <LinearGradient
       style={[
         styles.glassmorphismCard,
-        styles.glassmorphismCardBorder,
+        !disableBackground && styles.glassmorphismCardBorder,
         gradientStyle,
       ]}
       locations={[0, 1]}

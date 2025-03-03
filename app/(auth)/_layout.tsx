@@ -15,11 +15,7 @@ export default function AuthLayout() {
 
       <Unauthenticated>
         <Stack>
-          <Stack.Screen
-            name="index"
-            options={{ headerTitle: (props) => <TopBar />, title: "Phone" }}
-          />
-          <Stack.Screen name="identify/otp" options={{ title: "" }} />
+          <Stack.Screen name="identify/otp" options={{ headerTitle: (props) => <TopBar /> }} />
         </Stack>
       </Unauthenticated>
 
@@ -27,11 +23,11 @@ export default function AuthLayout() {
         <Stack>
           <Stack.Screen
             name="register/music-auth"
-            options={{ title: "Connect Music", headerBackVisible: false }}
+            options={{ headerTitle: (props) => <TopBar />, title: "Phone" , headerBackVisible: false }}
           />
           <Stack.Screen
             name="register/username"
-            options={{ title: "Create Username" }}
+            options={{headerTitle: (props) => <TopBar />, title: "Create Username" }}
           />
         </Stack>
       </Authenticated>
