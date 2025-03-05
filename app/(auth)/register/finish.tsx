@@ -1,53 +1,48 @@
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, View, Image, Pressable } from "react-native";
 import { ThemedView } from "@/components/ThemedView";
 import { ThemedText } from "@/components/ThemedText";
-import { Link } from "expo-router";
 import { api } from "@/convex/_generated/api";
 import { useQuery } from "convex/react";
-import { SafeAreaView } from "react-native-safe-area-context";
-import CDDisc from "@/components/auth/CDDisc";
+import GlassmorphismView from "@/components/GlassmorphismView";
+import { useRouter } from "expo-router";
 
-const cards = [
-  require("@/assets/auth/Steve-Lacy-Gemini-Rights.png"),
-  require("@/assets/auth/tyler_the_creator.png"),
-  require("@/assets/auth/travis_scott.png"),
-  require("@/assets/auth/dj_assault.png"),
-  require("@/assets/auth/migos.png"),
-];
-const vinylSpacing = 250;
 export default function FinishScreen() {
   const user = useQuery(api.auth.getCurrentUser);
+  const router = useRouter();
+  
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
-      <ThemedView style={styles.container}>
-        <ThemedView
-          style={[styles.vinylContainer, { marginLeft: vinylSpacing }]}
-        >
-          {cards.map((imageUri, index) => (
-            <CDDisc
-              key={index}
-              imageUri={imageUri}
-              marginLeft={vinylSpacing}
-            />
-          ))}
-        </ThemedView>
-        <ThemedText type="title">
-          Username
-        </ThemedText>
-        <ThemedText type="defaultSemiBold">
-          {user?.profile?.username}
-        </ThemedText>
-        <ThemedText type="title">
-          Spotify {!!user?.spotifyToken ? "✅ " : "❌"}
+    <ThemedView style={styles.container}>
+      <ThemedText type="title" style={styles.title}>You're all set!.</ThemedText>
+      <ThemedText type="subtitle" style={styles.subtitle}>Start curating your sound today.</ThemedText>
+        
+      <View style={styles.profileContainer}>
+        <GlassmorphismView viewStyle ={styles.glassView}>
+          <Image
+            source={require("@/assets/auth/profile.png")}
+            resizeMode="contain"
+            style={styles.profileImage}/>
+          <ThemedText style={styles.username}>
+            {user?.profile?.username ? `@${user.profile.username}` : ""}
+          </ThemedText>
+        </GlassmorphismView >
+      </View>
+
+      <View style={styles.bottomContainer}>
+        <ThemedText style={styles.connected} >
+          Spotify {!!user?.spotifyToken ? "connected!✅ " : "not connected! ❌"}
         </ThemedText>
 
-        <Link href="/register/onboard">
-          <View style={styles.buttonContainer}>
+        <Pressable style={styles.nextContainer}
+          onPress={() => {router.push("/register/onboard");}}>
+          <View>
+            <GlassmorphismView disableBackground={true}>
+              <View /> 
+            </GlassmorphismView>
             <ThemedText style={styles.buttonText}>Finish</ThemedText>
           </View>
-        </Link>
-      </ThemedView>
-    </SafeAreaView>
+          </Pressable>
+      </View>
+    </ThemedView>
   );
 }
 
@@ -65,44 +60,42 @@ const styles = StyleSheet.create({
       justifyContent: "center",
       alignItems: "center",
     },
-  logoContainer: {
-    position: "absolute",
-    top: 20,
-    left: 20,
-    width: 100,
-    height: 40,
-    backgroundColor: "white",
-    borderRadius: 10,
-    borderWidth: 2,
-    borderColor: "black",
-    justifyContent: "center",
-    alignItems: "center",
-    zIndex: 2,
+    title: {
+      fontWeight: 400,
+      fontSize: 21,
+      marginTop: 15
+   },
+    subtitle: {
+      fontSize: 15,
+      fontWeight: 300,
+      color: "#000",
+      fontFamily: "Helvetica-Regular",
+      marginBottom: 50
   },
-  circle: {
-    position: "absolute",
-    top: 20,
-    right: 20,
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    borderWidth: 2,
-    borderColor: "black",
-    backgroundColor: "white",
-    zIndex: 3,
+
+  username:{
+    position: "absolute", 
+    bottom: 20, 
+    fontSize: 16,
+    textAlign: "center",
   },
-  largeBox: {
-    position: "absolute",
-    top: "20%",
-    width: 250,
-    height: 250,
-    backgroundColor: "white",
-    borderRadius: 20,
-    borderWidth: 2,
-    borderColor: "black",
-    justifyContent: "center",
+  profileContainer: {
+    width: 250, 
+    height: 300, 
+    borderRadius: 20, 
+    alignSelf: "center", 
     alignItems: "center",
-    zIndex: 1,
+    justifyContent: "center",
+    paddingBottom: 0
+  },
+  profileImage: {
+    width: "60%", 
+    height: 250, 
+  },
+  glassView: {
+    alignItems: "center", 
+    justifyContent: "center",
+    paddingHorizontal: 10,
   },
   finishText: {
     marginTop: 500,
@@ -123,8 +116,36 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     fontFamily: "Helvetica",
-    color: "blue",
+    color: "white", 
     textAlign: "center",
-    fontSize: 24,
+    fontSize: 20,
+  },
+  nextContainer: {
+    display: "flex",
+    flexDirection: "row", 
+    alignItems: "center",
+    justifyContent: "center",
+    width: "100%",
+    height: 65,
+    backgroundColor: "black",
+    borderRadius: 50,
+    paddingHorizontal: 20, 
+    overflow: "hidden", 
+    marginTop: 10
+  },
+  connected:{
+    fontFamily: "Helvetica",
+    color: "gray", 
+    textAlign: "center",
+    fontSize: 20,
+  },
+  bottomContainer: {
+    position: "absolute", 
+    bottom: 65, 
+    width: "100%", 
+    alignItems: "center",
+    paddingHorizontal: 20,
+    
+
   },
 });

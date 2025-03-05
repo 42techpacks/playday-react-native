@@ -29,6 +29,14 @@ export default function AuthLayout() {
             name="register/username"
             options={{headerTitle: (props) => <TopBar />, title: "Create Username" }}
           />
+          <Stack.Screen
+            name="register/pfp"
+            options={{headerTitle: (props) => <TopBar />, title: "Upload Profile Picture" }}
+          />
+           <Stack.Screen
+            name="register/finish"
+            options={{headerTitle: (props) => <TopBar />, title: "Finish" }}
+          />
         </Stack>
       </Authenticated>
     </>

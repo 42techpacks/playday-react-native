@@ -1,36 +1,50 @@
-import { StyleSheet, TextInput, View } from "react-native";
+import { StyleSheet, Pressable, View, Image } from "react-native";
 import { ThemedView } from "@/components/ThemedView";
 import { ThemedText } from "@/components/ThemedText";
-import { Link } from "expo-router";
+import GlassmorphismView from "@/components/GlassmorphismView";
+import { useRouter } from "expo-router";
+import { useQuery } from "convex/react";
+import { api } from "@/convex/_generated/api";
 
 export default function ProfileImageScreen() {
+  const router = useRouter();
+  const user = useQuery(api.auth.getCurrentUser);
+
   return (
     <ThemedView style={styles.container}>
-      <View style={styles.logoContainer}>
-        <ThemedText type="subtitle">logo</ThemedText>
+      <ThemedText type="title" style={styles.title}>Add a profile photo.</ThemedText>
+      <ThemedText type="subtitle" style={styles.subtitle}>You can update this at any time.</ThemedText>
+   
+      <View style={styles.profileContainer}>
+        <GlassmorphismView viewStyle ={styles.glassView}>
+          <Image
+            source={require("@/assets/auth/profile.png")}
+            resizeMode="contain"
+            style={styles.profileImage}/>
+            <ThemedText style={styles.username}>
+              {user?.profile?.username ? `@${user.profile.username}` : ""}
+            </ThemedText>
+        </GlassmorphismView >
       </View>
 
-      <View style={styles.circle}></View>
-
-      <ThemedText type="title" style={styles.profileImageText}>
-        Add a profile image
-      </ThemedText>
-
-      <View style={styles.largeBox}></View>
-
-      <View style={styles.inputContainer}>
-        <TextInput
-          style={styles.input}
-          placeholder="Upload"
-          placeholderTextColor="#666"
-        />
-      </View>
-
-      <Link href="/(auth)/register/finish">
-        <View style={styles.buttonContainer}>
-          <ThemedText style={styles.buttonText}>Next</ThemedText>
+      <View style={styles.bottomContainer}>
+        <View style={styles.iconContainer}>
+          <Image
+          source={require("@/assets/auth/pfp_icon.png")}
+          resizeMode="contain"
+          style={styles.pfpButton}
+          />
         </View>
-      </Link>
+
+        <Pressable style={styles.nextContainer} onPress={() => {router.push("/register/finish");}}>
+          <View>
+            <GlassmorphismView disableBackground={true}>
+              <View /> 
+            </GlassmorphismView>
+            <ThemedText style={styles.buttonText}>Next</ThemedText>
+          </View>
+        </Pressable>
+      </View>
     </ThemedView>
   );
 }
@@ -43,85 +57,81 @@ const styles = StyleSheet.create({
     padding: 20,
     position: "relative",
   },
-  logoContainer: {
-    position: "absolute",
-    top: 20,
-    left: 20,
-    width: 100,
-    height: 40,
-    backgroundColor: "white",
-    borderRadius: 10,
-    borderWidth: 2,
-    borderColor: "black",
-    justifyContent: "center",
+  bottomContainer: {
+    position: "absolute", 
+    bottom: 65, 
+    width: "100%", 
     alignItems: "center",
-    zIndex: 2,
+    paddingHorizontal: 20,
+
   },
-  circle: {
-    position: "absolute",
-    top: 20,
-    right: 20,
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    borderWidth: 2,
-    borderColor: "black",
-    backgroundColor: "white",
-    zIndex: 3,
-  },
-  profileImageText: {
-    marginTop: 80,
-    marginBottom: 20,
-    fontSize: 24,
-    fontWeight: "bold",
-  },
-  largeBox: {
-    position: "absolute",
-    top: "20%",
-    width: 250,
-    height: 250,
-    backgroundColor: "white",
-    borderRadius: 20,
-    borderWidth: 2,
-    borderColor: "black",
-    justifyContent: "center",
-    alignItems: "center",
-    zIndex: 1,
-  },
-  inputContainer: {
-    marginTop: 400,
-    width: 100,
-    height: 100,
-    borderRadius: 75,
-    backgroundColor: "white",
-    borderWidth: 2,
-    borderColor: "black",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  input: {
-    width: "100%",
-    height: "100%",
-    borderRadius: 75,
+  title: {
+    fontWeight: 400,
+    fontSize: 21,
+    marginTop: 15
+ },
+  subtitle: {
+    fontSize: 15,
+    fontWeight: 300,
+    color: "#000",
+    fontFamily: "Helvetica-Regular",
+    marginBottom: 50
+},
+  username:{
+    position: "absolute", 
+    bottom: 20, 
+    fontSize: 16,
     textAlign: "center",
-    color: "#333",
   },
-  buttonContainer: {
-    backgroundColor: "white",
-    borderRadius: 10,
-    borderWidth: 1,
-    borderColor: "black",
-    paddingVertical: 16,
-    justifyContent: "center",
+
+  iconContainer: {
+    alignItems: "center",  
+    justifyContent: "center", 
+    marginBottom: -40,  
+    width: "100%",
+  },
+  pfpButton: {
+    width: 150,  
+    height: 150,  
+  },
+
+  profileContainer: {
+    width: 250, 
+    height: 300, 
+    borderRadius: 20, 
+    alignSelf: "center", 
     alignItems: "center",
-    width: 250,
-    marginTop: 5,
-    zIndex: 1,
+    justifyContent: "center",
+    paddingBottom: 0
   },
+  profileImage: {
+    width: "60%", 
+    height: 250, 
+  },
+  glassView: {
+    alignItems: "center", 
+    justifyContent: "center",
+    paddingHorizontal: 10,
+  },
+  
   buttonText: {
     fontFamily: "Helvetica",
-    color: "blue",
+    color: "white", 
     textAlign: "center",
-    fontSize: 24,
-  },
-});
+    fontSize: 20,
+    },
+
+  nextContainer: {
+    display: "flex",
+    flexDirection: "row", 
+    alignItems: "center",
+    justifyContent: "center",
+    width: "100%",
+    height: 65,
+    backgroundColor: "black",
+    borderRadius: 50,
+    paddingHorizontal: 20, 
+    overflow: "hidden", 
+    marginTop: 0
+},
+  });
