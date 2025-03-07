@@ -1,10 +1,8 @@
 import { Authenticated, AuthLoading, Unauthenticated } from "convex/react";
 import { Stack } from "expo-router";
 import { Text } from "react-native";
-import React, { useEffect } from "react";
+import React from "react";
 import TopBar from "@/components/auth/TopBar";
-import { useQuery } from "convex/react";
-import { api } from "@/convex/_generated/api";
 
 export default function AuthLayout() {
   return (
@@ -15,7 +13,18 @@ export default function AuthLayout() {
 
       <Unauthenticated>
         <Stack>
-          <Stack.Screen name="identify/otp" options={{ headerTitle: (props) => <TopBar /> }} />
+          <Stack.Screen
+            name="index"
+            options={{
+              headerShown: false,
+            }}
+          />
+          <Stack.Screen
+            name="identify/otp"
+            options={{
+              headerShown: false,
+            }}
+          />
         </Stack>
       </Unauthenticated>
 
@@ -23,11 +32,18 @@ export default function AuthLayout() {
         <Stack>
           <Stack.Screen
             name="register/music-auth"
-            options={{ headerTitle: (props) => <TopBar />, title: "Phone" , headerBackVisible: false }}
+            options={{
+              headerTitle: (props) => <TopBar />,
+              title: "Phone",
+              headerBackVisible: false,
+            }}
           />
           <Stack.Screen
             name="register/username"
-            options={{headerTitle: (props) => <TopBar />, title: "Create Username" }}
+            options={{
+              headerTitle: (props) => <TopBar />,
+              title: "Create Username",
+            }}
           />
           <Stack.Screen
             name="register/pfp"

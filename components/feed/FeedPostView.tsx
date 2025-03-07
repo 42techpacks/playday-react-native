@@ -59,9 +59,7 @@ export default function FeedPostView({ daylist }: FeedPostViewProps) {
         </ThemedView>
 
         {/* Post Songs */}
-        <ThemedView
-          style={[styles.feedPostVinyls, { marginLeft: vinylSpacing }]}
-        >
+        <ThemedView style={[styles.feedPostVinyls]}>
           {[...albumImages].reverse().map((imageUrl: string, index: number) => (
             <CDDisc
               key={index}
@@ -71,7 +69,15 @@ export default function FeedPostView({ daylist }: FeedPostViewProps) {
                   : require("@/assets/auth/Steve-Lacy-Gemini-Rights.png")
               }
               discSize={225}
-              marginLeft={vinylSpacing}
+              containerStyle={{
+                position: "absolute",
+                backgroundColor: "none",
+                transform: [
+                  {
+                    translateX: (index - (albumImages.length - 1) / 2) * -10,
+                  },
+                ],
+              }}
             />
           ))}
         </ThemedView>
@@ -171,6 +177,9 @@ const styles = StyleSheet.create({
   },
 
   feedPostVinyls: {
+    flex: 1,
+    height: 250,
+    position: "relative",
     flexDirection: "row",
     backgroundColor: "none",
     justifyContent: "center",

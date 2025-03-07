@@ -75,41 +75,34 @@ export default function PhoneScreen() {
         )}
       </Authenticated>
       <Unauthenticated>
-        <SafeAreaView
-          style={{
-            flex: 1,
-            backgroundColor: "white",
-          }}
-        >
+        <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
           <KeyboardAvoidingView
             behavior={Platform.OS === "ios" ? "padding" : undefined}
-            style={{
-              justifyContent: "center",
-              flex: 1,
-            }}
+            style={{ flex: 1 }}
             keyboardVerticalOffset={100}
           >
             <TouchableWithoutFeedback
-              style={{
-                flex: 1,
-              }}
+              style={{ flex: 1 }}
               onPress={Keyboard.dismiss}
             >
               <ThemedView style={styles.phoneScreen}>
-                {/* HERO: Card + Text */}
+                {/* HERO: Vinyls + Text */}
                 <ThemedView style={styles.phoneScreenHero}>
                   {/* CARD:  Vinyls */}
-                  <ThemedView
-                    style={[
-                      styles.vinylContainer,
-                      { marginLeft: vinylSpacing },
-                    ]}
-                  >
+                  <ThemedView style={[styles.vinylsContainer]}>
                     {cards.map((imageUri, index) => (
                       <CDDisc
                         key={index}
-                        marginLeft={vinylSpacing}
                         imageUri={imageUri}
+                        containerStyle={{
+                          position: "absolute",
+                          backgroundColor: "none",
+                          transform: [
+                            {
+                              translateX: (index - (cards.length - 1) / 2) * -10,
+                            },
+                          ],
+                        }}
                       />
                     ))}
                   </ThemedView>
@@ -135,6 +128,7 @@ export default function PhoneScreen() {
                     value={number}
                     onChangeText={setNumber}
                     iconUrl={require("@/assets/auth/phone-icon.png")}
+                    containerStyle={styles.phoneScreenFormInput}
                   />
                   <TouchableOpacity
                     style={styles.buttonContainer}
@@ -160,27 +154,30 @@ export default function PhoneScreen() {
 
 const styles = StyleSheet.create({
   phoneScreen: {
+    flex: 1,
     flexDirection: "column",
-    justifyContent: "center",
-    alignItems: "center",
-    width: 375,
-    gap: 50,
-    paddingTop: 100,
+    justifyContent: "space-between",
+    marginHorizontal: 10,
   } as ViewStyle,
   phoneScreenHero: {
-    display: "flex",
+    flex: 3,
     flexDirection: "column",
     justifyContent: "center",
     alignItems: "center",
+    gap: 10,
+  } as ViewStyle,
+  vinylsContainer: {
+    flex: 3,
     width: "100%",
-    gap: 125,
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    position: "relative",
   } as ViewStyle,
   phoneScreenText: {
-    display: "flex",
+    flex: 1,
     flexDirection: "column",
-    justifyContent: "center",
     alignItems: "center",
-    gap: "5px",
     backgroundColor: "none",
   } as ViewStyle,
   phoneScreenTitle: {
@@ -194,28 +191,24 @@ const styles = StyleSheet.create({
     fontFamily: "Helvetica-Regular",
   } as TextStyle,
   phoneScreenForm: {
-    width: "100%",
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    gap: 20,
+    flex: 1,
+    gap: 10,
+    flexDirection: "column",
+    justifyContent: "flex-start",
   } as ViewStyle,
-  phoneScreenDisclaimer: {
-    fontSize: 12,
-    textAlign: "center",
-    fontWeight: 300,
-    color: "#8D8D8D",
-    lineHeight: 18,
-  } as TextStyle,
+  phoneScreenFormInput: {
+    flex: 2,
+    width: "100%",
+    borderRadius: 30,
+    borderWidth: 1,
+  } as ViewStyle,
 
   buttonContainer: {
-    display: "flex",
     width: "100%",
-    height: 65,
+    flex: 2,
+    flexShrink: 0,
     backgroundColor: "#000", // Solid black background
     borderRadius: 50, // Makes it pill-shaped
-    paddingVertical: 9,
-    alignItems: "center",
     justifyContent: "center",
   } as ViewStyle,
 
@@ -225,15 +218,18 @@ const styles = StyleSheet.create({
     textAlign: "center",
   } as TextStyle,
 
+  phoneScreenDisclaimer: {
+    marginHorizontal: 50,
+    flex: 1,
+    fontSize: 14,
+    textAlign: "center",
+    fontWeight: 300,
+    color: "#8D8D8D",
+    lineHeight: 18,
+  } as TextStyle,
+
   cardContainer: {
     display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-  } as ViewStyle,
-
-  vinylContainer: {
-    display: "flex",
-    flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
   } as ViewStyle,

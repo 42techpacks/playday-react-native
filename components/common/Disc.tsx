@@ -23,7 +23,6 @@ export default function Disc({
 
   const dynamicStyles = StyleSheet.create({
     cdOuter: {
-      display: "flex",
       justifyContent: "center",
       alignItems: "center",
 
@@ -37,7 +36,6 @@ export default function Disc({
       position: "relative",
     },
     image: {
-      display: "flex",
       justifyContent: "center",
       alignItems: "center",
 

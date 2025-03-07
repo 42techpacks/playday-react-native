@@ -6,6 +6,10 @@ import {
   ViewStyle,
   TextStyle,
   Text,
+  KeyboardAvoidingView,
+  TouchableWithoutFeedback,
+  Keyboard,
+  Platform,
 } from "react-native";
 import { useState } from "react";
 import { useLocalSearchParams, Stack, Redirect } from "expo-router";
@@ -17,6 +21,7 @@ import { api } from "@/convex/_generated/api";
 import { SafeAreaView } from "react-native";
 import { useAuthActions } from "@convex-dev/auth/dist/react";
 import { Authenticated, Unauthenticated } from "convex/react";
+import React from "react";
 
 const cards = [
   require("@/assets/auth/Steve-Lacy-Gemini-Rights.png"),
@@ -58,102 +63,98 @@ export default function OTPScreen() {
       </Authenticated>
 
       <Unauthenticated>
-        <ThemedView style={styles.OTPScreenContainer}>
-          <SafeAreaView style={styles.discContainer}>
-            <ThemedView style={styles.OTPScreen}>
-              {/* HERO: Card + Text */}
-              <ThemedView style={styles.OTPScreenHero}>
-                {/* CARD:  Vinyls */}
-                <ThemedView
-                  style={[styles.vinylContainer, { marginLeft: vinylSpacing }]}
-                >
-                  {cards.map((imageUri, index) => (
-                    <CDDisc
-                      key={index}
-                      imageUri={imageUri}
-                      discSize={125}
-                      marginLeft={vinylSpacing}
-                    />
-                  ))}
+        <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
+          <KeyboardAvoidingView
+            behavior={Platform.OS === "ios" ? "padding" : undefined}
+            style={{ flex: 1 }}
+            keyboardVerticalOffset={100}
+          >
+            <TouchableWithoutFeedback
+              style={{ flex: 1 }}
+              onPress={Keyboard.dismiss}
+            >
+              <ThemedView style={styles.OTPScreen}>
+                {/* HERO: Card + Text */}
+                <ThemedView style={styles.OTPScreenHero}>
+                  {/* CARD:  Vinyls */}
+                  <ThemedView style={[styles.vinylContainer]}>
+                    {cards.map((imageUri, index) => (
+                      <CDDisc key={index} imageUri={imageUri} discSize={125} />
+                    ))}
+                  </ThemedView>
+
+                  {/* TEXT: Title + Subtitle */}
+                  <ThemedView style={styles.OTPScreenText}>
+                    <ThemedText type="title" style={styles.OTPScreenTitle}>
+                      We sent you a verification code.
+                    </ThemedText>
+                    <ThemedText
+                      type="subtitle"
+                      style={styles.OTPScreenSubtitle}
+                    >
+                      Enter the code sent to +1 407 747 0791.
+                    </ThemedText>
+                  </ThemedView>
                 </ThemedView>
 
-                {/* TEXT: Title + Subtitle */}
-                <ThemedView style={styles.OTPScreenText}>
-                  <ThemedText type="title" style={styles.OTPScreenTitle}>
-                    We sent you a verification code.
-                  </ThemedText>
-                  <ThemedText type="subtitle" style={styles.OTPScreenSubtitle}>
-                    Enter the code sent to +1 407 747 0791.
+                {/* FORM: Input + Button */}
+                <ThemedView style={styles.OTPScreenForm}>
+                  <GlassmorphismTextInput
+                    placeholder="OTP Verification"
+                    value={otp}
+                    onChangeText={setOtp}
+                    iconUrl={require("@/assets/auth/phone-icon.png")}
+                    containerStyle={styles.OTPScreenFormInput}
+                  />
+                  <TouchableOpacity
+                    style={styles.buttonContainer}
+                    onPress={handleVerifyOtp}
+                  >
+                    <ThemedText type="link" style={styles.buttonText}>
+                      Next
+                    </ThemedText>
+                  </TouchableOpacity>
+                  <ThemedText style={styles.OTPScreenDisclaimer}>
+                    By continuing you confirm that you've read and accepted our
+                    Terms and Privacy Policy.
                   </ThemedText>
                 </ThemedView>
               </ThemedView>
-
-              {/* FORM: Input + Button */}
-              <ThemedView style={styles.OTPScreenForm}>
-                <GlassmorphismTextInput
-                  placeholder="OTP Verification"
-                  value={otp}
-                  onChangeText={setOtp}
-                  iconUrl={require("@/assets/auth/phone-icon.png")}
-                />
-                <TouchableOpacity
-                  style={styles.buttonContainer}
-                  onPress={handleVerifyOtp}
-                >
-                  <ThemedText type="link" style={styles.buttonText}>
-                    Next
-                  </ThemedText>
-                </TouchableOpacity>
-                <ThemedText style={styles.OTPScreenDisclaimer}>
-                  By continuing you confirm that you've read and accepted our
-                  Terms and Privacy Policy.
-                </ThemedText>
-              </ThemedView>
-            </ThemedView>
-          </SafeAreaView>
-        </ThemedView>
+            </TouchableWithoutFeedback>
+          </KeyboardAvoidingView>
+        </SafeAreaView>
       </Unauthenticated>
     </>
   );
 }
 
 const styles = StyleSheet.create({
-  OTPScreenContainer: {
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    width: "100%",
-    height: "100%",
-  } as ViewStyle,
-  discContainer: {
-    width: "100%",
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "center",
-    alignItems: "center",
-    marginTop: 200,
-  } as ViewStyle,
   OTPScreen: {
-    display: "flex",
+    flex: 1,
     flexDirection: "column",
-    justifyContent: "center",
-    alignItems: "center",
-
-    width: 375,
-    height: "100%",
-    gap: 50,
-    paddingTop: 0,
+    justifyContent: "space-between",
+    marginHorizontal: 10,
   },
   OTPScreenHero: {
-    display: "flex",
+    flex: 3,
     flexDirection: "column",
     justifyContent: "center",
     alignItems: "center",
-    width: "100%",
-    gap: 175,
+  },
+  OTPScreenForm: {
+    flex: 1,
+    gap: 10,
+    flexDirection: "column",
+    justifyContent: "flex-start",
+  },
+  vinylContainer: {
+    flex: 3,
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
   },
   OTPScreenText: {
-    display: "flex",
+    flex: 1,
     flexDirection: "column",
     justifyContent: "center",
     alignItems: "center",
@@ -170,46 +171,32 @@ const styles = StyleSheet.create({
     color: "#000",
     fontFamily: "Helvetica-Regular",
   },
-  OTPScreenForm: {
-    width: "100%",
-    display: "flex",
+  OTPScreenFormInput: {
+    flex: 2,
+    borderRadius: 30,
+    borderWidth: 1,
+  },
+
+  buttonContainer: {
+    flex: 2,
+    flexShrink: 0,
+    backgroundColor: "#000", // Solid black background
+    borderRadius: 50, // Makes it pill-shaped
     justifyContent: "center",
-    alignItems: "center",
-    gap: 20,
+  },
+  buttonText: {
+    fontFamily: "Helvetica-Regular",
+    color: "white",
+    textAlign: "center",
   },
   OTPScreenDisclaimer: {
+    flex: 1,
     fontSize: 12,
     textAlign: "center",
     fontWeight: 300,
     color: "#8D8D8D",
     lineHeight: 20,
   } as TextStyle,
-
-  buttonContainer: {
-    display: "flex",
-    width: "100%",
-    height: 65,
-
-    backgroundColor: "#000", // Solid black background
-    borderRadius: 50, // Makes it pill-shaped
-    paddingVertical: 20,
-    alignItems: "center",
-    justifyContent: "center",
-    alignSelf: "stretch",
-  },
-
-  buttonText: {
-    fontFamily: "Helvetica-Regular",
-    color: "white",
-    textAlign: "center",
-  },
-
-  vinylContainer: {
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
-  },
 });
 
 const formatPhoneNumber = (number: string) => {

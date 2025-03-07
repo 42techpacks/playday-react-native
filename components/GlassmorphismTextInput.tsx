@@ -5,6 +5,7 @@ import {
   TextInput,
   Image,
   View,
+  ViewStyle,
 } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
 
@@ -14,6 +15,7 @@ interface GlassmorphismTextInputProps {
   placeholder: string;
   iconUrl?: NodeRequire;
   numLines?: number;
+  containerStyle?: ViewStyle;
 }
 
 export default function GlassmorphismTextInput({
@@ -22,14 +24,14 @@ export default function GlassmorphismTextInput({
   placeholder,
   iconUrl,
   numLines,
+  containerStyle,
 }: GlassmorphismTextInputProps) {
   return (
     <LinearGradient
       style={[
-        styles.phoneScreenInput,
+        containerStyle,
         styles.glassmorphismCardFill,
         styles.glassmorphismCardBorder,
-        numLines && { height: numLines * 24 + 36 }, // Add dynamic height based on number of lines
       ]}
       locations={[0, 1]}
       colors={["rgba(255, 255, 255, 0.5)", "rgba(255, 255, 255, 0.2)"]}
@@ -39,7 +41,7 @@ export default function GlassmorphismTextInput({
       <View style={styles.inputContainer}>
         {iconUrl && <Image source={iconUrl} style={styles.icon} />}
         <TextInput
-          style={[styles.input, numLines && { height: numLines * 24 }]}
+          style={[styles.input]}
           onChangeText={onChangeText}
           value={value.toString()}
           placeholder={placeholder}
@@ -55,25 +57,8 @@ export default function GlassmorphismTextInput({
 }
 
 const styles = StyleSheet.create({
-  class: {
-    display: "flex",
-    justifyContent: "center",
-  },
-  phoneScreenInput: {
-    display: "flex",
-    width: "100%",
-    justifyContent: "flex-start",
-    alignItems: "center",
-    borderRadius: 30,
-    borderWidth: 1,
-    minHeight: 60,
-  },
-
   glassmorphismCardFill: {
     borderRadius: 25,
-    width: "100%",
-    gap: 10,
-    justifyContent: "flex-start",
     shadowColor: "rgba(0, 0, 0, 0.3)",
     shadowOffset: {
       width: 0,
@@ -90,23 +75,21 @@ const styles = StyleSheet.create({
     borderStyle: "solid",
   },
   inputContainer: {
-    display: "flex",
+    flex: 1,
     flexDirection: "row",
-    alignItems: "flex-start",
-    justifyContent: "center",
-    width: "100%",
-    padding: 15, // Changed from individual paddings to uniform padding
+    justifyContent: "flex-start",
+    alignItems: "center",
+    marginHorizontal: 15,
+    gap: 10,
   },
   icon: {
     width: 18,
     height: 18,
-    marginRight: 10,
     backgroundColor: "none",
   },
   input: {
     fontFamily: "Helvetica-Regular",
     fontSize: 16,
     flex: 1,
-    paddingRight: 5, // Added right padding to prevent text cutoff
   },
 });

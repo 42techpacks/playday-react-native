@@ -4,6 +4,7 @@ import {
   StyleSheet,
   Dimensions,
   ImageSourcePropType,
+  ViewStyle,
 } from "react-native";
 import Disc from "../common/Disc";
 
@@ -14,14 +15,16 @@ interface CDDiscProps {
   imageUri: ImageSourcePropType;
   discSize?: number;
   marginLeft?: number;
+  containerStyle?: ViewStyle;
 }
 export default function CDDisc({
   imageUri,
+  containerStyle,
   discSize = DEFAULT_DISC_SIZE,
   marginLeft = 250,
 }: CDDiscProps) {
   return (
-    <View style={[styles.container, { marginLeft: -marginLeft }]}>
+    <View style={containerStyle}>
       <Disc imageUri={imageUri} discSize={discSize} />
     </View>
   );
@@ -29,8 +32,7 @@ export default function CDDisc({
 
 const styles = StyleSheet.create({
   container: {
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
+    // justifyContent: "center",
+    // alignItems: "center",
   },
 });
