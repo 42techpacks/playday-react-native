@@ -48,9 +48,11 @@ export const saveTokens = mutation({
 });
 
 // Helper function to refresh the access token
-async function refreshSpotifyToken(
-  refreshToken: string,
-): Promise<{ accessToken: string; expirationDate: number }> {
+async function refreshSpotifyToken(refreshToken: string): Promise<{
+  accessToken: string;
+  refreshToken: string;
+  expirationDate: number;
+}> {
   // Your Spotify API credentials
   const clientId = process.env.SPOTIFY_CLIENT_ID;
   const clientSecret = process.env.SPOTIFY_CLIENT_SECRET;
@@ -61,7 +63,7 @@ async function refreshSpotifyToken(
 
   const tokenEndpoint = "https://accounts.spotify.com/api/token";
   const authString = Buffer.from(`${clientId}:${clientSecret}`).toString(
-    "base64",
+    "base64"
   );
 
   const response = await fetch(tokenEndpoint, {
@@ -77,6 +79,7 @@ async function refreshSpotifyToken(
   });
 
   if (!response.ok) {
+    console.error(response);
     throw new Error(`Failed to refresh Spotify token: ${response.statusText}`);
   }
 
@@ -84,6 +87,7 @@ async function refreshSpotifyToken(
 
   return {
     accessToken: data.access_token,
+    refreshToken: data.refresh_token || refreshToken,
     // Convert expiration seconds to milliseconds and add to current time
     expirationDate: Date.now() + data.expires_in * 1000,
   };
@@ -105,6 +109,7 @@ export const refreshToken = action({
           tokenId: args.tokenId,
           accessToken: refreshedTokens.accessToken,
           expirationDate: refreshedTokens.expirationDate,
+          refreshToken: refreshedTokens.refreshToken,
         });
       }
 
@@ -167,12 +172,14 @@ export const updateTokens = mutation({
     tokenId: v.id("spotifyTokens"),
     accessToken: v.string(),
     expirationDate: v.number(),
+    refreshToken: v.string(),
   },
   handler: async (ctx, args) => {
     await ctx.db.patch(args.tokenId, {
       accessToken: args.accessToken,
       expirationDate: args.expirationDate,
       lastUpdated: Date.now(),
+      refreshToken: args.refreshToken,
     });
   },
 });

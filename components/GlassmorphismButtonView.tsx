@@ -1,6 +1,5 @@
-import { useState } from "react";
-import { Text, StyleSheet, Pressable } from "react-native";
-import { IconSymbol } from "./ui/IconSymbol";
+import { Text, StyleSheet } from "react-native";
+import { IconSymbol } from "@/components/ui/IconSymbol";
 import { SFSymbols6_0 } from "sf-symbols-typescript";
 import LinearGradient from "react-native-linear-gradient";
 import { ThemedView } from "@/components/ThemedView";

@@ -1,4 +1,4 @@
-import { Text, StyleSheet, Image } from "react-native";
+import { Text, StyleSheet, Image, ActivityIndicator } from "react-native";
 import { ThemedView } from "@/components/ThemedView";
 import { IconSymbol } from "@/components/ui/IconSymbol.ios";
 import LinearGradient from "react-native-linear-gradient";
@@ -6,6 +6,7 @@ import CDDisc from "../auth/CDDisc";
 import SongView from "./SongView";
 import { ThemedText } from "@/components/ThemedText";
 import CommentInput from "./CommentInput";
+import { useTrackImages } from "@/hooks/useSpotifyApis";
 
 type DaylistDoc = {
   userId: string;
@@ -22,26 +23,24 @@ type FeedPostViewProps = {
   daylist: DaylistDoc;
 };
 
-const songs = [
-  { title: "Sex on the Beach", artist: "DJ Assault" },
-  { title: "Gem Lingo", artist: "Overmono" },
-  { title: "Bounce Dat A**", artist: "DJ Funk" },
-  { title: "Helmet", artist: "Steve Lacy" },
-  { title: "ARE WE STILL FRIENDS?", artist: "Tyler, the Creator" },
-  { title: "Within", artist: "Daft Punk" },
-];
-
-const cds = [
-  require("@/assets/auth/Steve-Lacy-Gemini-Rights.png"),
-  require("@/assets/auth/tyler_the_creator.png"),
-  require("@/assets/auth/travis_scott.png"),
-  require("@/assets/auth/dj_assault.png"),
-  require("@/assets/auth/migos.png"),
-];
-
 const vinylSpacing = 250;
 
 export default function FeedPostView({ daylist }: FeedPostViewProps) {
+  // Extract track IDs from the daylist
+  const trackIds = daylist.songs.map((song) => song.id);
+
+  // Use the custom hook to fetch album images
+  const { data: albumImages = [], isLoading } = useTrackImages(trackIds);
+
+  console.log(albumImages, isLoading);
+  if (isLoading) {
+    return (
+      <ThemedView style={styles.feedPostView}>
+        <ActivityIndicator size="large" color="#0000ff" />
+      </ThemedView>
+    );
+  }
+
   return (
     <LinearGradient
       style={[styles.glassmorphismCardFill, styles.glassmorphismCardBorder]}
@@ -63,10 +62,14 @@ export default function FeedPostView({ daylist }: FeedPostViewProps) {
         <ThemedView
           style={[styles.feedPostVinyls, { marginLeft: vinylSpacing }]}
         >
-          {cds.map((imageUri, index) => (
+          {[...albumImages].reverse().map((imageUrl: string, index: number) => (
             <CDDisc
               key={index}
-              imageUri={imageUri}
+              imageUri={
+                imageUrl
+                  ? { uri: imageUrl }
+                  : require("@/assets/auth/Steve-Lacy-Gemini-Rights.png")
+              }
               discSize={225}
               marginLeft={vinylSpacing}
             />
@@ -78,7 +81,7 @@ export default function FeedPostView({ daylist }: FeedPostViewProps) {
           <ThemedView style={styles.feedPostHeaderLeft}>
             <ThemedView style={styles.feedPostInteractionContainer}>
               <Image
-                source={require("../../assets/feed/like-icon.png")}
+                source={require("@/assets/feed/like-icon.png")}
                 style={{ height: 19, width: 21 }}
               />
               <ThemedText style={styles.feedPostInteractionCount}>
@@ -87,7 +90,7 @@ export default function FeedPostView({ daylist }: FeedPostViewProps) {
             </ThemedView>
             <ThemedView style={styles.feedPostInteractionContainer}>
               <Image
-                source={require("../../assets/feed/comment-icon.png")}
+                source={require("@/assets/feed/comment-icon.png")}
                 style={{ height: 18, width: 18 }}
               />
               <ThemedText style={styles.feedPostInteractionCount}>1</ThemedText>
@@ -95,7 +98,7 @@ export default function FeedPostView({ daylist }: FeedPostViewProps) {
           </ThemedView>
           <ThemedView style={styles.feedPostInteractionContainer}>
             <Image
-              source={require("../../assets/feed/save-icon.png")}
+              source={require("@/assets/feed/save-icon.png")}
               style={{ height: 19, width: 19 }}
             />
             <ThemedText style={styles.feedPostInteractionCount}>100</ThemedText>
@@ -112,7 +115,9 @@ export default function FeedPostView({ daylist }: FeedPostViewProps) {
           ))}
         </ThemedView>
 
-        <CommentInput />
+        <ThemedView style={styles.feedPostComment}>
+          <CommentInput />
+        </ThemedView>
       </ThemedView>
     </LinearGradient>
   );
@@ -142,16 +147,13 @@ const styles = StyleSheet.create({
   },
 
   feedPostView: {
-    display: "flex",
     width: "100%",
-    height: 800,
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "none",
   },
 
   feedPostHeader: {
-    display: "flex",
     flexDirection: "row",
     width: "100%",
     justifyContent: "space-between",
@@ -161,7 +163,6 @@ const styles = StyleSheet.create({
   },
 
   feedPostHeaderLeft: {
-    display: "flex",
     flexDirection: "row",
     gap: 10,
     justifyContent: "center",
@@ -170,7 +171,6 @@ const styles = StyleSheet.create({
   },
 
   feedPostVinyls: {
-    display: "flex",
     flexDirection: "row",
     backgroundColor: "none",
     justifyContent: "center",
@@ -180,7 +180,6 @@ const styles = StyleSheet.create({
   },
 
   feedPostInteractions: {
-    display: "flex",
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
@@ -191,7 +190,6 @@ const styles = StyleSheet.create({
   },
 
   feedPostInteractionContainer: {
-    display: "flex",
     flexDirection: "column",
     gap: 0,
     justifyContent: "center",
@@ -206,7 +204,6 @@ const styles = StyleSheet.create({
   },
 
   feedPostSongs: {
-    display: "flex",
     justifyContent: "center",
     alignItems: "center",
 
@@ -216,5 +213,10 @@ const styles = StyleSheet.create({
     padding: 20,
 
     gap: 10,
+  },
+
+  feedPostComment: {
+    backgroundColor: "none",
+    paddingBottom: 20,
   },
 });

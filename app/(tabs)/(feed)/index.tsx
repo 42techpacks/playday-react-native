@@ -1,13 +1,12 @@
 import {
-  Image,
   StyleSheet,
-  Platform,
   View,
   Text,
   FlatList,
 } from "react-native";
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
+import { useSpotifyAuth } from "@/hooks/useSpotifyAuth";
 
 import FeedOverlayView from "@/components/feed/FeedOverlayView";
 import FeedPostView from "@/components/feed/FeedPostView";
@@ -15,9 +14,12 @@ import FeedPostView from "@/components/feed/FeedPostView";
 
 export default function FeedScreen() {
   const hasPosted = true;
+  // TODO: Update this so that the convex query handles the fetching of the images
   const daylists = useQuery(api.daylists.list);
+  const { isLoading: authLoading, isRefreshing: authRefreshing } =
+    useSpotifyAuth();
 
-  if (!daylists) {
+  if (!daylists || authLoading || authRefreshing) {
     return (
       <View style={styles.centered}>
         <Text>Loading...</Text>
@@ -32,6 +34,7 @@ export default function FeedScreen() {
         data={daylists}
         contentContainerStyle={styles.feedPosts}
         renderItem={({ item }) => <FeedPostView daylist={item} />}
+        keyExtractor={(item) => item._id.toString()}
       />
 
       {/* Daily Posting Feed Overlay */}

@@ -17,7 +17,6 @@ export default function CommentInput() {
 
 const styles = StyleSheet.create({
   commentInputContainer: {
-    display: "flex",
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
