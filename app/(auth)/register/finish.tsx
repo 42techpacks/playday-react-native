@@ -3,99 +3,114 @@ import { ThemedView } from "@/components/ThemedView";
 import { ThemedText } from "@/components/ThemedText";
 import { api } from "@/convex/_generated/api";
 import { useQuery } from "convex/react";
+import GlassmorphismButtonView from "@/components/GlassmorphismButtonView";
 import GlassmorphismView from "@/components/GlassmorphismView";
 import { useRouter } from "expo-router";
 
 export default function FinishScreen() {
   const user = useQuery(api.auth.getCurrentUser);
   const router = useRouter();
-  
+
   return (
-    <ThemedView style={styles.container}>
-      <ThemedText type="title" style={styles.title}>You're all set!.</ThemedText>
-      <ThemedText type="subtitle" style={styles.subtitle}>Start curating your sound today.</ThemedText>
-        
-      <View style={styles.profileContainer}>
-        <GlassmorphismView viewStyle ={styles.glassView}>
+    <ThemedView style={styles.finishScreen}>
+      {/* TOP SECTION: Header + Profile Card */}
+      <ThemedView style={styles.topSection}>
+        {/* HEADER: Title + Subtitle */}
+        <ThemedView style={styles.header}>
+          {/* 'TITLE' */}
+          <ThemedText type="title" style={styles.title}>
+            You're all set!
+          </ThemedText>
+          {/* 'SUBTITLE' */}
+          <ThemedText type="subtitle" style={styles.subtitle}>
+            Start curating your sound today.
+          </ThemedText>
+        </ThemedView>
+
+        {/* PROFILE CARD: Image + Username */}
+        <GlassmorphismView containerStyle={styles.profileContainer}>
+          {/* 'IMAGE' */}
           <Image
             source={require("@/assets/auth/profile.png")}
             resizeMode="contain"
-            style={styles.profileImage}/>
+            style={styles.profileImage}
+          />
+          {/* 'USERNAME' */}
           <ThemedText style={styles.username}>
             {user?.profile?.username ? `@${user.profile.username}` : ""}
           </ThemedText>
-        </GlassmorphismView >
-      </View>
+        </GlassmorphismView>
+      </ThemedView>
 
-      <View style={styles.bottomContainer}>
-        <ThemedText style={styles.connected} >
+      {/* FOOTER: Streaming Connection Status + Next Button */}
+      <ThemedView style={styles.footerContainer}>
+        {/* 'CONNECTED' Status */}
+        <ThemedText style={styles.connected}>
           Spotify {!!user?.spotifyToken ? "connected!✅ " : "not connected! ❌"}
         </ThemedText>
 
-        <Pressable style={styles.nextContainer}
-          onPress={() => {router.push("/register/onboard");}}>
-          <View>
-            <GlassmorphismView disableBackground={true}>
-              <View /> 
-            </GlassmorphismView>
-            <ThemedText style={styles.buttonText}>Finish</ThemedText>
-          </View>
-          </Pressable>
-      </View>
+        {/* 'NEXT' Button */}
+        <Pressable
+          style={styles.buttonContainer}
+          onPress={() => router.push("/(auth)/register/onboard")}
+        >
+          <GlassmorphismButtonView
+            label="Next"
+            disabled={false}
+            textSize={16}
+            buttonColor="black"
+            buttonHeight={50}
+          />
+        </Pressable>
+      </ThemedView>
     </ThemedView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  finishScreen: {
     flex: 1,
+    flexDirection: "column",
+    justifyContent: "space-between",
+    padding: 30,
+  },
+  topSection: {
+    flex: 1.2,
     alignItems: "center",
-    justifyContent: "flex-start",
-    padding: 20,
-    position: "relative",
+    justifyContent: "space-between",
   },
-  vinylContainer: {
-      display: "flex",
-      flexDirection: "row",
-      justifyContent: "center",
-      alignItems: "center",
-    },
-    title: {
-      fontWeight: 400,
-      fontSize: 21,
-      marginTop: 15
-   },
-    subtitle: {
-      fontSize: 15,
-      fontWeight: 300,
-      color: "#000",
-      fontFamily: "Helvetica-Regular",
-      marginBottom: 50
+  header: {
+    flexBasis: 100,
+    justifyContent: "center",
+    alignItems: "center",
+    color: "#000",
+    fontFamily: "Helvetica-Regular",
   },
-
-  username:{
-    position: "absolute", 
-    bottom: 20, 
-    fontSize: 16,
+  title: {
+    fontWeight: 400,
+    fontSize: 21,
+  },
+  subtitle: {
+    fontWeight: 300,
+    fontSize: 15,
+  },
+  username: {
+    flex: 0.5,
     textAlign: "center",
+    color: "grey",
+    fontSize: 14,
+    fontWeight: 300,
   },
   profileContainer: {
-    width: 250, 
-    height: 300, 
-    borderRadius: 20, 
-    alignSelf: "center", 
-    alignItems: "center",
-    justifyContent: "center",
-    paddingBottom: 0
+    flexBasis: 220,
+    aspectRatio: 1 / 1,
+
+    borderRadius: 20,
+    backgroundColor: "transparent",
   },
   profileImage: {
-    width: "60%", 
-    height: 250, 
-  },
-  glassView: {
-    alignItems: "center", 
-    justifyContent: "center",
-    paddingHorizontal: 10,
+    flex: 1.5,
+    padding: 20,
   },
   finishText: {
     marginTop: 500,
@@ -104,48 +119,21 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   buttonContainer: {
-    backgroundColor: "white",
-    borderRadius: 10,
-    borderWidth: 1,
-    borderColor: "black",
-    paddingVertical: 16,
-    justifyContent: "center",
-    alignItems: "center",
-    width: 250,
-    marginTop: 5,
+    flexBasis: 50,
+    flexDirection: "row",
   },
-  buttonText: {
-    fontFamily: "Helvetica",
-    color: "white", 
+  connected: {
     textAlign: "center",
-    fontSize: 20,
-  },
-  nextContainer: {
-    display: "flex",
-    flexDirection: "row", 
-    alignItems: "center",
-    justifyContent: "center",
-    width: "100%",
-    height: 65,
-    backgroundColor: "black",
-    borderRadius: 50,
-    paddingHorizontal: 20, 
-    overflow: "hidden", 
-    marginTop: 10
-  },
-  connected:{
+    color: "gray",
     fontFamily: "Helvetica",
-    color: "gray", 
-    textAlign: "center",
-    fontSize: 20,
+    fontSize: 14,
   },
-  bottomContainer: {
-    position: "absolute", 
-    bottom: 65, 
-    width: "100%", 
+  footerContainer: {
+    flex: 1,
     alignItems: "center",
-    paddingHorizontal: 20,
-    
+    justifyContent: "flex-end",
 
+    gap: 30,
+    backgroundColor: "transparent",
   },
 });

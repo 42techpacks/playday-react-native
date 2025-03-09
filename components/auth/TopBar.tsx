@@ -1,34 +1,57 @@
 import React from "react";
-import { View, Image, StyleSheet } from "react-native";
+import { ThemedView } from "../ThemedView";
+import { Image, StyleSheet } from "react-native";
+import { ThemedText } from "../ThemedText";
 
-export default function TopBar() {
+interface Props {
+  title?: string;
+  backEnabled: boolean;
+}
+
+export default function TopBar({ title, backEnabled }: Props) {
   return (
-    <View style={styles.topBar}>
+    <ThemedView
+      style={[styles.topBar, backEnabled ? { marginRight: -25 } : {}]}
+    >
       {/* Logo on the very left */}
-      <Image
-        source={require("@/assets/auth/logo.png")}
-        style={styles.logo}
-        resizeMode="contain"
-      />
+      {title ? (
+        <ThemedText style={styles.title}>{title}</ThemedText>
+      ) : (
+        <>
+          <Image
+            source={require("@/assets/auth/logo.png")}
+            style={styles.logo}
+            resizeMode="contain"
+          />
+          <Image
+            source={require("@/assets/auth/info.png")}
+            style={styles.infoIcon}
+            resizeMode="contain"
+          />
+        </>
+      )}
       {/* Static info icon on the very right */}
-      <Image
-        source={require("@/assets/auth/info.png")}
-        style={styles.infoIcon}
-        resizeMode="contain"
-      />
-    </View>
+    </ThemedView>
   );
 }
 
 const styles = StyleSheet.create({
   topBar: {
-    display: "flex",
+    flex: 1,
     flexDirection: "row",
-    alignItems: "center",
     justifyContent: "space-between",
+    alignItems: "center",
     backgroundColor: "none",
-    width: "100%",
-    paddingBottom: 10,
+    paddingVertical: 0,
+  },
+
+  title: {
+    flex: 1,
+    flexDirection: "row",
+    textAlign: "center",
+
+    fontSize: 20,
+    fontWeight: 600,
   },
 
   logo: {

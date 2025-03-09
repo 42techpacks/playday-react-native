@@ -1,4 +1,12 @@
-import { Pressable, StyleSheet, TextInput, View, Text, Image} from "react-native";
+import {
+  Pressable,
+  StyleSheet,
+  Image,
+  Platform,
+  Keyboard,
+  TouchableWithoutFeedback,
+  SafeAreaView,
+} from "react-native";
 import { ThemedView } from "@/components/ThemedView";
 import { ThemedText } from "@/components/ThemedText";
 import { useRouter } from "expo-router";
@@ -7,6 +15,8 @@ import { api } from "@/convex/_generated/api";
 import { useMutation, useQuery } from "convex/react";
 import GlassmorphismTextInput from "@/components/GlassmorphismTextInput";
 import GlassmorphismView from "@/components/GlassmorphismView";
+import GlassmorphismButtonView from "@/components/GlassmorphismButtonView";
+import { KeyboardAvoidingView } from "react-native";
 
 export default function UsernameScreen() {
   const [username, onChangeUsername] = useState("");
@@ -15,112 +25,125 @@ export default function UsernameScreen() {
   const router = useRouter();
 
   return (
-    <ThemedView style={styles.container}>
-      <ThemedText type="title" style={styles.title}>Choose a username.</ThemedText>
-      <ThemedText type="subtitle" style={styles.subtitle}>You can update this at any time.</ThemedText>
+    <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : undefined}
+        style={{ flex: 1 }}
+        keyboardVerticalOffset={100}
+      >
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+          <ThemedView style={styles.usernameScreen}>
+            {/* TOP SECTION: Header + Profile Card */}
+            <ThemedView style={styles.topSection}>
+              {/* HEADER: Title + Subttitle */}
+              <ThemedView style={styles.header}>
+                <ThemedText type="title" style={styles.title}>
+                  Choose a username.
+                </ThemedText>
+                <ThemedText type="subtitle" style={styles.subtitle}>
+                  You can update this at any time.
+                </ThemedText>
+              </ThemedView>
 
-      <View style={styles.profileContainer}>
-      <GlassmorphismView>
-        <Image
-          source={require("@/assets/auth/profile.png")}
-          resizeMode="contain"
-          style={styles.profileImage}/>
-      </GlassmorphismView>
-      </View>
+              {/* PROFILE CARD: Icon */}
+              <GlassmorphismView containerStyle={styles.profileContainer}>
+                <Image
+                  source={require("@/assets/auth/profile.png")}
+                  resizeMode="contain"
+                  style={styles.profileImage}
+                />
+              </GlassmorphismView>
+            </ThemedView>
 
-      <View style={styles.bottomContainer}>
-        <GlassmorphismTextInput 
-          value={username}
-          onChangeText={onChangeUsername}
-          placeholder="Username"/>
+            {/* FOOTER: Input + Button */}
+            <ThemedView style={styles.footerContainer}>
+              {/* 'USERNAME' Input */}
+              <GlassmorphismTextInput
+                value={username}
+                onChangeText={onChangeUsername}
+                placeholder="Username"
+                keyboardType="default"
+                containerStyle={styles.inputContainer}
+              />
 
-        <Pressable
-          style={styles.buttonContainer}
-          onPress={async () => {await addUsername({ username });
-          router.push("/register/pfp");}}>
-          <View>
-
-            <GlassmorphismView disableBackground={true}>
-              <View /> 
-            </GlassmorphismView>
-              <Text
-                style={[styles.buttonText,{ color: username.length < 2 ? "gray" : "white" },]}>
-                Next
-              </Text>
-          </View>
-       </Pressable>
-      </View>      
-    </ThemedView>
+              {/* 'NEXT' Button */}
+              <Pressable
+                style={styles.buttonContainer}
+                onPress={async () => {
+                  await addUsername({ username });
+                  router.push("/register/pfp");
+                }}
+              >
+                <GlassmorphismButtonView
+                  label="Next"
+                  disabled={false}
+                  textSize={16}
+                  buttonColor="black"
+                  buttonHeight={50}
+                />
+              </Pressable>
+            </ThemedView>
+          </ThemedView>
+        </TouchableWithoutFeedback>
+      </KeyboardAvoidingView>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  usernameScreen: {
     flex: 1,
-    alignItems: "center",
-    justifyContent: "flex-start",
-    padding: 20,
-    position: "relative",
+    flexDirection: "column",
+    justifyContent: "space-between",
+    padding: 30,
   },
-  bottomContainer: {
-    position: "absolute", 
-    bottom: 65, 
-    width: "100%", 
+  topSection: {
+    flex: 1.2,
     alignItems: "center",
-    paddingHorizontal: 20,
+    justifyContent: "space-between",
+  },
+  header: {
+    flexBasis: 100,
+    justifyContent: "center",
+    alignItems: "center",
+    color: "#000",
+    fontFamily: "Helvetica-Regular",
   },
   title: {
     fontWeight: 400,
     fontSize: 21,
-    marginTop: 15
- },
-  subtitle: {
-    fontSize: 15,
-    fontWeight: 300,
-    color: "#000",
-    fontFamily: "Helvetica-Regular",
-    marginBottom: 50
-},
-profileContainer: {
-  width: 250, 
-  height: 300, 
-  borderRadius: 20, 
-  alignSelf: "center", 
-  alignItems: "center",
-  justifyContent: "center",
-},
-profileImage: {
-  width: "60%", 
-  height: 250, 
-},
-  fixToText: {
-    flexDirection: "row",
-    justifyContent: "space-between",
   },
- 
-  input: {
-    height: 40,
-    paddingHorizontal: 10,
-    color: "#333",
+  subtitle: {
+    fontWeight: 300,
+    fontSize: 15,
+  },
+  profileContainer: {
+    flexBasis: 220,
+    aspectRatio: 1 / 1,
+
+    borderRadius: 20,
+    backgroundColor: "transparent",
+  },
+  profileImage: {
+    flex: 1,
+    padding: 20,
+  },
+  footerContainer: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "flex-end",
+
+    gap: 10,
+    backgroundColor: "transparent",
+  },
+  inputContainer: {
+    flexBasis: 60,
+    flexDirection: "row",
+    height: "auto",
+
+    backgroundColor: "transparent",
   },
   buttonContainer: {
-    display: "flex",
-    flexDirection: "row", 
-    alignItems: "center",
-    justifyContent: "center",
-    width: "100%",
-    height: 65,
-    backgroundColor: "black",
-    borderRadius: 50,
-    paddingHorizontal: 20, 
-    overflow: "hidden", 
-    marginTop: 15
-
-  },
-  buttonText: {
-    fontFamily: "Helvetica",
-    color: "blue", 
-    textAlign: "center",
-    fontSize: 20,
+    flexDirection: "row",
   },
 });

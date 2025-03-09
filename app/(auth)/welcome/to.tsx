@@ -4,6 +4,8 @@ import { ThemedText } from "@/components/ThemedText";
 import { Pressable } from "react-native";
 import { Link } from "expo-router";
 import CDDisc from "@/components/auth/CDDisc";
+import GlassmorphismButtonView from "@/components/GlassmorphismButtonView";
+import { useRouter } from "expo-router";
 
 const cards = [
   require("@/assets/auth/Steve-Lacy-Gemini-Rights.png"),
@@ -14,63 +16,104 @@ const cards = [
 ];
 const vinylSpacing = 250;
 export default function WelcomeToScreen() {
+  const router = useRouter();
+
   return (
-    <ThemedView style={styles.container}>
-      <ThemedView style={{ flex: 4, justifyContent: "center" }}>
-        <ThemedText type="title"> Welcome to Playday</ThemedText>
-        <ThemedText type="subtitle">
-          {" "}
-          A sacred place for your curated vibes
-        </ThemedText>
-        <ThemedView
-          style={[styles.vinylContainer, { marginLeft: vinylSpacing }]}
-        >
+    <ThemedView style={styles.welcomeToScreen}>
+      {/* TOP SECTION: Header + Vinyl Container */}
+      <ThemedView style={styles.topSection}>
+        {/* HEADER: Title + Subtitle */}
+        <ThemedView style={styles.header}>
+          {/* 'TITLE' */}
+          <ThemedText type="title" style={styles.title}>
+            Welcome to Playday!
+          </ThemedText>
+          {/* 'SUBTITLE' */}
+          <ThemedText type="subtitle" style={styles.subtitle}>
+            A sacred place for your curated vibes.
+          </ThemedText>
+        </ThemedView>
+        {/* VINYL CONTAINER: Vinyls */}
+        <ThemedView style={[styles.vinylsContainer]}>
           {cards.map((imageUri, index) => (
-            <CDDisc key={index} imageUri={imageUri} marginLeft={vinylSpacing} />
+            <CDDisc
+              key={index}
+              imageUri={imageUri}
+              containerStyle={{
+                position: "absolute",
+                backgroundColor: "none",
+                transform: [
+                  {
+                    translateX: (index - (cards.length - 1) / 2) * -10,
+                  },
+                ],
+              }}
+            />
           ))}
         </ThemedView>
       </ThemedView>
 
-      <ThemedView style={{ flex: 1, width: "100%" }}>
-        <Link href="/(tabs)/(feed)" asChild>
-          <Pressable style={styles.buttonContainer}>
-            <ThemedText type="title" style={styles.buttonText}>
-              Enter App
-            </ThemedText>
-          </Pressable>
-        </Link>
-      </ThemedView>
+      {/* 'CONTINUE' Button */}
+      <Pressable
+        style={styles.buttonContainer}
+        onPress={() => router.push("/(tabs)/(feed)")}
+      >
+        <GlassmorphismButtonView
+          label="Continue"
+          disabled={false}
+          textSize={16}
+          buttonColor="black"
+          buttonHeight={50}
+        />
+      </Pressable>
     </ThemedView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  welcomeToScreen: {
     flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    padding: 20,
-  },
-  buttonContainer: {
-    display: "flex",
-    width: "100%",
-    height: 65,
-    backgroundColor: "#000", // Solid black background
-    borderRadius: 50, // Makes it pill-shaped
-    paddingVertical: 9,
-    alignItems: "center",
-    justifyContent: "center",
+    flexDirection: "column",
+    justifyContent: "space-between",
+    padding: 30,
   },
 
-  buttonText: {
-    fontFamily: "Helvetica-Regular",
-    color: "white",
-    textAlign: "center",
+  topSection: {
+    flex: 3,
+    alignItems: "center",
+    justifyContent: "space-between",
   },
-  vinylContainer: {
-    display: "flex",
+
+  header: {
+    flexBasis: 100,
+    justifyContent: "center",
+    alignItems: "center",
+    color: "#000",
+    fontFamily: "Helvetica-Regular",
+  },
+
+  title: {
+    fontWeight: 400,
+    fontSize: 21,
+  },
+
+  subtitle: {
+    fontWeight: 300,
+    fontSize: 15,
+  },
+
+  buttonContainer: {
+    flex: 1,
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "flex-end",
+  },
+
+  vinylsContainer: {
+    flex: 1,
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
+    position: "relative",
   },
 });

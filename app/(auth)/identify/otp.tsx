@@ -14,6 +14,7 @@ import {
 import { useState } from "react";
 import { useLocalSearchParams, Stack, Redirect } from "expo-router";
 import CDDisc from "@/components/auth/CDDisc";
+import GlassmorphismButtonView from "@/components/GlassmorphismButtonView";
 import GlassmorphismTextInput from "@/components/GlassmorphismTextInput";
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
@@ -67,7 +68,7 @@ export default function OTPScreen() {
           <KeyboardAvoidingView
             behavior={Platform.OS === "ios" ? "padding" : undefined}
             style={{ flex: 1 }}
-            keyboardVerticalOffset={100}
+            keyboardVerticalOffset={0}
           >
             <TouchableWithoutFeedback
               style={{ flex: 1 }}
@@ -79,7 +80,7 @@ export default function OTPScreen() {
                   {/* CARD:  Vinyls */}
                   <ThemedView style={[styles.vinylContainer]}>
                     {cards.map((imageUri, index) => (
-                      <CDDisc key={index} imageUri={imageUri} discSize={125} />
+                      <CDDisc key={index} imageUri={imageUri} discSize={225} />
                     ))}
                   </ThemedView>
 
@@ -99,20 +100,27 @@ export default function OTPScreen() {
 
                 {/* FORM: Input + Button */}
                 <ThemedView style={styles.OTPScreenForm}>
+                  {/* 'OTP VERIFICATION' Input */}
                   <GlassmorphismTextInput
                     placeholder="OTP Verification"
                     value={otp}
                     onChangeText={setOtp}
                     iconUrl={require("@/assets/auth/phone-icon.png")}
                     containerStyle={styles.OTPScreenFormInput}
+                    keyboardType="phone-pad"
                   />
+                  {/* 'NEXT' Button */}
                   <TouchableOpacity
                     style={styles.buttonContainer}
                     onPress={handleVerifyOtp}
                   >
-                    <ThemedText type="link" style={styles.buttonText}>
-                      Next
-                    </ThemedText>
+                    <GlassmorphismButtonView
+                      label="Next"
+                      disabled={false}
+                      textSize={16}
+                      buttonColor="black"
+                      buttonHeight={50}
+                    />
                   </TouchableOpacity>
                   <ThemedText style={styles.OTPScreenDisclaimer}>
                     By continuing you confirm that you've read and accepted our
@@ -133,7 +141,7 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: "column",
     justifyContent: "space-between",
-    marginHorizontal: 10,
+    paddingHorizontal: 30,
   },
   OTPScreenHero: {
     flex: 3,
@@ -142,13 +150,13 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   OTPScreenForm: {
-    flex: 1,
+    flex: 1.1,
     gap: 10,
     flexDirection: "column",
-    justifyContent: "flex-start",
+    justifyContent: "flex-end",
   },
   vinylContainer: {
-    flex: 3,
+    flex: 10,
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
@@ -156,8 +164,10 @@ const styles = StyleSheet.create({
   OTPScreenText: {
     flex: 1,
     flexDirection: "column",
-    justifyContent: "center",
+
+    justifyContent: "flex-end",
     alignItems: "center",
+
     gap: "5px",
     backgroundColor: "none",
   },
@@ -168,21 +178,18 @@ const styles = StyleSheet.create({
   OTPScreenSubtitle: {
     fontSize: 15,
     fontWeight: 300,
-    color: "#000",
-    fontFamily: "Helvetica-Regular",
   },
   OTPScreenFormInput: {
-    flex: 2,
+    flexBasis: 60,
+    flexDirection: "row",
     borderRadius: 30,
     borderWidth: 1,
   },
 
   buttonContainer: {
-    flex: 2,
-    flexShrink: 0,
-    backgroundColor: "#000", // Solid black background
-    borderRadius: 50, // Makes it pill-shaped
-    justifyContent: "center",
+    flexBasis: 50,
+    flexDirection: "row",
+    backgroundColor: "transparent",
   },
   buttonText: {
     fontFamily: "Helvetica-Regular",
@@ -190,7 +197,6 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   OTPScreenDisclaimer: {
-    flex: 1,
     fontSize: 12,
     textAlign: "center",
     fontWeight: 300,

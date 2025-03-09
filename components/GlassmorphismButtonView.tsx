@@ -5,12 +5,13 @@ import LinearGradient from "react-native-linear-gradient";
 import { ThemedView } from "@/components/ThemedView";
 
 interface GlassmorphismButtonProps {
-  label: string;
-  sfSymbol: SFSymbols6_0;
+  label?: string;
+  sfSymbol?: SFSymbols6_0;
   buttonColor: string;
   disabled: boolean;
   textSize?: number;
   buttonHeight?: number;
+  style?: object;
 }
 
 const gradientColors = {
@@ -25,6 +26,7 @@ export default function GlassmorphismButtonView({
   disabled,
   textSize,
   buttonHeight,
+  style,
 }: GlassmorphismButtonProps) {
   return (
     <LinearGradient
@@ -34,39 +36,53 @@ export default function GlassmorphismButtonView({
       style={[
         buttonColor === "black"
           ? styles.glassmorphismButtonFillBlack
-          : styles.glassmorphismButtonFillWhite,
-        buttonColor === "black"
-          ? styles.glassmorphismButtonBorderBlack
+          : styles.glassmorphismButtonFillBlack,
+        buttonColor === "white"
+          ? styles.glassmorphismButtonBorderWhite
           : styles.glassmorphismButtonBorderWhite,
+        buttonColor === "transparent"
+          ? styles.glassmorphismButtonBorderTransparent
+          : styles.glassmorphismButtonBorderTransparent,
         disabled ? { opacity: 0.5 } : { opacity: 1 },
         buttonHeight ? { height: buttonHeight } : {},
+        styles.glassmorphismButtonContainer,
+        style,
       ]}
       locations={[0, 1]}
       useAngle={true}
       angle={146.7}
     >
       <ThemedView style={[styles.glassmorphismButton]}>
-        <IconSymbol
-          name={sfSymbol}
-          color={buttonColor === "black" ? "#FFF" : "#000"}
-          size={textSize}
-        />
-        <Text
-          style={[
-            buttonColor === "black" ? { color: "#FFF" } : { color: "#000" },
-            textSize ? { fontSize: textSize } : {},
-          ]}
-        >
-          {label}
-        </Text>
+        {sfSymbol && (
+          <IconSymbol
+            name={sfSymbol}
+            color={buttonColor === "black" ? "#FFF" : "#000"}
+            size={textSize}
+          />
+        )}
+        {label && (
+          <Text
+            style={[
+              buttonColor === "black" ? { color: "#FFF" } : { color: "#000" },
+              textSize ? { fontSize: textSize } : {},
+            ]}
+          >
+            {label}
+          </Text>
+        )}
       </ThemedView>
     </LinearGradient>
   );
 }
 
 const styles = StyleSheet.create({
+  glassmorphismButtonContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+
   glassmorphismButton: {
-    display: "flex",
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
@@ -79,12 +95,14 @@ const styles = StyleSheet.create({
     backgroundColor: "none",
   },
 
-  glassmorphismButtonFillBlack: {
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
+  glassmorphismButtonFillTransparent: { backgroundColor: "transparent" },
 
+  glassmorphismButtonBorderTransparent: {
+    borderColor: "transparent",
+    borderWidth: 0,
+  },
+
+  glassmorphismButtonFillBlack: {
     borderRadius: 50,
 
     shadowColor: "rgba(0, 0, 0, 0.3)",
@@ -104,11 +122,6 @@ const styles = StyleSheet.create({
   },
 
   glassmorphismButtonFillWhite: {
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
-
     borderRadius: 50,
 
     shadowColor: "rgba(0, 0, 0, 0.3)",
