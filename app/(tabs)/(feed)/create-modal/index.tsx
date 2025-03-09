@@ -50,7 +50,7 @@ export default function CreatePostScreen() {
   return (
     <ThemedView style={styles.createModal}>
       {/* IMAGES: CDs */}
-      <GlassmorphismView viewStyle={styles.createModalImages}>
+      <GlassmorphismView containerStyle={styles.createModalImages}>
         <Text style={styles.createModalDate}>January 25th, 2025</Text>
         <ThemedView
           style={[styles.createModalCdContainer, { marginLeft: vinylSpacing }]}

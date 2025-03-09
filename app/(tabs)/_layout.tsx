@@ -11,6 +11,8 @@ import TabBarBackground from "@/components/ui/TabBarBackground";
 import { Colors } from "@/constants/Colors";
 import { useColorScheme } from "@/hooks/useColorScheme";
 
+import TopBar from "@/components/auth/TopBar";
+
 export default function TabLayout() {
   const colorScheme = useColorScheme();
 
@@ -37,10 +39,10 @@ export default function TabLayout() {
               ios: {
                 // Use a transparent background on iOS to show the blur effect
                 position: "absolute",
-                paddingTop: 5,
               },
               default: {},
             }),
+            tabBarShowLabel: false,
           }}
         >
           <Tabs.Screen
@@ -48,16 +50,17 @@ export default function TabLayout() {
             options={{
               title: "Home",
               tabBarIcon: ({ color }) => (
-                <IconSymbol size={28} name="house.fill" color={color} />
+                <IconSymbol size={30} name="house.fill" color={color} />
               ),
             }}
           />
           <Tabs.Screen
             name="explore"
             options={{
-              title: "Explore",
+              title: "Listen",
+              headerShadowVisible: false,
               tabBarIcon: ({ color }) => (
-                <IconSymbol size={28} name="paperplane.fill" color={color} />
+                <IconSymbol size={24} name="play.fill" color={color} />
               ),
             }}
           />

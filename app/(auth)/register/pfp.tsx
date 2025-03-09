@@ -1,6 +1,7 @@
 import { StyleSheet, Pressable, View, Image } from "react-native";
 import { ThemedView } from "@/components/ThemedView";
 import { ThemedText } from "@/components/ThemedText";
+import GlassmorphismButtonView from "@/components/GlassmorphismButtonView";
 import GlassmorphismView from "@/components/GlassmorphismView";
 import { useRouter } from "expo-router";
 import { useQuery } from "convex/react";
@@ -11,38 +12,62 @@ export default function ProfileImageScreen() {
   const user = useQuery(api.auth.getCurrentUser);
 
   return (
-    <ThemedView style={styles.container}>
-      <ThemedText type="title" style={styles.title}>Add a profile photo.</ThemedText>
-      <ThemedText type="subtitle" style={styles.subtitle}>You can update this at any time.</ThemedText>
-   
-      <View style={styles.profileContainer}>
-        <GlassmorphismView viewStyle ={styles.glassView}>
+    <ThemedView style={styles.profilePhotoScreen}>
+      {/* TOP SECTION: Header + Profile Card */}
+      <ThemedView style={styles.topSection}>
+        {/* HEADER: Title + Subtitle */}
+        <ThemedView style={styles.header}>
+          <ThemedText type="title" style={styles.title}>
+            Add a profile photo.
+          </ThemedText>
+          <ThemedText type="subtitle" style={styles.subtitle}>
+            You can update this at any time.
+          </ThemedText>
+        </ThemedView>
+        {/* PROFILE CARD: Icon/Image + Username */}
+        <GlassmorphismView containerStyle={styles.profileContainer}>
+          {/* 'PFP' Image */}
           <Image
             source={require("@/assets/auth/profile.png")}
             resizeMode="contain"
-            style={styles.profileImage}/>
-            <ThemedText style={styles.username}>
-              {user?.profile?.username ? `@${user.profile.username}` : ""}
-            </ThemedText>
-        </GlassmorphismView >
-      </View>
-
-      <View style={styles.bottomContainer}>
-        <View style={styles.iconContainer}>
-          <Image
-          source={require("@/assets/auth/pfp_icon.png")}
-          resizeMode="contain"
-          style={styles.pfpButton}
+            style={styles.profileImage}
           />
-        </View>
+          {/* 'USERNAME' Text */}
+          <ThemedText style={styles.username}>
+            {user?.profile?.username ? `@${user.profile.username}` : ""}
+          </ThemedText>
+        </GlassmorphismView>
+        container
+      </ThemedView>
 
-        <Pressable style={styles.nextContainer} onPress={() => {router.push("/register/finish");}}>
-          <View>
-            <GlassmorphismView disableBackground={true}>
-              <View /> 
-            </GlassmorphismView>
-            <ThemedText style={styles.buttonText}>Next</ThemedText>
-          </View>
+      {/* FOOTER: Upload Image + Next Buttons */}
+      <View style={styles.footerContainer}>
+        {/* 'IMAGE' Button */}
+        <Pressable
+          style={styles.imageButton}
+          onPress={() => console.log("Upload Image Buton Clicked.")}
+        >
+          <GlassmorphismButtonView
+            disabled={false}
+            textSize={30}
+            buttonColor="black"
+            buttonHeight={50}
+            sfSymbol="photo.badge.plus.fill"
+          />
+        </Pressable>
+
+        {/* 'NEXT' Button */}
+        <Pressable
+          style={styles.buttonContainer}
+          onPress={() => router.push("/(auth)/register/finish")}
+        >
+          <GlassmorphismButtonView
+            label="Next"
+            disabled={false}
+            textSize={16}
+            buttonColor="black"
+            buttonHeight={50}
+          />
         </Pressable>
       </View>
     </ThemedView>
@@ -50,88 +75,74 @@ export default function ProfileImageScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: {
+  profilePhotoScreen: {
     flex: 1,
-    alignItems: "center",
-    justifyContent: "flex-start",
-    padding: 20,
-    position: "relative",
+    flexDirection: "column",
+    justifyContent: "space-between",
+    padding: 30,
   },
-  bottomContainer: {
-    position: "absolute", 
-    bottom: 65, 
-    width: "100%", 
-    alignItems: "center",
-    paddingHorizontal: 20,
 
+  topSection: {
+    flex: 1.2,
+    alignItems: "center",
+    justifyContent: "space-between",
   },
+
+  header: {
+    flexBasis: 100,
+    justifyContent: "center",
+    alignItems: "center",
+    color: "#000",
+    fontFamily: "Helvetica-Regular",
+  },
+
   title: {
     fontWeight: 400,
     fontSize: 21,
-    marginTop: 15
- },
-  subtitle: {
-    fontSize: 15,
-    fontWeight: 300,
-    color: "#000",
-    fontFamily: "Helvetica-Regular",
-    marginBottom: 50
-},
-  username:{
-    position: "absolute", 
-    bottom: 20, 
-    fontSize: 16,
-    textAlign: "center",
   },
 
-  iconContainer: {
-    alignItems: "center",  
-    justifyContent: "center", 
-    marginBottom: -40,  
-    width: "100%",
-  },
-  pfpButton: {
-    width: 150,  
-    height: 150,  
+  subtitle: {
+    fontWeight: 300,
+    fontSize: 15,
   },
 
   profileContainer: {
-    width: 250, 
-    height: 300, 
-    borderRadius: 20, 
-    alignSelf: "center", 
-    alignItems: "center",
-    justifyContent: "center",
-    paddingBottom: 0
-  },
-  profileImage: {
-    width: "60%", 
-    height: 250, 
-  },
-  glassView: {
-    alignItems: "center", 
-    justifyContent: "center",
-    paddingHorizontal: 10,
-  },
-  
-  buttonText: {
-    fontFamily: "Helvetica",
-    color: "white", 
-    textAlign: "center",
-    fontSize: 20,
-    },
+    flexBasis: 220,
+    aspectRatio: 1 / 1,
 
-  nextContainer: {
-    display: "flex",
-    flexDirection: "row", 
+    borderRadius: 20,
+    backgroundColor: "transparent",
+  },
+
+  profileImage: {
+    flex: 1.5,
+    padding: 20,
+  },
+
+  username: {
+    flex: 0.5,
+    textAlign: "center",
+    color: "grey",
+    fontSize: 14,
+    fontWeight: 300,
+  },
+
+  footerContainer: {
+    flex: 1,
     alignItems: "center",
-    justifyContent: "center",
-    width: "100%",
-    height: 65,
-    backgroundColor: "black",
-    borderRadius: 50,
-    paddingHorizontal: 20, 
-    overflow: "hidden", 
-    marginTop: 0
-},
-  });
+    justifyContent: "flex-end",
+
+    gap: 30,
+    backgroundColor: "transparent",
+  },
+
+  buttonContainer: {
+    flexBasis: 50,
+    flexDirection: "row",
+  },
+
+  imageButton: {
+    flexBasis: 60,
+    flexDirection: "column",
+  },
+});

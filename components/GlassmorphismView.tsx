@@ -5,47 +5,42 @@ import LinearGradient from "react-native-linear-gradient";
 
 interface GlassmorphismViewProps {
   children: React.ReactNode;
-  gradientStyle?: ViewStyle;
-  viewStyle?: ViewStyle;
-  disableBackground?: boolean; 
+  containerStyle: ViewStyle;
+  disableBackground?: boolean;
 }
 
 export default function GlassmorphismView({
   children,
-  gradientStyle,
-  viewStyle,
+  containerStyle,
   disableBackground = false, // Default is false
 }: GlassmorphismViewProps) {
   return (
     <LinearGradient
       style={[
+        containerStyle,
         styles.glassmorphismCard,
         !disableBackground && styles.glassmorphismCardBorder,
-        gradientStyle,
       ]}
       locations={[0, 1]}
       colors={["rgba(255, 255, 255, 0.5)", "rgba(255, 255, 255, 0.2)"]}
       useAngle={true}
       angle={146.7}
     >
-      <ThemedView style={[styles.glassmorphismView, viewStyle]}>
-        {children}
-      </ThemedView>
+      <ThemedView style={[styles.glassmorphismView]}>{children}</ThemedView>
     </LinearGradient>
   );
 }
 
 const styles = StyleSheet.create({
   glassmorphismView: {
-    display: "flex",
+    backgroundColor: "transparent",
+    flex: 1,
     justifyContent: "center",
     alignItems: "center",
   },
   glassmorphismCard: {
     borderRadius: 25,
-    width: "100%",
     gap: 10,
-    justifyContent: "flex-start",
     shadowColor: "rgba(0, 0, 0, 0.3)",
     shadowOffset: {
       width: 0,

@@ -6,8 +6,10 @@ import {
   Image,
   View,
   ViewStyle,
+  KeyboardTypeOptions,
 } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
+import { ThemedView } from "./ThemedView";
 
 interface GlassmorphismTextInputProps {
   onChangeText: (text: string) => void;
@@ -16,6 +18,7 @@ interface GlassmorphismTextInputProps {
   iconUrl?: NodeRequire;
   numLines?: number;
   containerStyle?: ViewStyle;
+  keyboardType: KeyboardTypeOptions;
 }
 
 export default function GlassmorphismTextInput({
@@ -24,12 +27,14 @@ export default function GlassmorphismTextInput({
   placeholder,
   iconUrl,
   numLines,
+  keyboardType,
   containerStyle,
 }: GlassmorphismTextInputProps) {
   return (
     <LinearGradient
       style={[
         containerStyle,
+        styles.glassmorphismContainer,
         styles.glassmorphismCardFill,
         styles.glassmorphismCardBorder,
       ]}
@@ -38,7 +43,7 @@ export default function GlassmorphismTextInput({
       useAngle={true}
       angle={146.7}
     >
-      <View style={styles.inputContainer}>
+      <ThemedView style={styles.inputContainer}>
         {iconUrl && <Image source={iconUrl} style={styles.icon} />}
         <TextInput
           style={[styles.input]}
@@ -46,19 +51,25 @@ export default function GlassmorphismTextInput({
           value={value.toString()}
           placeholder={placeholder}
           placeholderTextColor="#000"
-          keyboardType="phone-pad"
+          keyboardType={keyboardType}
           numberOfLines={numLines}
           multiline={numLines ? true : false}
           textAlignVertical="top"
         />
-      </View>
+      </ThemedView>
     </LinearGradient>
   );
 }
 
 const styles = StyleSheet.create({
+  glassmorphismContainer: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+
   glassmorphismCardFill: {
-    borderRadius: 25,
+    borderRadius: 50,
     shadowColor: "rgba(0, 0, 0, 0.3)",
     shadowOffset: {
       width: 0,
@@ -77,10 +88,9 @@ const styles = StyleSheet.create({
   inputContainer: {
     flex: 1,
     flexDirection: "row",
-    justifyContent: "flex-start",
-    alignItems: "center",
-    marginHorizontal: 15,
-    gap: 10,
+    marginHorizontal: 20,
+    gap: 15,
+    backgroundColor: "transparent",
   },
   icon: {
     width: 18,

@@ -21,6 +21,7 @@ import { ThemedView } from "@/components/ThemedView";
 import { useState } from "react";
 import { useAuthActions } from "@convex-dev/auth/dist/react";
 import LinearGradient from "react-native-linear-gradient";
+import GlassmorphismButtonView from "@/components/GlassmorphismButtonView";
 import GlassmorphismTextInput from "@/components/GlassmorphismTextInput";
 import { Authenticated, Unauthenticated, useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
@@ -59,8 +60,6 @@ export default function PhoneScreen() {
     }
   };
 
-  const vinylSpacing = 250;
-
   return (
     <>
       <Authenticated>
@@ -79,35 +78,33 @@ export default function PhoneScreen() {
           <KeyboardAvoidingView
             behavior={Platform.OS === "ios" ? "padding" : undefined}
             style={{ flex: 1 }}
-            keyboardVerticalOffset={100}
+            keyboardVerticalOffset={0}
           >
             <TouchableWithoutFeedback
               style={{ flex: 1 }}
               onPress={Keyboard.dismiss}
             >
               <ThemedView style={styles.phoneScreen}>
-                {/* HERO: Vinyls + Text */}
-                <ThemedView style={styles.phoneScreenHero}>
-                  {/* CARD:  Vinyls */}
-                  <ThemedView style={[styles.vinylsContainer]}>
-                    {cards.map((imageUri, index) => (
-                      <CDDisc
-                        key={index}
-                        imageUri={imageUri}
-                        containerStyle={{
-                          position: "absolute",
-                          backgroundColor: "none",
-                          transform: [
-                            {
-                              translateX: (index - (cards.length - 1) / 2) * -10,
-                            },
-                          ],
-                        }}
-                      />
-                    ))}
-                  </ThemedView>
+                <ThemedView style={[styles.vinylsContainer]}>
+                  {cards.map((imageUri, index) => (
+                    <CDDisc
+                      key={index}
+                      imageUri={imageUri}
+                      containerStyle={{
+                        position: "absolute",
+                        backgroundColor: "none",
+                        transform: [
+                          {
+                            translateX: (index - (cards.length - 1) / 2) * -10,
+                          },
+                        ],
+                      }}
+                    />
+                  ))}
+                </ThemedView>
 
-                  {/* TEXT: Title + Subtitle */}
+                {/* FORM: Input + Sign In Button */}
+                <ThemedView style={styles.phoneScreenForm}>
                   <ThemedView style={styles.phoneScreenText}>
                     <ThemedText type="title" style={styles.phoneScreenTitle}>
                       Discover the sound of the day.
@@ -119,24 +116,27 @@ export default function PhoneScreen() {
                       Listen, curate, and share your favorite music.
                     </ThemedText>
                   </ThemedView>
-                </ThemedView>
-
-                {/* FORM: Input + Button */}
-                <ThemedView style={styles.phoneScreenForm}>
+                  {/* 'PHONE' Input */}
                   <GlassmorphismTextInput
                     placeholder="Phone Number"
                     value={number}
                     onChangeText={setNumber}
                     iconUrl={require("@/assets/auth/phone-icon.png")}
                     containerStyle={styles.phoneScreenFormInput}
+                    keyboardType="phone-pad"
                   />
+                  {/* 'SIGN IN' Button */}
                   <TouchableOpacity
                     style={styles.buttonContainer}
                     onPress={handleSendOtp}
                   >
-                    <ThemedText type="link" style={styles.buttonText}>
-                      Sign In
-                    </ThemedText>
+                    <GlassmorphismButtonView
+                      label="Sign In"
+                      disabled={false}
+                      textSize={16}
+                      buttonColor="black"
+                      buttonHeight={50}
+                    />
                   </TouchableOpacity>
                   <ThemedText style={styles.phoneScreenDisclaimer}>
                     By continuing you confirm that you've read and accepted our
@@ -156,28 +156,24 @@ const styles = StyleSheet.create({
   phoneScreen: {
     flex: 1,
     flexDirection: "column",
-    justifyContent: "space-between",
-    marginHorizontal: 10,
+    padding: 30,
   } as ViewStyle,
-  phoneScreenHero: {
-    flex: 3,
+  phoneScreenForm: {
+    flex: 1,
     flexDirection: "column",
-    justifyContent: "center",
-    alignItems: "center",
     gap: 10,
+    justifyContent: "flex-end",
   } as ViewStyle,
   vinylsContainer: {
-    flex: 3,
-    width: "100%",
-    flexDirection: "row",
+    flex: 1.75,
     justifyContent: "center",
     alignItems: "center",
     position: "relative",
   } as ViewStyle,
   phoneScreenText: {
-    flex: 1,
-    flexDirection: "column",
+    justifyContent: "center",
     alignItems: "center",
+    paddingVertical: 20,
     backgroundColor: "none",
   } as ViewStyle,
   phoneScreenTitle: {
@@ -187,29 +183,18 @@ const styles = StyleSheet.create({
   phoneScreenSubtitle: {
     fontSize: 15,
     fontWeight: 300,
-    color: "#000",
-    fontFamily: "Helvetica-Regular",
   } as TextStyle,
-  phoneScreenForm: {
-    flex: 1,
-    gap: 10,
-    flexDirection: "column",
-    justifyContent: "flex-start",
-  } as ViewStyle,
   phoneScreenFormInput: {
-    flex: 2,
-    width: "100%",
+    flexBasis: 60,
+    flexDirection: "row",
     borderRadius: 30,
     borderWidth: 1,
   } as ViewStyle,
 
   buttonContainer: {
-    width: "100%",
-    flex: 2,
-    flexShrink: 0,
-    backgroundColor: "#000", // Solid black background
-    borderRadius: 50, // Makes it pill-shaped
-    justifyContent: "center",
+    flexBasis: 50,
+    flexDirection: "row",
+    backgroundColor: "transparent",
   } as ViewStyle,
 
   buttonText: {
@@ -219,18 +204,10 @@ const styles = StyleSheet.create({
   } as TextStyle,
 
   phoneScreenDisclaimer: {
-    marginHorizontal: 50,
-    flex: 1,
-    fontSize: 14,
+    fontSize: 12,
     textAlign: "center",
     fontWeight: 300,
     color: "#8D8D8D",
     lineHeight: 18,
   } as TextStyle,
-
-  cardContainer: {
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-  } as ViewStyle,
 });

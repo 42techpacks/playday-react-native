@@ -1,4 +1,4 @@
-import { StyleSheet, Image, Platform } from "react-native";
+import { StyleSheet, Image, Platform, Dimensions } from "react-native";
 
 import { Pressable, Text } from "react-native";
 import { Collapsible } from "@/components/Collapsible";
@@ -6,149 +6,229 @@ import { ExternalLink } from "@/components/ExternalLink";
 import ParallaxScrollView from "@/components/ParallaxScrollView";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
+import { SafeAreaView } from "react-native";
 import { IconSymbol } from "@/components/ui/IconSymbol";
 import SignOutButton from "@/components/auth-inputs/SignOutButton";
 import SpoitifyAuthButton from "@/components/spotify/spotify-auth-button";
 import { Link } from "expo-router";
 
+import CDDisc from "@/components/auth/CDDisc";
+import CDDiscCarousel from "@/components/feed/CDDiscCarousel";
+import GlassmorphismButtonView from "@/components/GlassmorphismButtonView";
+import SongProgressBar from "@/components/feed/SongProgressBar";
+
+const { width, height } = Dimensions.get("window");
+
+const cards = [
+  {
+    image: require("@/assets/auth/Steve-Lacy-Gemini-Rights.png"),
+    title: "Bad Habit",
+    artist: "Steve Lacy",
+  },
+  {
+    image: require("@/assets/auth/tyler_the_creator.png"),
+    title: "EARFQUAKE",
+    artist: "Tyler, The Creator",
+  },
+  {
+    image: require("@/assets/auth/travis_scott.png"),
+    title: "SICKO MODE",
+    artist: "Travis Scott",
+  },
+  {
+    image: require("@/assets/auth/dj_assault.png"),
+    title: "Sex on the Beach",
+    artist: "DJ Assault",
+  },
+  {
+    image: require("@/assets/auth/migos.png"),
+    title: "Bad and Boujee",
+    artist: "Migos",
+  },
+];
+
+const cardImages = [
+  require("@/assets/auth/Steve-Lacy-Gemini-Rights.png"),
+  require("@/assets/auth/tyler_the_creator.png"),
+  require("@/assets/auth/travis_scott.png"),
+  require("@/assets/auth/dj_assault.png"),
+  require("@/assets/auth/migos.png"),
+];
+
 export default function TabTwoScreen() {
+  const { width, height } = Dimensions.get("window");
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: "#D0D0D0", dark: "#353636" }}
-      headerImage={
-        <IconSymbol
-          size={310}
-          color="#808080"
-          name="chevron.left.forwardslash.chevron.right"
-          style={styles.headerImage}
-        />
-      }
-    >
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Playday Explore</ThemedText>
+    <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
+      <ThemedView style={styles.audioFeed}>
+        <ThemedView style={styles.headerContainer}>
+          {/* POST HEADER: User + Time Posted */}
+          <ThemedView style={styles.postHeader}>
+            <ThemedText style={styles.postUser}>@npcmilo</ThemedText>
+            <ThemedText style={styles.timePosted}>42 minutes ago</ThemedText>
+          </ThemedView>
+          {/* SONG HEADER: Song Title + Song Artist */}
+          <ThemedView style={styles.songHeader}>
+            <ThemedText style={styles.songTitle}>{cards[0].title}</ThemedText>
+            <ThemedText style={styles.songArtist}>{cards[0].artist}</ThemedText>
+          </ThemedView>
+        </ThemedView>
+        {/* POST: CD Disc Carousel + Post Header */}
+        <ThemedView style={styles.postContainer}>
+          {/* CD DISCS: Carousel */}
+          <CDDiscCarousel cards={cardImages} cdSize={height * 0.35} />
+        </ThemedView>
+        {/* CONTROLS: Post Interactions + Song Progress Bar + Interactions */}
+        <ThemedView style={styles.controls}>
+          {/* POST INTERACTIONS: Like + Comment + Save */}
+          <ThemedView style={styles.postInteractions}>
+            {/* 'LIKE' Button */}
+            <Pressable onPress={() => console.log("like")}>
+              <IconSymbol size={35} name="heart" color="black" />
+            </Pressable>
+            <ThemedView style={styles.postInteractionsRight}>
+              {/* 'COMMENT' Button */}
+              <Pressable onPress={() => console.log("comment")}>
+                <IconSymbol size={35} name="bubble" color="black" />
+              </Pressable>
+              {/* 'SAVE' Button */}
+              <Pressable onPress={() => console.log("save")}>
+                <IconSymbol size={35} name="plus.square" color="black" />
+              </Pressable>
+            </ThemedView>
+          </ThemedView>
+          {/* SONG PROGRESS BAR */}
+          <SongProgressBar />
+          {/* SONG INTERACTIONS: Back + Play/Pause + Next */}
+          <ThemedView style={styles.songInteractions}>
+            {/* 'BACK' Button */}
+            <Pressable
+              style={styles.songInteractionButton}
+              onPress={() => console.log("back")}
+            >
+              <GlassmorphismButtonView
+                buttonColor="white"
+                sfSymbol="backward.end"
+                disabled={false}
+                textSize={width / 5 - 45}
+                style={{ borderRadius: width / 5 }}
+              />
+            </Pressable>
+            {/* 'PLAY/PAUSE' Button */}
+            <Pressable
+              style={styles.songInteractionButton}
+              onPress={() => console.log("play/pause")}
+            >
+              <GlassmorphismButtonView
+                buttonColor="black"
+                sfSymbol="play"
+                disabled={false}
+                textSize={width / 5 - 35}
+                style={{ borderRadius: width / 5 }}
+              />
+            </Pressable>
+            {/* 'NEXT' Button */}
+            <Pressable
+              style={styles.songInteractionButton}
+              onPress={() => console.log("next")}
+            >
+              <GlassmorphismButtonView
+                buttonColor="white"
+                sfSymbol="forward.end"
+                disabled={false}
+                textSize={width / 5 - 45}
+                style={{ borderRadius: width / 5 }}
+              />
+            </Pressable>
+          </ThemedView>
+        </ThemedView>
       </ThemedView>
-      <ThemedText>
-        This is a useless screen we left in here cause 3 things looks better than 2 in the tab bar
-      </ThemedText>
-      <Collapsible title="File-based routing">
-        <ThemedText>
-          This app has two screens:{" "}
-          <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText>{" "}
-          and{" "}
-          <ThemedText type="defaultSemiBold">app/(tabs)/explore.tsx</ThemedText>
-        </ThemedText>
-        <ThemedText>
-          The layout file in{" "}
-          <ThemedText type="defaultSemiBold">app/(tabs)/_layout.tsx</ThemedText>{" "}
-          sets up the tab navigator.
-        </ThemedText>
-        <ExternalLink href="https://docs.expo.dev/router/introduction">
-          <ThemedText type="link">Learn more</ThemedText>
-        </ExternalLink>
-      </Collapsible>
-      <Collapsible title="Android, iOS, and web support">
-        <ThemedText>
-          You can open this project on Android, iOS, and the web. To open the
-          web version, press <ThemedText type="defaultSemiBold">w</ThemedText>{" "}
-          in the terminal running this project.
-        </ThemedText>
-      </Collapsible>
-      <Collapsible title="Images">
-        <ThemedText>
-          For static images, you can use the{" "}
-          <ThemedText type="defaultSemiBold">@2x</ThemedText> and{" "}
-          <ThemedText type="defaultSemiBold">@3x</ThemedText> suffixes to
-          provide files for different screen densities
-        </ThemedText>
-        <Image
-          source={require("@/assets/images/react-logo.png")}
-          style={{ alignSelf: "center" }}
-        />
-        <ExternalLink href="https://reactnative.dev/docs/images">
-          <ThemedText type="link">Learn more</ThemedText>
-        </ExternalLink>
-      </Collapsible>
-      <Collapsible title="Custom fonts">
-        <ThemedText>
-          Open <ThemedText type="defaultSemiBold">app/_layout.tsx</ThemedText>{" "}
-          to see how to load{" "}
-          <ThemedText style={{ fontFamily: "SpaceMono" }}>
-            custom fonts such as this one.
-          </ThemedText>
-        </ThemedText>
-        <ExternalLink href="https://docs.expo.dev/versions/latest/sdk/font">
-          <ThemedText type="link">Learn more</ThemedText>
-        </ExternalLink>
-      </Collapsible>
-      <Collapsible title="Light and dark mode components">
-        <ThemedText>
-          This template has light and dark mode support. The{" "}
-          <ThemedText type="defaultSemiBold">useColorScheme()</ThemedText> hook
-          lets you inspect what the user's current color scheme is, and so you
-          can adjust UI colors accordingly.
-        </ThemedText>
-        <ExternalLink href="https://docs.expo.dev/develop/user-interface/color-themes/">
-          <ThemedText type="link">Learn more</ThemedText>
-        </ExternalLink>
-      </Collapsible>
-      <Collapsible title="Animations">
-        <ThemedText>
-          This template includes an example of an animated component. The{" "}
-          <ThemedText type="defaultSemiBold">
-            components/HelloWave.tsx
-          </ThemedText>{" "}
-          component uses the powerful{" "}
-          <ThemedText type="defaultSemiBold">
-            react-native-reanimated
-          </ThemedText>{" "}
-          library to create a waving hand animation.
-        </ThemedText>
-        {Platform.select({
-          ios: (
-            <ThemedText>
-              The{" "}
-              <ThemedText type="defaultSemiBold">
-                components/ParallaxScrollView.tsx
-              </ThemedText>{" "}
-              component provides a parallax effect for the header image.
-            </ThemedText>
-          ),
-        })}
-      </Collapsible>
-    </ParallaxScrollView>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  headerImage: {
-    color: "#808080",
-    bottom: -90,
-    left: -35,
-    position: "absolute",
+  audioFeed: {
+    flex: 1,
+    padding: 30,
+    paddingBottom: 75,
   },
-  titleContainer: {
-    flexDirection: "row",
-    gap: 8,
+  headerContainer: {
+    flex: 0.25,
   },
-  stepContainer: {
-    flexDirection: "column",
-    gap: 8,
-    marginBottom: 8,
-    padding: 10,
-    alignItems: "center",
+  songHeader: {
+    flexBasis: height * 0.08,
     justifyContent: "center",
+    alignItems: "flex-start",
   },
-  button: {
-    backgroundColor: "#666",
-    paddingVertical: 16,
-    paddingHorizontal: 32,
-    borderRadius: 8,
-    width: "80%",
+  songTitle: {
+    fontSize: height * 0.045,
+    fontWeight: 300,
+    lineHeight: height * 0.045,
+  },
+  songArtist: {
+    fontSize: height * 0.02,
+    fontWeight: 200,
+    lineHeight: height * 0.02,
+  },
+  postHeader: {
+    flexBasis: height * 0.035,
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  postUser: {
+    fontWeight: 300,
+    fontSize: height * 0.02,
+  },
+  timePosted: {
+    fontWeight: 300,
+    fontSize: height * 0.02,
+  },
+  postContainer: {
+    flex: 0.5,
+    backgroundColor: "transparent",
+  },
+  controls: {
+    flex: 0.5,
+    flexDirection: "column",
+    justifyContent: "flex-end",
+    backgroundColor: "none",
+    gap: 2.5,
+  },
+  postInteractions: {
+    flexBasis: 50,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    backgroundColor: "transparent",
+    marginBottom: 5,
+  },
+  postInteractionsRight: {
+    flexDirection: "row",
     alignItems: "center",
   },
-  buttonText: {
-    color: "white",
-    fontSize: 16,
-    fontWeight: "600",
+  songInteractions: {
+    flexBasis: width / 5,
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    gap: 20,
+    backgroundColor: "none",
+  },
+  songInteractionButton: {
+    borderRadius: width / 5,
+    flexBasis: width / 5,
+  },
+  buttonContainer: {
+    backgroundColor: "transparent",
+    flexBasis: 80,
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  vinylContainer: {
+    flexBasis: 350,
+    justifyContent: "center",
+    alignItems: "center",
+    position: "relative",
   },
 });

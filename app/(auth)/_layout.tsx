@@ -33,25 +33,61 @@ export default function AuthLayout() {
           <Stack.Screen
             name="register/music-auth"
             options={{
-              headerTitle: (props) => <TopBar />,
+              headerTitle: (props) => <TopBar backEnabled={false} />,
               title: "Phone",
               headerBackVisible: false,
+              headerShadowVisible: false,
             }}
           />
           <Stack.Screen
             name="register/username"
             options={{
-              headerTitle: (props) => <TopBar />,
+              headerTitle: (props) => <TopBar backEnabled={true} />,
               title: "Create Username",
+              headerTintColor: "black",
+              headerShadowVisible: false,
             }}
           />
           <Stack.Screen
             name="register/pfp"
-            options={{headerTitle: (props) => <TopBar />, title: "Upload Profile Picture" }}
+            options={{
+              headerTitle: (props) => <TopBar backEnabled={true} />,
+              title: "Upload Profile Picture",
+              headerTintColor: "black",
+              headerShadowVisible: false,
+            }}
           />
-           <Stack.Screen
+          <Stack.Screen
             name="register/finish"
-            options={{headerTitle: (props) => <TopBar />, title: "Finish" }}
+            options={{
+              headerTitle: (props) => <TopBar backEnabled={true} />,
+              title: "Finish",
+              headerTintColor: "black",
+              headerShadowVisible: false,
+            }}
+          />
+          <Stack.Screen
+            name="register/onboard"
+            options={{
+              title: "Features",
+              headerTintColor: "black",
+              headerShadowVisible: false,
+              headerTitle: (props) => (
+                <TopBar title="Browse our features" backEnabled={false} />
+              ),
+              headerBackVisible: false,
+            }}
+          />
+          <Stack.Screen
+            name="welcome/to"
+            options={{
+              title: "Welcome",
+              headerShadowVisible: false,
+              headerTitle: (props) => (
+                <TopBar title="Welcome, Milo." backEnabled={false} />
+              ),
+              headerBackVisible: false,
+            }}
           />
         </Stack>
       </Authenticated>

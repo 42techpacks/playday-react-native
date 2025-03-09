@@ -6,11 +6,18 @@ export default function FeedLayout() {
     <Stack>
       <Stack.Screen
         name="index"
-        options={{ headerTitle: (props) => <TopBar />, title: "Home" }}
+        options={{
+          headerTitle: (props) => <TopBar backEnabled={false} />,
+          title: "Home",
+          headerShadowVisible: false,
+        }}
       />
       <Stack.Screen
         name="create-modal"
-        options={{ headerShown: false, presentation: "modal" }}
+        options={{
+          headerShown: false,
+          presentation: "modal",
+        }}
       />
     </Stack>
   );
