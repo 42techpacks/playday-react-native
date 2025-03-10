@@ -3,7 +3,7 @@ import { ThemedView } from "../ThemedView";
 import { Image, Pressable, StyleSheet } from "react-native";
 import { ThemedText } from "../ThemedText";
 import { IconSymbol } from "../ui/IconSymbol.ios";
-import { Link, useRouter } from "expo-router";
+import { Link } from "expo-router";
 import { Dimensions } from "react-native";
 
 interface Props {
@@ -12,10 +12,9 @@ interface Props {
   searchEnabled?: boolean;
 }
 
-const { width, height } = Dimensions.get("window");
+const { width } = Dimensions.get("window");
 
 export default function TopBar({ title, backEnabled }: Props) {
-  const router = useRouter();
   return (
     <ThemedView
       style={[styles.topBar, backEnabled ? { marginRight: -25 } : {}]}
