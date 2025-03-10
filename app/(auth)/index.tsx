@@ -20,7 +20,6 @@ import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { useState } from "react";
 import { useAuthActions } from "@convex-dev/auth/dist/react";
-import LinearGradient from "react-native-linear-gradient";
 import GlassmorphismButtonView from "@/components/GlassmorphismButtonView";
 import GlassmorphismTextInput from "@/components/GlassmorphismTextInput";
 import { Authenticated, Unauthenticated, useQuery } from "convex/react";

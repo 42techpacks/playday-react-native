@@ -8,6 +8,7 @@ export interface SpotifyTrack {
     images: { url: string }[];
   };
   duration_ms: number;
+  uri: string;
 }
 
 export interface SpotifyPlaylist {

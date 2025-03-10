@@ -11,9 +11,10 @@ interface SpotifyPlayPauseProps {
     isConnected: boolean;
     onPress: () => void;
   }) => React.ReactNode;
+  uri: string;
 }
 
-export function SpotifyPlayPause({ children }: SpotifyPlayPauseProps) {
+export function SpotifyPlayPause({ children, uri }: SpotifyPlayPauseProps) {
   const { isPlaying, togglePlayPause } = useSpotifyPlayerState();
   const [isLoading, setIsLoading] = React.useState(false);
 
@@ -23,7 +24,7 @@ export function SpotifyPlayPause({ children }: SpotifyPlayPauseProps) {
     setIsLoading(true);
     try {
       // Using a sample Spotify URI - you can replace this with any valid URI
-      const uri = "spotify:album:1htHMnxonxmyHdKE2uDFMR";
+      // const uri = "spotify:album:1htHMnxonxmyHdKE2uDFMR";
 
       if (!isConnected) {
         // If not connected, use authorizeAndPlayURI which will handle authorization

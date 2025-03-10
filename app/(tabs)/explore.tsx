@@ -111,7 +111,7 @@ export default function TabTwoScreen() {
               )}
             </SpotifySkip>
             {/* 'PLAY/PAUSE' Button */}
-            <SpotifyPlayPause>
+            <SpotifyPlayPause uri="">
               {({ isPlaying, isLoading, isConnected, onPress }) => (
                 <Pressable
                   style={styles.songInteractionButton}

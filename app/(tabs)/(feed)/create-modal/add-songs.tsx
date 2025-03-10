@@ -68,12 +68,13 @@ export default function AddSongsScreen() {
   };
 
   // Map search results to DaylistSong format
-  const searchSongs: DaylistSong[] = useMemo(
+  const searchSongs = useMemo(
     () =>
       searchResults?.map((track) => ({
         id: track.id,
         name: track.name,
         imageUrl: track.album.images[0]?.url,
+        uri: track.uri,
         artists: track.artists.map((a) => ({ name: a.name })),
       })) || [],
     [searchResults],
