@@ -94,6 +94,7 @@ export default function FeedPostView({ daylist }: FeedPostViewProps) {
               key={song.id}
               songTitle={song.name}
               artist={song.artists[0].name}
+              uri={song.uri}
             />
           ))}
         </ThemedView>

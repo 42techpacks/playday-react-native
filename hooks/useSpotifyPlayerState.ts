@@ -1,7 +1,7 @@
 import { AppRemote } from "expo-spotify-sdk";
 import { useEffect, useState } from "react";
 
-import { PlayerState } from "../../../src/ExpoSpotifySDK.types";
+import { PlayerState } from "expo-spotify-sdk/ExpoSpotifySDK.types";
 
 export function useSpotifyPlayerState() {
   const [playerState, setPlayerState] = useState<PlayerState | null>(null);
@@ -41,7 +41,7 @@ export function useSpotifyPlayerState() {
           setPlayerState(null);
           setIsSubscribed(false);
         }
-      },
+      }
     );
 
     // Set up event listener for app remote disconnection
@@ -49,7 +49,7 @@ export function useSpotifyPlayerState() {
       () => {
         setPlayerState(null);
         setIsSubscribed(false);
-      },
+      }
     );
 
     // Initial subscription if already connected

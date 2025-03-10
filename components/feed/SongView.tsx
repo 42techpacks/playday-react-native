@@ -1,14 +1,15 @@
-import { useState } from "react";
-import { Text, StyleSheet, Image } from "react-native";
+import { Text, StyleSheet } from "react-native";
 import { ThemedView } from "@/components/ThemedView";
-import LinearGradient from "react-native-linear-gradient";
+import { IconSymbol } from "@/components/ui/IconSymbol.ios";
+import { SpotifyTrackPlayPause } from "@/components/spotify/SpotifyPlayPause";
 
 interface SongViewProps {
   songTitle: string;
   artist: string;
+  uri: string;
 }
 
-export default function SongView({ songTitle, artist }: SongViewProps) {
+export default function SongView({ songTitle, artist, uri }: SongViewProps) {
   return (
     <ThemedView style={styles.songView}>
       <ThemedView style={styles.songInfo}>
@@ -17,22 +18,28 @@ export default function SongView({ songTitle, artist }: SongViewProps) {
         <Text style={styles.songText}>{artist}</Text>
       </ThemedView>
       <ThemedView style={styles.songInteractions}>
+        <SpotifyTrackPlayPause uri={uri}>
+          {({ isPlaying, isLoading, onPress }) => (
+            <ThemedView
+              style={[
+                styles.songInteractionButton,
+                isLoading && styles.songInteractionButtonLoading
+              ]}
+              onTouchEnd={onPress}
+            >
+              <IconSymbol
+                name={isPlaying ? "pause.fill" : "play.fill"}
+                size={14}
+                color="black"
+              />
+            </ThemedView>
+          )}
+        </SpotifyTrackPlayPause>
         <ThemedView style={styles.songInteractionButton}>
-          <Image
-            source={require("../../assets/feed/play-icon.png")}
-            style={{
-              height: 10,
-              width: 10,
-            }}
-          />
-        </ThemedView>
-        <ThemedView style={styles.songInteractionButton}>
-          <Image
-            source={require("../../assets/feed/add-icon.png")}
-            style={{
-              height: 10,
-              width: 10,
-            }}
+          <IconSymbol
+            name="plus"
+            size={14}
+            color="black"
           />
         </ThemedView>
       </ThemedView>
@@ -71,14 +78,18 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
 
-    borderRadius: "50%",
+    borderRadius: 25,
     overflow: "hidden",
 
-    height: 25,
-    width: 25,
+    height: 28,
+    width: 28,
     backgroundColor: "#E2E2E2",
     borderColor: "#D2D2D2",
     borderWidth: 1,
+  },
+
+  songInteractionButtonLoading: {
+    opacity: 0.7,
   },
 
   songText: {
