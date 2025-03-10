@@ -62,7 +62,7 @@ export default function SpotifyAuthButton() {
               : "Login with Spotify"
           }
           buttonColor="spotify"
-          disabled={false}
+          disabled={registrationStatus?.hasSpotifyTokens}
           textSize={20}
           buttonHeight={65}
           style={{ borderRadius: 65 }}
