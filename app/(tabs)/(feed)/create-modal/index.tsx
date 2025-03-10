@@ -17,6 +17,10 @@ import GlassmorphismButtonView from "@/components/GlassmorphismButtonView";
 import GlassmorphismTextInput from "@/components/GlassmorphismTextInput";
 import GlassmorphismView from "@/components/GlassmorphismView";
 import CDDiscCarousel from "@/components/feed/CDDiscCarousel";
+import { Dimensions } from "react-native";
+
+const { width, height } = Dimensions.get("window");
+const cdSize = width * 0.4;
 
 export default function CreatePostScreen() {
   const router = useRouter();
@@ -52,12 +56,13 @@ export default function CreatePostScreen() {
     <ThemedView style={styles.createModal}>
       {/* IMAGES: CDs */}
       <GlassmorphismView containerStyle={styles.createModalImages}>
-        <CDDiscCarousel cards={[]} cdSize={150} />
+        <CDDiscCarousel cards={[]} cdSize={cdSize} />
       </GlassmorphismView>
 
       {/* SONG CONTROLS: Count + Add Songs Button */}
       <View style={styles.songControlsContainer}>
         <Text style={styles.songCount}>{songs.length}/6</Text>
+        {/* 'ADD SONGS' Button */}
         <Link
           href={{
             pathname: "/create-modal/add-songs",
@@ -71,6 +76,8 @@ export default function CreatePostScreen() {
               sfSymbol="plus"
               buttonColor="black"
               disabled={false}
+              buttonHeight={width * 0.08}
+              style={{ borderRadius: width * 0.08 }}
             />
           </Pressable>
         </Link>
@@ -98,19 +105,22 @@ export default function CreatePostScreen() {
 
       {/* FOOTER: Description Input + Share Button */}
       <View style={styles.createModalFooter}>
+        {/* 'DESCRIPTION INPUT */}
         <GlassmorphismTextInput
           value={caption}
           placeholder="Add a description..."
           onChangeText={setCaption}
-          numLines={4}
+          numLines={1}
           keyboardType="default"
           containerStyle={styles.inputContainer}
+          textStyle={{ marginBottom: 5 }} // Don't know why this is happening
         />
-        <Pressable onPress={handleShare} style={{ flex: 1 }}>
+        {/* 'SHARE' Button */}
+        <Pressable onPress={handleShare} style={{ flexBasis: 65 }}>
           <GlassmorphismButtonView
             label="Share"
             disabled={false}
-            buttonColor="white"
+            buttonColor="black"
             sfSymbol="paperplane"
             textSize={20}
             buttonHeight={65}
@@ -123,7 +133,9 @@ export default function CreatePostScreen() {
 
 const styles = StyleSheet.create({
   createModal: {
-    flex: 0.5,
+    flex: 1,
+    padding: 30,
+    gap: 30,
   },
   createModalDate: {
     fontSize: 16,
@@ -133,23 +145,24 @@ const styles = StyleSheet.create({
     top: 15,
   },
   createModalFooter: {
-    flex: 1,
-    gap: 20,
+    flexBasis: 100,
+    gap: 10,
     flexDirection: "column",
+    justifyContent: "flex-end",
   },
   createModalImages: {
-    flexBasis: 350,
+    flexBasis: cdSize + 75,
+    marginHorizontal: cdSize / 2 - 25,
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 25,
     backgroundColor: "transparent",
   },
   songControlsContainer: {
-    flex: 1,
+    flexBasis: width * 0.08,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    width: "100%",
   },
   songCount: {
     fontSize: 24,
@@ -172,7 +185,7 @@ const styles = StyleSheet.create({
     fontWeight: "500",
   },
   listContent: {
-    flex: 1,
+    flexBasis: 100,
     paddingBottom: 300,
   },
   artistName: {
@@ -180,7 +193,6 @@ const styles = StyleSheet.create({
     fontWeight: "normal",
   },
   inputContainer: {
-    flexBasis: 100,
-    borderRadius: 50,
+    flexBasis: 50,
   },
 });

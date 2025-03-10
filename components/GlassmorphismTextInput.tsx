@@ -12,6 +12,7 @@ import LinearGradient from "react-native-linear-gradient";
 import { ThemedView } from "./ThemedView";
 import { IconSymbol } from "./ui/IconSymbol.ios";
 import { SFSymbols6_0 } from "sf-symbols-typescript";
+import { TextStyle } from "react-native";
 
 interface GlassmorphismTextInputProps {
   onChangeText: (text: string) => void;
@@ -21,6 +22,7 @@ interface GlassmorphismTextInputProps {
   iconSize?: number;
   numLines?: number;
   containerStyle?: ViewStyle;
+  textStyle?: TextStyle;
   keyboardType: KeyboardTypeOptions;
   shadowEnabled?: boolean;
 }
@@ -34,6 +36,7 @@ export default function GlassmorphismTextInput({
   numLines,
   keyboardType,
   containerStyle,
+  textStyle,
   shadowEnabled = true,
 }: GlassmorphismTextInputProps) {
   return (
@@ -55,7 +58,7 @@ export default function GlassmorphismTextInput({
           <IconSymbol name={iconSymbol} size={iconSize} color="#121212" />
         )}
         <TextInput
-          style={[styles.input]}
+          style={[styles.input, textStyle]}
           onChangeText={onChangeText}
           value={value.toString()}
           placeholder={placeholder}
@@ -104,5 +107,6 @@ const styles = StyleSheet.create({
     fontFamily: "Helvetica-Regular",
     fontSize: 16,
     flex: 1,
+    backgroundColor: "transparent",
   },
 });

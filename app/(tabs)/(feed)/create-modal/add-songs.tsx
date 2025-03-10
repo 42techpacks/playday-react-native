@@ -1,4 +1,11 @@
-import { View, TextInput, StyleSheet, FlatList, Pressable } from "react-native";
+import {
+  View,
+  TextInput,
+  StyleSheet,
+  FlatList,
+  Pressable,
+  ActivityIndicator,
+} from "react-native";
 import { Text } from "react-native";
 import { Link, useRouter, useLocalSearchParams } from "expo-router";
 import { useState, useEffect, useMemo } from "react";
@@ -7,6 +14,7 @@ import { useSpotifyAuth } from "@/hooks/useSpotifyAuth";
 import { SpotifyTrack } from "@/lib/spotify";
 import SpotifyAuthButton from "@/components/spotify/spotify-auth-button";
 import GlassmorphismTextInput from "@/components/GlassmorphismTextInput";
+import GlassmorphismButtonView from "@/components/GlassmorphismButtonView";
 
 export type DaylistSong = {
   id: string;
@@ -102,18 +110,23 @@ export default function AddSongsScreen() {
   }
 
   return (
-    <View style={styles.container}>
+    <View style={styles.addSongs}>
+      {/* 'SEARCH' Input */}
       <GlassmorphismTextInput
-        containerStyle={styles.searchInput}
-        placeholder="Search songs on Spotify"
         value={searchQuery}
+        placeholder="Search for a song..."
+        iconSymbol={"magnifyingglass"}
+        iconSize={24}
         onChangeText={setSearchQuery}
         keyboardType="default"
+        containerStyle={styles.searchInput}
+        shadowEnabled={true}
       />
 
       {isLoading ? (
+        /* 'LOADING' */
         <View style={styles.centered}>
-          <Text>Loading...</Text>
+          <ActivityIndicator />
         </View>
       ) : (
         <FlatList
@@ -121,6 +134,7 @@ export default function AddSongsScreen() {
           keyExtractor={(item) => item.id}
           contentContainerStyle={styles.listContent}
           renderItem={({ item: song }) => (
+            /* 'SONG' Item */
             <Pressable
               style={[
                 styles.songItem,
@@ -129,11 +143,14 @@ export default function AddSongsScreen() {
               onPress={() => toggleSongSelection(song.id)}
             >
               <View style={styles.songInfo}>
+                {/* 'TITLE' */}
                 <Text style={styles.songTitle}>{song.name}</Text>
+                {/* 'ARTIST' */}
                 <Text style={styles.artistName}>
                   {song.artists.map((a) => a.name).join(", ")}
                 </Text>
               </View>
+              {/* 'ADD' Button */}
               <Text style={styles.addButton}>
                 {selectedSongs.has(song.id) ? "✓" : "+"}
               </Text>
@@ -142,12 +159,22 @@ export default function AddSongsScreen() {
         />
       )}
 
+      {/* FOOTER: Selected Count + Done Button */}
       <View style={styles.footer}>
+        {/* 'SELECTED' Count */}
         <Text style={styles.selectedCount}>
           {selectedSongs.size}/6 Songs Selected
         </Text>
+        {/* 'DONE' Button */}
         <Pressable style={styles.doneButton} onPress={handleDone}>
-          <Text style={styles.doneButtonText}>Done</Text>
+          <GlassmorphismButtonView
+            label="Done"
+            buttonColor="black"
+            disabled={false}
+            textSize={20}
+            buttonHeight={65}
+            style={styles.buttonStyle}
+          />
         </Pressable>
       </View>
     </View>
@@ -155,14 +182,14 @@ export default function AddSongsScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: {
+  addSongs: {
     flex: 1,
     backgroundColor: "#fff",
-    padding: 16,
+    padding: 30,
+    gap: 30,
   },
   authContainer: {
     flex: 1,
-    backgroundColor: "#fff",
     padding: 16,
     justifyContent: "center",
     alignItems: "center",
@@ -180,10 +207,9 @@ const styles = StyleSheet.create({
     fontSize: 24,
   },
   searchInput: {
-    padding: 12,
-    borderRadius: 8,
-    backgroundColor: "#f0f0f0",
-    marginBottom: 16,
+    flexBasis: 50,
+    alignItems: "center",
+    borderRadius: 100,
   },
   listContent: {
     paddingBottom: 200, // Add padding at the bottom of the list
@@ -213,30 +239,19 @@ const styles = StyleSheet.create({
     color: "#666",
   },
   footer: {
-    position: "absolute",
-    bottom: 140,
-    left: 16,
-    right: 16,
+    flex: 1,
+    justifyContent: "flex-end",
+    gap: 10,
   },
   selectedCount: {
     fontSize: 14,
     color: "#666",
-    marginBottom: 12,
     textAlign: "center",
   },
   doneButton: {
-    backgroundColor: "#fff",
-    padding: 16,
-    borderRadius: 4,
-    alignItems: "center",
-    borderWidth: 1,
-    borderColor: "#000",
-    width: "100%",
+    flexBasis: 50,
   },
-  doneButtonText: {
-    color: "#000",
-    fontSize: 16,
-  },
+  buttonStyle: {},
   centered: {
     flex: 1,
     justifyContent: "center",

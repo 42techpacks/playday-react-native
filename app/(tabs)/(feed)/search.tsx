@@ -111,7 +111,7 @@ const styles = StyleSheet.create({
   searchInput: {
     flex: 1,
     alignItems: "center",
-    borderRadius: 100,
+    borderRadius: 50,
   },
   resultsLabel: {
     fontSize: 14,

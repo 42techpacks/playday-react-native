@@ -105,7 +105,7 @@ const styles = StyleSheet.create({
     gap: 5,
 
     color: "white",
-    backgroundColor: "none",
+    backgroundColor: "transparent",
   },
 
   glassmorphismButtonFillTransparent: { backgroundColor: "transparent" },
