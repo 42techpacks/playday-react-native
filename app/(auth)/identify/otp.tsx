@@ -39,7 +39,6 @@ export default function OTPScreen() {
   const [otp, setOtp] = useState("");
   const { signIn } = useAuthActions();
   const registrationStatus = useQuery(api.auth.checkRegistrationStatus);
-  console.log(registrationStatus);
 
   const handleVerifyOtp = async () => {
     const formattedNumber = formatPhoneNumber(phoneNumber); // Reformat the number before sending

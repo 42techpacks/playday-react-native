@@ -32,7 +32,6 @@ export default function FeedPostView({ daylist }: FeedPostViewProps) {
   // Use the custom hook to fetch album images
   const { data: albumImages = [], isLoading } = useTrackImages(trackIds);
 
-  console.log(albumImages, isLoading);
   if (isLoading) {
     return (
       <ThemedView style={styles.feedPostView}>
