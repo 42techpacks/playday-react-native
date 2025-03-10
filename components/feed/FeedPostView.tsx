@@ -1,4 +1,4 @@
-import { Text, StyleSheet, Image, ActivityIndicator } from "react-native";
+import { Text, StyleSheet, Image } from "react-native";
 import { ThemedView } from "@/components/ThemedView";
 import { IconSymbol } from "@/components/ui/IconSymbol.ios";
 import LinearGradient from "react-native-linear-gradient";
@@ -6,40 +6,17 @@ import CDDisc from "../auth/CDDisc";
 import SongView from "./SongView";
 import { ThemedText } from "@/components/ThemedText";
 import CommentInput from "./CommentInput";
-import { useTrackImages } from "@/hooks/useSpotifyApis";
-
-type DaylistDoc = {
-  userId: string;
-  caption: string;
-  date: number;
-  songs: Array<{
-    id: string;
-    name: string;
-    artists: Array<{ name: string }>;
-  }>;
-};
+import { Doc } from "@/convex/_generated/dataModel";
 
 type FeedPostViewProps = {
-  daylist: DaylistDoc;
+  daylist: Doc<"daylists">;
 };
 
-const vinylSpacing = 250;
-
 export default function FeedPostView({ daylist }: FeedPostViewProps) {
-  // Extract track IDs from the daylist
-  const trackIds = daylist.songs.map((song) => song.id);
-
-  // Use the custom hook to fetch album images
-  const { data: albumImages = [], isLoading } = useTrackImages(trackIds);
-
-  console.log(albumImages, isLoading);
-  if (isLoading) {
-    return (
-      <ThemedView style={styles.feedPostView}>
-        <ActivityIndicator size="large" color="#0000ff" />
-      </ThemedView>
-    );
-  }
+  // Get album images directly from the daylist data
+  const albumImages = daylist.songs
+    .map(song => song.imageUrl)
+    .filter(url => !!url) as string[];
 
   return (
     <LinearGradient

@@ -25,6 +25,7 @@ const schema = defineSchema({
       v.object({
         id: v.string(),
         name: v.string(),
+        imageUrl: v.optional(v.string()),
         artists: v.array(
           v.object({
             name: v.string(),
