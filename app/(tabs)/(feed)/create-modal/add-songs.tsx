@@ -15,6 +15,11 @@ import SpotifyAuthButton from "@/components/spotify/spotify-auth-button";
 import GlassmorphismTextInput from "@/components/GlassmorphismTextInput";
 import GlassmorphismButtonView from "@/components/GlassmorphismButtonView";
 import { Doc } from "@/convex/_generated/dataModel";
+import CDDisc from "@/components/auth/CDDisc";
+import { AnimatePresence, MotiView } from "moti";
+import { EasingNameSymbol } from "react-native-reanimated/lib/typescript/Easing";
+import { EasingFunction } from "react-native-reanimated";
+import { LinearTransition } from "react-native-reanimated";
 
 // UI-specific extension of the Convex song type
 export type DaylistSong = Doc<"daylists">["songs"][number] & {
@@ -31,10 +36,8 @@ export default function AddSongsScreen() {
   const [searchQuery, setSearchQuery] = useState("");
   const debouncedQuery = useDebounce(searchQuery, 300);
   const { isAuthenticated, isLoading: authLoading } = useSpotifyAuth();
-  const {
-    data: searchResults,
-    isLoading: searchLoading,
-  } = useSpotifySearch(debouncedQuery);
+  const { data: searchResults, isLoading: searchLoading } =
+    useSpotifySearch(debouncedQuery);
 
   // Parse existing songs from params
   const existingSongs: DaylistSong[] = useMemo(() => {
@@ -140,6 +143,25 @@ export default function AddSongsScreen() {
               ]}
               onPress={() => toggleSongSelection(song.id)}
             >
+              <MotiView
+                from={{ rotate: "0deg" }}
+                animate={{ rotate: `${360 * 1}deg` }}
+                transition={{
+                  loop: true,
+                  type: "timing",
+                  repeatReverse: false,
+                  duration: 10000,
+                }}
+              >
+                <CDDisc
+                  imageUri={
+                    song.imageUrl
+                      ? { uri: song.imageUrl }
+                      : require("@/assets/auth/Steve-Lacy-Gemini-Rights.png")
+                  }
+                  discSize={50}
+                />
+              </MotiView>
               <View style={styles.songInfo}>
                 {/* 'TITLE' */}
                 <Text style={styles.songTitle}>{song.name}</Text>
@@ -222,6 +244,7 @@ const styles = StyleSheet.create({
   },
   songInfo: {
     flex: 1,
+    marginLeft: 10,
   },
   songTitle: {
     fontSize: 16,
