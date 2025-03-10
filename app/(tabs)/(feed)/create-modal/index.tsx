@@ -1,6 +1,5 @@
 import {
   View,
-  TextInput,
   StyleSheet,
   Pressable,
   Text,
@@ -12,14 +11,13 @@ import { DaylistSong } from "./add-songs";
 import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { ThemedView } from "@/components/ThemedView";
-import CDDisc from "@/components/auth/CDDisc";
 import GlassmorphismButtonView from "@/components/GlassmorphismButtonView";
 import GlassmorphismTextInput from "@/components/GlassmorphismTextInput";
 import GlassmorphismView from "@/components/GlassmorphismView";
 import CDDiscCarousel from "@/components/feed/CDDiscCarousel";
 import { Dimensions } from "react-native";
 
-const { width, height } = Dimensions.get("window");
+const { width } = Dimensions.get("window");
 const cdSize = width * 0.4;
 
 export default function CreatePostScreen() {
@@ -43,14 +41,17 @@ export default function CreatePostScreen() {
   const handleShare = async () => {
     await createDaylist({
       caption,
-      songs: songs.map(({ id, name, artists }) => ({ id, name, artists })),
+      songs: songs.map(({ id, name, imageUrl, artists }) => ({
+        id,
+        name,
+        imageUrl,
+        artists,
+      })),
     });
     router.dismissTo({
       pathname: "/",
     });
   };
-
-  const vinylSpacing = 250;
 
   return (
     <ThemedView style={styles.createModal}>
