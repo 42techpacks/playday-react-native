@@ -109,7 +109,7 @@ export default function TabTwoScreen() {
                 buttonColor="white"
                 sfSymbol="backward.end"
                 disabled={false}
-                textSize={width / 5 - 45}
+                textSize={width / 5 - 55}
                 style={{ borderRadius: width / 5 }}
               />
             </Pressable>
@@ -122,7 +122,7 @@ export default function TabTwoScreen() {
                 buttonColor="black"
                 sfSymbol="play"
                 disabled={false}
-                textSize={width / 5 - 35}
+                textSize={width / 5.2 - 45}
                 style={{ borderRadius: width / 5 }}
               />
             </Pressable>
@@ -135,7 +135,7 @@ export default function TabTwoScreen() {
                 buttonColor="white"
                 sfSymbol="forward.end"
                 disabled={false}
-                textSize={width / 5 - 45}
+                textSize={width / 5 - 55}
                 style={{ borderRadius: width / 5 }}
               />
             </Pressable>

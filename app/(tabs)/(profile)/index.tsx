@@ -9,52 +9,104 @@ import { api } from "@/convex/_generated/api";
 import FeedPostView from "@/components/feed/FeedPostView";
 import { Pressable } from "react-native";
 import { Link } from "expo-router";
+import { IconSymbol } from "@/components/ui/IconSymbol.ios";
+import GlassmorphismButtonView from "@/components/GlassmorphismButtonView";
 
-const tyler = require("@/assets/auth/tyler_the_creator.png");
 const { width, height } = Dimensions.get("window");
-export default function ProfileScreen() {
+export default function ProfileScreen({
+  profilePhoto,
+}: {
+  profilePhoto?: string;
+}) {
   const daylists = useQuery(api.daylists.list);
 
   if (!daylists) {
     return (
-      <ThemedView style={styles.container}>
+      <ThemedView style={styles.profileScreen}>
         <Text>Loading...</Text>
       </ThemedView>
     );
   }
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
-      <ThemedView style={styles.container}>
+      <ThemedView style={styles.profileScreen}>
         <FlatList
           data={daylists}
           contentContainerStyle={styles.feedPosts}
           renderItem={({ item }) => <FeedPostView daylist={item} />}
           ListHeaderComponent={
             <ThemedView style={{ flex: 1 }}>
-              <ThemedView style={styles.profileIdentifiers}>
-                <ThemedView style={styles.profileNaming}>
-                  <ThemedText type="title">kenjamin</ThemedText>
-                  <ThemedText type="default"> Kenny Oseleononmen </ThemedText>
+              {/* PROFILE INFO: Profile Photo + Username + Profile Info + Controls */}
+              <ThemedView style={styles.profileInfo}>
+                {/* LEFT: Profile Photo */}
+                <ThemedView style={styles.left}>
+                  <ThemedView style={styles.pfp}>
+                    {profilePhoto ? (
+                      <Image
+                        source={{ uri: profilePhoto }}
+                        style={{ width: height * 0.16, height: height * 0.16 }}
+                      />
+                    ) : (
+                      <IconSymbol
+                        name={"person.circle"}
+                        size={height * 0.16}
+                        color={"#e0e0e0"}
+                      />
+                    )}
+                  </ThemedView>
                 </ThemedView>
-
-                <ThemedView style={styles.profileImage}>
-                  <Disc imageUri={tyler} discSize={width * 0.15} />
+                {/* RIGHT: Username + User Info + Controls */}
+                <ThemedView style={styles.right}>
+                  {/* 'USERNAME' */}
+                  <ThemedText style={styles.userText}>@kenjamin</ThemedText>
+                  {/* USER INFO: Followers + Following + Posts */}
+                  <ThemedView style={styles.userInfo}>
+                    {/* 'FOLLOWERS' */}
+                    <ThemedView style={styles.infoItem}>
+                      <ThemedText style={styles.infoNum}>42</ThemedText>
+                      <ThemedText style={styles.infoText}>Followers</ThemedText>
+                    </ThemedView>
+                    {/* 'FOLLOWING' */}
+                    <ThemedView style={styles.infoItem}>
+                      <ThemedText style={styles.infoNum}>42</ThemedText>
+                      <ThemedText style={styles.infoText}>Following</ThemedText>
+                    </ThemedView>
+                    {/* 'POSTS' */}
+                    <ThemedView style={styles.infoItem}>
+                      <ThemedText style={styles.infoNum}>42</ThemedText>
+                      <ThemedText style={styles.infoText}>Posts</ThemedText>
+                    </ThemedView>
+                  </ThemedView>
+                  {/* PROFILE CONTROLS: Settings + Share Profile */}
+                  <ThemedView style={styles.profileControls}>
+                    <Link href="/settings" asChild>
+                      <Pressable style={styles.buttonContainer}>
+                        <GlassmorphismButtonView
+                          label="Settings"
+                          buttonColor="white"
+                          disabled={false}
+                          style={styles.buttonStyle}
+                          textSize={width * 0.03}
+                        />
+                      </Pressable>
+                    </Link>
+                    <Pressable
+                      style={styles.buttonContainer}
+                      onPress={() => {
+                        alert("TODO");
+                      }}
+                    >
+                      <GlassmorphismButtonView
+                        label="Share Profile"
+                        buttonColor="white"
+                        disabled={false}
+                        style={styles.buttonStyle}
+                        textSize={width * 0.03}
+                      />
+                    </Pressable>
+                  </ThemedView>
                 </ThemedView>
-              </ThemedView>
-              <ThemedView style={styles.profileControls}>
-                <Link href="/settings" asChild>
-                  <Pressable style={styles.buttonContainer}>
-                    <ThemedText type="defaultSemiBold"> Settings </ThemedText>
-                  </Pressable>
-                </Link>
-                <Pressable
-                  style={styles.buttonContainer}
-                  onPress={() => {
-                    alert("TODO");
-                  }}
-                >
-                  <ThemedText type="defaultSemiBold"> Share Profile</ThemedText>
-                </Pressable>
               </ThemedView>
             </ThemedView>
           }
@@ -66,44 +118,83 @@ export default function ProfileScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: {
+  profileScreen: {
     flex: 1,
   },
   profileHeader: {
-    //has name and imgage stacked on top of buttons
-    height: height * 0.13,
+    marginLeft: -10,
   },
-  profileIdentifiers: {
-    //Has naming and image in it
-    flex: 2,
+  profileInfo: {
     flexDirection: "row",
-    justifyContent: "space-between",
-  },
-  profileNaming: {
-    // has user name and full name stacked on top of each other
-    flex: 4,
-    flexDirection: "column",
-  },
-  profileImage: {
-    //Just the users image in a disk
-    flex: 1,
-  },
-  profileControls: {
-    //has settings and share profile button side by side
-    flex: 1,
-    flexDirection: "row",
-    justifyContent: "space-around",
+    borderRadius: 0,
     gap: 10,
-  },
-  buttonContainer: {
-    flex: 1,
-    backgroundColor: "#fff",
-    borderRadius: 50,
-    borderColor: "#000",
-    borderWidth: 1,
+
     justifyContent: "center",
     alignItems: "center",
   },
+  left: {
+    backgroundColor: "none",
+  },
+  pfp: {
+    width: height * 0.16,
+    height: height * 0.16,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "transparent",
+    borderRadius: height * 0.16,
+    overflow: "hidden",
+  },
+  right: {
+    flex: 3,
+
+    flexDirection: "column",
+    backgroundColor: "none",
+    gap: 10,
+  },
+  userText: {
+    fontSize: height * 0.02,
+    fontWeight: 500,
+    lineHeight: height * 0.02,
+  },
+  userInfo: {
+    flexDirection: "row",
+    backgroundColor: "none",
+    justifyContent: "space-between",
+    alignItems: "flex-end",
+    paddingRight: 10,
+  },
+  infoItem: {
+    backgroundColor: "none",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  infoNum: {
+    fontSize: height * 0.022,
+    fontWeight: 300,
+    lineHeight: height * 0.022,
+    color: "#121212",
+  },
+  infoText: {
+    fontSize: height * 0.015,
+    fontWeight: 500,
+    lineHeight: height * 0.02,
+    color: "#121212",
+  },
+  profileControls: {
+    flexBasis: 20,
+    flexDirection: "row",
+    justifyContent: "flex-start",
+    alignItems: "center",
+    gap: 5,
+  },
+  buttonContainer: {
+    flex: 0.5,
+    flexDirection: "row",
+    borderRadius: 50,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  buttonStyle: {},
   feedPosts: {
     flexDirection: "column",
     backgroundColor: "#FFFFFF",
