@@ -18,59 +18,49 @@ export default function MusicServiceAuthScreen() {
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      <ThemedView style={styles.container}>
-        <ThemedText type="title" style={styles.title}>
-          Connect your existing library.
-        </ThemedText>
-        <ThemedText type="subtitle" style={styles.subtitle}>
-          Login with your music streaming provider.
-        </ThemedText>
-
-        <View style={styles.CDView}>
-          <CDDisc
-            imageUri={require("@/assets/auth/kali_uchis.png")}
-            marginLeft={0}
-          />
-        </View>
-
-        <ThemedView style={styles.buttonScreen}>
-          <GlassmorphismView
-            containerStyle={styles.spotifyButton}
-            disableBackground={true}
-          >
-            <SpotifyAuthButton />
-          </GlassmorphismView>
-
-          <Pressable style={styles.skipButton} onPress={handleSkip}>
-            <GlassmorphismButtonView
-              label="Skip"
-              buttonColor="white"
-              sfSymbol="arrow.right"
-              disabled={false}
-              textSize={20}
-              buttonHeight={65}
-            />
-          </Pressable>
-          <GlassmorphismView
-            containerStyle={styles.appleButtonContainer}
-            disableBackground={true}
-          >
-            <View style={styles.logoContainer}>
-              <Image
-                source={require("@/assets/auth/apple_icon.png")}
-                resizeMode="contain"
-                style={styles.logo}
-              />
-            </View>
-            <ThemedText style={styles.appleButtonText}>
-              Login with Apple Music
+      <ThemedView style={styles.topSection}>
+        <ThemedView style={styles.musicServiceAuthScreen}>
+          {/* HEADER: Title + Subtitle */}
+          <ThemedView style={styles.header}>
+            <ThemedText type="title" style={styles.title}>
+              Connect your existing library.
             </ThemedText>
-          </GlassmorphismView>
+            <ThemedText type="subtitle" style={styles.subtitle}>
+              Login with your music streaming provider.
+            </ThemedText>
+          </ThemedView>
 
-          <ThemedText style={styles.disclaimer}>
-            By continuing you confirm that you've read and accepted our Terms
-            and Privacy Policy.
-          </ThemedText>
+          {/* CD Disc Hero */}
+          <ThemedView style={styles.CDView}>
+            <CDDisc
+              imageUri={require("@/assets/auth/kali_uchis.png")}
+              marginLeft={0}
+            />
+          </ThemedView>
+          {/* BUTTON CONTAINER: Spotify + Skip + Disclaimer */}
+          <ThemedView style={styles.buttons}>
+            {/* 'SPOTIFY BUTTON' */}
+            <SpotifyAuthButton />
+
+            {/* 'SKIP BUTTON' */}
+            <Pressable style={styles.skipButton} onPress={handleSkip}>
+              <GlassmorphismButtonView
+                label="Skip"
+                buttonColor="white"
+                sfSymbol="arrow.right"
+                disabled={false}
+                textSize={20}
+                buttonHeight={65}
+                style={styles.buttonStyle}
+              />
+            </Pressable>
+
+            {/* 'DISCLAIMER' */}
+            <ThemedText style={styles.disclaimer}>
+              By continuing you confirm that you've read and accepted our Terms
+              and Privacy Policy.
+            </ThemedText>
+          </ThemedView>
         </ThemedView>
       </ThemedView>
     </SafeAreaView>
@@ -78,12 +68,27 @@ export default function MusicServiceAuthScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: {
+  musicServiceAuthScreen: {
     flex: 1,
     alignItems: "center",
     justifyContent: "flex-start",
-    padding: 20,
+    padding: 30,
     position: "relative",
+    backgroundColor: "transparent",
+  },
+  topSection: {
+    flex: 1.2,
+    alignItems: "center",
+    justifyContent: "space-between",
+    backgroundColor: "transparent",
+  },
+  header: {
+    flexBasis: 70,
+    justifyContent: "center",
+    alignItems: "center",
+    color: "#000",
+    fontFamily: "Helvetica-Regular",
+    backgroundColor: "transparent",
   },
   title: {
     fontWeight: 400,
@@ -97,40 +102,28 @@ const styles = StyleSheet.create({
     fontFamily: "Helvetica-Regular",
     marginBottom: 50,
   },
-  buttonScreen: {
-    width: "100%",
-    display: "flex",
-    justifyContent: "center",
+  buttons: {
+    flex: 1,
+    justifyContent: "flex-end",
     alignItems: "center",
-    gap: 20,
+    gap: 10,
+    backgroundColor: "transparent",
+  },
+  buttonStyle: {
+    borderRadius: 50,
   },
   CDView: {
-    marginBottom: 75,
-  },
-  appleButtonContainer: {
-    display: "flex",
-    flexDirection: "row", // ✅ Keep logo and text in a row
-    alignItems: "center", // ✅ Ensures vertical centering
-    justifyContent: "center", // ✅ Ensures text is centered
-    width: "100%",
-    height: 65,
-    backgroundColor: "#E25E5E",
-    borderRadius: 50,
-    paddingHorizontal: 20,
-  },
-  appleButtonText: {
-    color: "white",
-    fontSize: 20,
-    marginLeft: 40, // ✅ Moves text slightly to the right
+    flexBasis: 220,
+    backgroundColor: "transparent",
   },
   skipButton: {
-    width: "100%",
-    height: 65,
+    flexBasis: 65,
+    flexDirection: "row",
   },
   spotifyButton: {
-    width: "100%",
+    flexBasis: 50,
+    flexDirection: "row",
     backgroundColor: "#0DAE40",
-    height: 65,
     borderRadius: 50,
   },
   disclaimer: {

@@ -6,21 +6,19 @@ import { Link } from "expo-router";
 import CDDisc from "@/components/auth/CDDisc";
 import GlassmorphismButtonView from "@/components/GlassmorphismButtonView";
 import { useRouter } from "expo-router";
+import { Image } from "react-native";
+import { Dimensions } from "react-native";
+import { MotiView } from "moti";
 
-const cards = [
-  require("@/assets/auth/Steve-Lacy-Gemini-Rights.png"),
-  require("@/assets/auth/tyler_the_creator.png"),
-  require("@/assets/auth/travis_scott.png"),
-  require("@/assets/auth/dj_assault.png"),
-  require("@/assets/auth/migos.png"),
-];
 const vinylSpacing = 250;
+
 export default function WelcomeToScreen() {
   const router = useRouter();
+  const { width, height } = Dimensions.get("window");
 
   return (
     <ThemedView style={styles.welcomeToScreen}>
-      {/* TOP SECTION: Header + Vinyl Container */}
+      {/* TOP SECTION: Header + Image Container */}
       <ThemedView style={styles.topSection}>
         {/* HEADER: Title + Subtitle */}
         <ThemedView style={styles.header}>
@@ -33,23 +31,30 @@ export default function WelcomeToScreen() {
             A sacred place for your curated vibes.
           </ThemedText>
         </ThemedView>
-        {/* VINYL CONTAINER: Vinyls */}
-        <ThemedView style={[styles.vinylsContainer]}>
-          {cards.map((imageUri, index) => (
-            <CDDisc
-              key={index}
-              imageUri={imageUri}
-              containerStyle={{
-                position: "absolute",
-                backgroundColor: "none",
-                transform: [
-                  {
-                    translateX: (index - (cards.length - 1) / 2) * -10,
-                  },
-                ],
+        {/* IMAGE CONTAINER: Mascot */}
+        <ThemedView style={[styles.imageContainer]}>
+          <MotiView
+            from={{
+              translateY: 0,
+            }}
+            animate={{
+              translateY: 20,
+            }}
+            transition={{
+              type: "timing",
+              duration: 2000,
+              loop: true,
+              repeatReverse: true,
+            }}
+          >
+            <Image
+              source={require("@/assets/auth/playday-mascot_1.png")}
+              style={{
+                height: height * 0.003 * 100,
+                width: height * 0.003 * 106,
               }}
             />
-          ))}
+          </MotiView>
         </ThemedView>
       </ThemedView>
 
@@ -59,7 +64,7 @@ export default function WelcomeToScreen() {
         onPress={() => router.push("/(tabs)/(feed)")}
       >
         <GlassmorphismButtonView
-          label="Continue"
+          label="Enter"
           disabled={false}
           textSize={16}
           buttonColor="black"
@@ -109,7 +114,7 @@ const styles = StyleSheet.create({
     alignItems: "flex-end",
   },
 
-  vinylsContainer: {
+  imageContainer: {
     flex: 1,
     flexDirection: "row",
     justifyContent: "center",

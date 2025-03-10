@@ -1,4 +1,4 @@
-import { Text, StyleSheet } from "react-native";
+import { Text, StyleSheet, Image } from "react-native";
 import { IconSymbol } from "@/components/ui/IconSymbol";
 import { SFSymbols6_0 } from "sf-symbols-typescript";
 import LinearGradient from "react-native-linear-gradient";
@@ -17,6 +17,7 @@ interface GlassmorphismButtonProps {
 const gradientColors = {
   black: ["rgba(18,18,18, 1)", "rgba(18,18,18,0.8)"],
   white: ["rgba(255, 255, 255, 0.5)", "rgba(255, 255, 255, 0.2)"],
+  spotify: ["#00aa36", "rgba(0, 170, 54, 0.65)"],
 };
 
 export default function GlassmorphismButtonView({
@@ -31,18 +32,19 @@ export default function GlassmorphismButtonView({
   return (
     <LinearGradient
       colors={
-        buttonColor === "black" ? gradientColors.black : gradientColors.white
+        buttonColor === "black"
+          ? gradientColors.black
+          : buttonColor === "spotify"
+            ? gradientColors.spotify
+            : gradientColors.white
       }
       style={[
-        buttonColor === "black"
-          ? styles.glassmorphismButtonFillBlack
-          : styles.glassmorphismButtonFillBlack,
-        buttonColor === "white"
-          ? styles.glassmorphismButtonBorderWhite
-          : styles.glassmorphismButtonBorderWhite,
+        buttonColor === "black" ? styles.glassmorphismButtonFillBlack : "",
+        buttonColor === "white" ? styles.glassmorphismButtonBorderWhite : "",
         buttonColor === "transparent"
           ? styles.glassmorphismButtonBorderTransparent
-          : styles.glassmorphismButtonBorderTransparent,
+          : "",
+        buttonColor === "spotify" ? styles.glassmorphismButtonSpotify : "",
         disabled ? { opacity: 0.5 } : { opacity: 1 },
         buttonHeight ? { height: buttonHeight } : {},
         styles.glassmorphismButtonContainer,
@@ -60,10 +62,21 @@ export default function GlassmorphismButtonView({
             size={textSize}
           />
         )}
+        {buttonColor === "spotify" && (
+          <ThemedView style={styles.logoContainer}>
+            <Image
+              source={require("@/assets/auth/Spotify.png")}
+              resizeMode="contain"
+              style={{ padding: 5 }}
+            />
+          </ThemedView>
+        )}
         {label && (
           <Text
             style={[
-              buttonColor === "black" ? { color: "#FFF" } : { color: "#000" },
+              buttonColor === "black" || buttonColor === "spotify"
+                ? { color: "#FFF" }
+                : { color: "#000" },
               textSize ? { fontSize: textSize } : {},
             ]}
           >
@@ -138,5 +151,28 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "rgba(255, 255, 255, 0.6)",
     borderStyle: "solid",
+  },
+
+  glassmorphismButtonSpotify: {
+    borderRadius: 50,
+
+    shadowColor: "rgba(0, 0, 0, 0.1)",
+    shadowOffset: {
+      width: 0,
+      height: 20,
+    },
+    shadowRadius: 40,
+    shadowOpacity: 1,
+
+    backgroundColor: "#00aa36",
+    borderStyle: "solid",
+    borderColor: "rgba(0, 197, 63, 0.6)",
+    borderWidth: 1,
+
+    position: "relative",
+  },
+
+  logoContainer: {
+    backgroundColor: "transparent",
   },
 });

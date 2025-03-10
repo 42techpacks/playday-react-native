@@ -16,6 +16,7 @@ import CDDisc from "@/components/auth/CDDisc";
 import GlassmorphismButtonView from "@/components/GlassmorphismButtonView";
 import GlassmorphismTextInput from "@/components/GlassmorphismTextInput";
 import GlassmorphismView from "@/components/GlassmorphismView";
+import CDDiscCarousel from "@/components/feed/CDDiscCarousel";
 
 export default function CreatePostScreen() {
   const router = useRouter();
@@ -51,19 +52,7 @@ export default function CreatePostScreen() {
     <ThemedView style={styles.createModal}>
       {/* IMAGES: CDs */}
       <GlassmorphismView containerStyle={styles.createModalImages}>
-        <Text style={styles.createModalDate}>January 25th, 2025</Text>
-        <ThemedView
-          style={[styles.createModalCdContainer, { marginLeft: vinylSpacing }]}
-        >
-          <CDDisc
-            imageUri={require("@/assets/auth/dj_assault.png")}
-            marginLeft={vinylSpacing}
-          />
-          <CDDisc
-            imageUri={require("@/assets/auth/dj_assault.png")}
-            marginLeft={vinylSpacing}
-          />
-        </ThemedView>
+        <CDDiscCarousel cards={[]} cdSize={150} />
       </GlassmorphismView>
 
       {/* SONG CONTROLS: Count + Add Songs Button */}
@@ -114,8 +103,10 @@ export default function CreatePostScreen() {
           placeholder="Add a description..."
           onChangeText={setCaption}
           numLines={4}
+          keyboardType="default"
+          containerStyle={styles.inputContainer}
         />
-        <Pressable onPress={handleShare}>
+        <Pressable onPress={handleShare} style={{ flex: 1 }}>
           <GlassmorphismButtonView
             label="Share"
             disabled={false}
@@ -132,10 +123,7 @@ export default function CreatePostScreen() {
 
 const styles = StyleSheet.create({
   createModal: {
-    flex: 1,
-    backgroundColor: "#fff",
-    padding: 16,
-    gap: 20,
+    flex: 0.5,
   },
   createModalDate: {
     fontSize: 16,
@@ -145,37 +133,19 @@ const styles = StyleSheet.create({
     top: 15,
   },
   createModalFooter: {
-    display: "flex",
+    flex: 1,
     gap: 20,
-    paddingBottom: 20,
+    flexDirection: "column",
   },
   createModalImages: {
-    display: "flex",
-    width: "100%",
+    flexBasis: 350,
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 25,
-  },
-  createModalCdContainer: {
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "center",
-    height: 400,
-    width: 400,
-    alignItems: "center",
-    backgroundColor: "none",
-  },
-  cdArt: {
-    width: 280,
-    height: 280,
-    borderRadius: 140,
-    borderWidth: 2,
-    borderColor: "#000",
-    justifyContent: "center",
-    alignItems: "center",
+    backgroundColor: "transparent",
   },
   songControlsContainer: {
-    display: "flex",
+    flex: 1,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
@@ -202,10 +172,15 @@ const styles = StyleSheet.create({
     fontWeight: "500",
   },
   listContent: {
+    flex: 1,
     paddingBottom: 300,
   },
   artistName: {
     color: "#666",
     fontWeight: "normal",
+  },
+  inputContainer: {
+    flexBasis: 100,
+    borderRadius: 50,
   },
 });

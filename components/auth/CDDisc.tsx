@@ -12,7 +12,7 @@ const { width } = Dimensions.get("window");
 const DEFAULT_DISC_SIZE = width * 0.6; // Default to 60% of screen width
 
 interface CDDiscProps {
-  imageUri: ImageSourcePropType;
+  imageUri: any;
   discSize?: number;
   marginLeft?: number;
   containerStyle?: ViewStyle;
@@ -24,7 +24,7 @@ export default function CDDisc({
   marginLeft = 250,
 }: CDDiscProps) {
   return (
-    <View style={containerStyle}>
+    <View style={[containerStyle, styles.container]}>
       <Disc imageUri={imageUri} discSize={discSize} />
     </View>
   );
@@ -32,7 +32,6 @@ export default function CDDisc({
 
 const styles = StyleSheet.create({
   container: {
-    // justifyContent: "center",
-    // alignItems: "center",
+    backgroundColor: "transparent",
   },
 });

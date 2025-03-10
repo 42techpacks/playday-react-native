@@ -6,6 +6,7 @@ import { useSpotifySearch } from "@/hooks/useSpotifyApis";
 import { useSpotifyAuth } from "@/hooks/useSpotifyAuth";
 import { SpotifyTrack } from "@/lib/spotify";
 import SpotifyAuthButton from "@/components/spotify/spotify-auth-button";
+import GlassmorphismTextInput from "@/components/GlassmorphismTextInput";
 
 export type DaylistSong = {
   id: string;
@@ -42,8 +43,8 @@ export default function AddSongsScreen() {
   }, [params.songs]);
 
   // Track selected song IDs
-  const [selectedSongs, setSelectedSongs] = useState<Set<string>>(() =>
-    new Set(existingSongs.map(song => song.id))
+  const [selectedSongs, setSelectedSongs] = useState<Set<string>>(
+    () => new Set(existingSongs.map((song) => song.id)),
   );
 
   const toggleSongSelection = (id: string) => {
@@ -59,25 +60,28 @@ export default function AddSongsScreen() {
   };
 
   // Map search results to DaylistSong format
-  const searchSongs: DaylistSong[] = useMemo(() =>
-    searchResults?.map(track => ({
-      id: track.id,
-      name: track.name,
-      artists: track.artists.map(a => ({ name: a.name }))
-    })) || [],
-  [searchResults]);
+  const searchSongs: DaylistSong[] = useMemo(
+    () =>
+      searchResults?.map((track) => ({
+        id: track.id,
+        name: track.name,
+        artists: track.artists.map((a) => ({ name: a.name })),
+      })) || [],
+    [searchResults],
+  );
 
   const handleDone = () => {
     // Combine existing and search songs, filtering by selected IDs
     const allSongs = [...existingSongs, ...searchSongs];
-    const uniqueSongs = allSongs.filter((song, index) =>
-      selectedSongs.has(song.id) &&
-      allSongs.findIndex(s => s.id === song.id) === index
+    const uniqueSongs = allSongs.filter(
+      (song, index) =>
+        selectedSongs.has(song.id) &&
+        allSongs.findIndex((s) => s.id === song.id) === index,
     );
 
     router.dismissTo({
       pathname: "/create-modal",
-      params: { songs: JSON.stringify(uniqueSongs) }
+      params: { songs: JSON.stringify(uniqueSongs) },
     });
   };
 
@@ -89,7 +93,9 @@ export default function AddSongsScreen() {
   if (!isAuthenticated && !authLoading) {
     return (
       <View style={styles.authContainer}>
-        <Text style={styles.authText}>Connect to Spotify to search for songs</Text>
+        <Text style={styles.authText}>
+          Connect to Spotify to search for songs
+        </Text>
         <SpotifyAuthButton />
       </View>
     );
@@ -97,13 +103,12 @@ export default function AddSongsScreen() {
 
   return (
     <View style={styles.container}>
-      <TextInput
-        style={styles.searchInput}
+      <GlassmorphismTextInput
+        containerStyle={styles.searchInput}
         placeholder="Search songs on Spotify"
         value={searchQuery}
         onChangeText={setSearchQuery}
-        autoCapitalize="none"
-        autoCorrect={false}
+        keyboardType="default"
       />
 
       {isLoading ? (
@@ -129,7 +134,9 @@ export default function AddSongsScreen() {
                   {song.artists.map((a) => a.name).join(", ")}
                 </Text>
               </View>
-              <Text style={styles.addButton}>{selectedSongs.has(song.id) ? "✓" : "+"}</Text>
+              <Text style={styles.addButton}>
+                {selectedSongs.has(song.id) ? "✓" : "+"}
+              </Text>
             </Pressable>
           )}
         />
@@ -254,4 +261,3 @@ function useDebounce<T>(value: T, delay: number): T {
 
   return debouncedValue;
 }
-

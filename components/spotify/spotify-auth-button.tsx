@@ -1,9 +1,17 @@
-import { ActivityIndicator, View, StyleSheet, Pressable, Text, Image } from "react-native";
+import {
+  ActivityIndicator,
+  View,
+  StyleSheet,
+  Pressable,
+  Text,
+  Image,
+} from "react-native";
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { useSpotifyAuth } from "@/hooks/useSpotifyAuth";
 import { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
+import GlassmorphismButtonView from "../GlassmorphismButtonView";
 
 export default function SpotifyAuthButton() {
   const registrationStatus = useQuery(api.auth.checkRegistrationStatus);
@@ -43,27 +51,22 @@ export default function SpotifyAuthButton() {
   return (
     <View style={styles.container}>
       <Pressable
+        style={{ flexBasis: 65, flexDirection: "row" }}
         onPress={handleAuthenticatePress}
-        style={[
-          styles.button,
-          (isLoading || registrationStatus?.hasSpotifyTokens) && styles.disabledButton,
-        ]}
         disabled={isLoading || registrationStatus?.hasSpotifyTokens}
       >
-        <View style={styles.buttonContent}>
-          <View style={styles.logoContainer}>
-            <Image
-              source={require("@/assets/auth/Spotify.png")}
-              resizeMode="contain"
-            />
-          </View>
-
-          <Text style={styles.buttonText}>
-            {registrationStatus?.hasSpotifyTokens
+        <GlassmorphismButtonView
+          label={
+            registrationStatus?.hasSpotifyTokens
               ? "Already Connected to Spotify"
-              : "Login with Spotify"}
-          </Text>
-        </View>
+              : "Login with Spotify"
+          }
+          buttonColor="spotify"
+          disabled={false}
+          textSize={20}
+          buttonHeight={65}
+          style={{ borderRadius: 65 }}
+        />
       </Pressable>
 
       {authError && <Text style={styles.errorText}>{authError}</Text>}
@@ -73,18 +76,9 @@ export default function SpotifyAuthButton() {
 
 const styles = StyleSheet.create({
   container: {
-    width: "100%",
     alignItems: "center",
   },
-  button: {
-    paddingVertical: 12,
-    paddingHorizontal: 10,
-    alignItems: "center",
-    width: "100%",
-    backgroundColor: "#0DAE40",
-    height: 65,
-    borderRadius: 50,
-  },
+  button: {},
   disabledButton: {
     opacity: 0.5,
   },
@@ -94,18 +88,14 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     width: "100%",
     position: "relative",
-    height: "100%"
+    height: "100%",
   },
-  logoContainer: {
-    position: "absolute",
-    left: 20,
-    height:"100%"
-  },
+  logoContainer: {},
   buttonText: {
     color: "white",
     fontSize: 20,
     backgroundColor: "transparent",
-    marginLeft: 50
+    marginLeft: 50,
   },
   loadingText: {
     marginTop: 8,

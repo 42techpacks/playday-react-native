@@ -8,24 +8,26 @@ import GlassmorphismView from "@/components/GlassmorphismView";
 import { MotiView } from "moti";
 import { IconSymbol } from "@/components/ui/IconSymbol.ios";
 import { SFSymbols6_0 } from "sf-symbols-typescript";
+import { Image } from "moti";
+import { ImageURISource } from "react-native";
 
 const { width, height } = Dimensions.get("window");
 
-const features: { image: SFSymbols6_0; title: string; subtitle: string }[] = [
+const features: { image: ImageURISource; title: string; subtitle: string }[] = [
   {
-    image: "square.stack.3d.up.fill",
-    title: "Smart Organization",
-    subtitle: "Keep everything in perfect order.",
+    image: require(`@/assets/auth/feature-1.png`),
+    title: "Share Your Favorites",
+    subtitle: "Be the first to put everyone on.",
   },
   {
-    image: "bolt.shield.fill",
-    title: "Enhanced Security",
-    subtitle: "Your data is safe with us.",
+    image: require(`@/assets/auth/feature-2.png`),
+    title: "Listen With Friends",
+    subtitle: "Follow and invite others to Playday.",
   },
   {
-    image: "sparkles.rectangle.stack.fill",
-    title: "Beautiful Interface",
-    subtitle: "Clean and intuitive design.",
+    image: require(`@/assets/auth/feature-3.png`),
+    title: "Visual + Audio Feed",
+    subtitle: "Choose to view or listen to your feed.",
   },
 ];
 
@@ -56,7 +58,13 @@ export default function OnboardScreen() {
                 <GlassmorphismView
                   containerStyle={styles.glassmorphismContainer}
                 >
-                  <IconSymbol size={60} name={feature.image} color={"black"} />
+                  <Image
+                    source={feature.image}
+                    style={{
+                      width: "100%",
+                      resizeMode: "contain",
+                    }}
+                  />
                 </GlassmorphismView>
                 <ThemedView style={styles.featureText}>
                   <ThemedText style={styles.featureTitle}>
@@ -122,6 +130,7 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: "row",
     backgroundColor: "transparent",
+    borderRadius: 25,
   },
   featureImage: {
     fontSize: 48,

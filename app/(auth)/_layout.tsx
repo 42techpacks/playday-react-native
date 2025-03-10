@@ -84,7 +84,7 @@ export default function AuthLayout() {
               title: "Welcome",
               headerShadowVisible: false,
               headerTitle: (props) => (
-                <TopBar title="Welcome, Milo." backEnabled={false} />
+                <TopBar title="Registration Complete" backEnabled={false} />
               ),
               headerBackVisible: false,
             }}

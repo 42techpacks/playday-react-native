@@ -22,6 +22,16 @@ export default function CDDiscCarousel({ cards, cdSize }: CDDiscCarouselProps) {
     setActiveIndex(index);
   };
 
+  if (cards.length === 0) {
+    return (
+      <ThemedView style={[styles.cdDiscCarousel, { flexBasis: cdSize * 1.2 }]}>
+        <ThemedView style={styles.stackContainer}>
+          <CDDisc imageUri={null} discSize={cdSize} />
+        </ThemedView>
+      </ThemedView>
+    );
+  }
+
   return (
     <ThemedView style={[styles.cdDiscCarousel, { flexBasis: cdSize * 1.2 }]}>
       {/* 'CD DISC STACK & SWIPE' */}
@@ -98,11 +108,13 @@ const styles = StyleSheet.create({
   stackContainer: {
     alignItems: "center",
     justifyContent: "center",
+    backgroundColor: "transparent",
   },
   cdDiscWrapper: {
     position: "absolute",
     justifyContent: "center",
     alignItems: "center",
+    backgroundColor: "transparent",
   },
   carouselIndicator: {
     flexBasis: 50,

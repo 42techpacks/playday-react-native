@@ -4,12 +4,15 @@ import { Image, Pressable, StyleSheet } from "react-native";
 import { ThemedText } from "../ThemedText";
 import { IconSymbol } from "../ui/IconSymbol.ios";
 import { Link, useRouter } from "expo-router";
+import { Dimensions } from "react-native";
 
 interface Props {
   title?: string;
   backEnabled: boolean;
   searchEnabled?: boolean;
 }
+
+const { width, height } = Dimensions.get("window");
 
 export default function TopBar({ title, backEnabled }: Props) {
   const router = useRouter();
@@ -56,6 +59,8 @@ const styles = StyleSheet.create({
 
     fontSize: 20,
     fontWeight: 600,
+    // Don't know why there's this weird margin/padding
+    marginLeft: -(width * 0.075),
   },
 
   logo: {
