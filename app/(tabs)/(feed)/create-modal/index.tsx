@@ -36,10 +36,11 @@ export default function CreatePostScreen() {
   const handleShare = async () => {
     await createDaylist({
       caption,
-      songs: songs.map(({ id, name, imageUrl, artists }) => ({
+      songs: songs.map(({ id, name, imageUrl, artists, uri }) => ({
         id,
         name,
         imageUrl,
+        uri,
         artists,
       })),
     });
