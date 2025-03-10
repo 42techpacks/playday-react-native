@@ -1,10 +1,4 @@
-import {
-  View,
-  StyleSheet,
-  Pressable,
-  Text,
-  FlatList,
-} from "react-native";
+import { View, StyleSheet, Pressable, Text, FlatList } from "react-native";
 import { Link, useRouter, useLocalSearchParams } from "expo-router";
 import { useState, useEffect } from "react";
 import { DaylistSong } from "./add-songs";
@@ -31,6 +25,7 @@ export default function CreatePostScreen() {
     if (params.songs) {
       try {
         const newSongs = JSON.parse(params.songs) as DaylistSong[];
+        console.log(newSongs);
         setSongs(newSongs);
       } catch (e) {
         console.error("Failed to parse songs:", e);
