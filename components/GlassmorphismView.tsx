@@ -7,12 +7,16 @@ interface GlassmorphismViewProps {
   children: React.ReactNode;
   containerStyle: ViewStyle;
   disableBackground?: boolean;
+  flexRow?: boolean;
+  shadowEnabled?: boolean;
 }
 
 export default function GlassmorphismView({
   children,
   containerStyle,
   disableBackground = false, // Default is false
+  flexRow = false,
+  shadowEnabled = true,
 }: GlassmorphismViewProps) {
   return (
     <LinearGradient
@@ -20,13 +24,21 @@ export default function GlassmorphismView({
         containerStyle,
         styles.glassmorphismCard,
         !disableBackground && styles.glassmorphismCardBorder,
+        shadowEnabled ? { shadowOpacity: 0.5 } : { shadowOpacity: 0 },
       ]}
       locations={[0, 1]}
       colors={["rgba(255, 255, 255, 0.5)", "rgba(255, 255, 255, 0.2)"]}
       useAngle={true}
       angle={146.7}
     >
-      <ThemedView style={[styles.glassmorphismView]}>{children}</ThemedView>
+      <ThemedView
+        style={[
+          styles.glassmorphismView,
+          flexRow ? { flexDirection: "row" } : { flexDirection: "column" },
+        ]}
+      >
+        {children}
+      </ThemedView>
     </LinearGradient>
   );
 }
@@ -39,7 +51,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   glassmorphismCard: {
-    borderRadius: 25,
     gap: 10,
     shadowColor: "rgba(0, 0, 0, 0.3)",
     shadowOffset: {
@@ -47,7 +58,6 @@ const styles = StyleSheet.create({
       height: 40,
     },
     shadowRadius: 40,
-    shadowOpacity: 1,
   },
   glassmorphismCardBorder: {
     backgroundColor: "rgba(255, 255, 255, 0.7)",

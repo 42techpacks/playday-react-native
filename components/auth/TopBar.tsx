@@ -1,14 +1,18 @@
 import React from "react";
 import { ThemedView } from "../ThemedView";
-import { Image, StyleSheet } from "react-native";
+import { Image, Pressable, StyleSheet } from "react-native";
 import { ThemedText } from "../ThemedText";
+import { IconSymbol } from "../ui/IconSymbol.ios";
+import { Link, useRouter } from "expo-router";
 
 interface Props {
   title?: string;
   backEnabled: boolean;
+  searchEnabled?: boolean;
 }
 
 export default function TopBar({ title, backEnabled }: Props) {
+  const router = useRouter();
   return (
     <ThemedView
       style={[styles.topBar, backEnabled ? { marginRight: -25 } : {}]}
@@ -23,11 +27,11 @@ export default function TopBar({ title, backEnabled }: Props) {
             style={styles.logo}
             resizeMode="contain"
           />
-          <Image
-            source={require("@/assets/auth/info.png")}
-            style={styles.infoIcon}
-            resizeMode="contain"
-          />
+          <Link href="/(tabs)/(feed)/search" asChild>
+            <Pressable>
+              <IconSymbol name="magnifyingglass" size={24} color="black" />
+            </Pressable>
+          </Link>
         </>
       )}
       {/* Static info icon on the very right */}
@@ -57,6 +61,11 @@ const styles = StyleSheet.create({
   logo: {
     width: 100,
     height: 25,
+  },
+
+  right: {
+    flexDirection: "row",
+    gap: 10,
   },
 
   infoIcon: {

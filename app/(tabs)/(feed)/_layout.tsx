@@ -19,6 +19,14 @@ export default function FeedLayout() {
           presentation: "modal",
         }}
       />
+      <Stack.Screen
+        name="search"
+        options={{
+          headerTitle: (props) => <TopBar backEnabled={true} title="Search" />,
+          headerShadowVisible: false,
+          headerTintColor: "#121212",
+        }}
+      />
     </Stack>
   );
 }

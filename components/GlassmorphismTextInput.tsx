@@ -10,25 +10,31 @@ import {
 } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
 import { ThemedView } from "./ThemedView";
+import { IconSymbol } from "./ui/IconSymbol.ios";
+import { SFSymbols6_0 } from "sf-symbols-typescript";
 
 interface GlassmorphismTextInputProps {
   onChangeText: (text: string) => void;
   value: string;
   placeholder: string;
-  iconUrl?: NodeRequire;
+  iconSymbol?: SFSymbols6_0;
+  iconSize?: number;
   numLines?: number;
   containerStyle?: ViewStyle;
   keyboardType: KeyboardTypeOptions;
+  shadowEnabled?: boolean;
 }
 
 export default function GlassmorphismTextInput({
   onChangeText,
   value,
   placeholder,
-  iconUrl,
+  iconSymbol,
+  iconSize,
   numLines,
   keyboardType,
   containerStyle,
+  shadowEnabled = true,
 }: GlassmorphismTextInputProps) {
   return (
     <LinearGradient
@@ -37,6 +43,7 @@ export default function GlassmorphismTextInput({
         styles.glassmorphismContainer,
         styles.glassmorphismCardFill,
         styles.glassmorphismCardBorder,
+        shadowEnabled ? { shadowOpacity: 0.5 } : { shadowOpacity: 0 },
       ]}
       locations={[0, 1]}
       colors={["rgba(255, 255, 255, 0.5)", "rgba(255, 255, 255, 0.2)"]}
@@ -44,7 +51,9 @@ export default function GlassmorphismTextInput({
       angle={146.7}
     >
       <ThemedView style={styles.inputContainer}>
-        {iconUrl && <Image source={iconUrl} style={styles.icon} />}
+        {iconSymbol && (
+          <IconSymbol name={iconSymbol} size={iconSize} color="#121212" />
+        )}
         <TextInput
           style={[styles.input]}
           onChangeText={onChangeText}
@@ -73,10 +82,9 @@ const styles = StyleSheet.create({
     shadowColor: "rgba(0, 0, 0, 0.3)",
     shadowOffset: {
       width: 0,
-      height: 40,
+      height: 10,
     },
-    shadowRadius: 40,
-    shadowOpacity: 1,
+    shadowRadius: 10,
   },
 
   glassmorphismCardBorder: {
@@ -91,11 +99,6 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
     gap: 15,
     backgroundColor: "transparent",
-  },
-  icon: {
-    width: 18,
-    height: 18,
-    backgroundColor: "none",
   },
   input: {
     fontFamily: "Helvetica-Regular",
