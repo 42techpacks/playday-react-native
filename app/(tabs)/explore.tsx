@@ -1,21 +1,15 @@
-import { StyleSheet, Image, Platform, Dimensions } from "react-native";
-
-import { Pressable, Text } from "react-native";
-import { Collapsible } from "@/components/Collapsible";
-import { ExternalLink } from "@/components/ExternalLink";
-import ParallaxScrollView from "@/components/ParallaxScrollView";
+import { StyleSheet, Dimensions, ActivityIndicator, Alert } from "react-native";
+import { Pressable } from "react-native";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { SafeAreaView } from "react-native";
 import { IconSymbol } from "@/components/ui/IconSymbol";
-import SignOutButton from "@/components/auth-inputs/SignOutButton";
-import SpoitifyAuthButton from "@/components/spotify/spotify-auth-button";
-import { Link } from "expo-router";
 
-import CDDisc from "@/components/auth/CDDisc";
 import CDDiscCarousel from "@/components/feed/CDDiscCarousel";
 import GlassmorphismButtonView from "@/components/GlassmorphismButtonView";
 import SongProgressBar from "@/components/feed/SongProgressBar";
+import { SpotifyPlayPause } from "@/components/spotify/SpotifyPlayPause";
+import { SpotifySkip } from "@/components/spotify/SpotifySkip";
 
 const { width, height } = Dimensions.get("window");
 
@@ -56,7 +50,6 @@ const cardImages = [
 ];
 
 export default function TabTwoScreen() {
-  const { width, height } = Dimensions.get("window");
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
       <ThemedView style={styles.audioFeed}>
@@ -101,44 +94,67 @@ export default function TabTwoScreen() {
           {/* SONG INTERACTIONS: Back + Play/Pause + Next */}
           <ThemedView style={styles.songInteractions}>
             {/* 'BACK' Button */}
-            <Pressable
-              style={styles.songInteractionButton}
-              onPress={() => console.log("back")}
-            >
-              <GlassmorphismButtonView
-                buttonColor="white"
-                sfSymbol="backward.end"
-                disabled={false}
-                textSize={width / 5 - 55}
-                style={{ borderRadius: width / 5 }}
-              />
-            </Pressable>
+            <SpotifySkip direction="previous">
+              {({ isConnected, onPress }) => (
+                <Pressable
+                  style={styles.songInteractionButton}
+                  onPress={onPress}
+                >
+                  <GlassmorphismButtonView
+                    buttonColor="white"
+                    sfSymbol="backward.end"
+                    disabled={false}
+                    textSize={width / 5 - 55}
+                    style={{ borderRadius: width / 5 }}
+                  />
+                </Pressable>
+              )}
+            </SpotifySkip>
             {/* 'PLAY/PAUSE' Button */}
-            <Pressable
-              style={styles.songInteractionButton}
-              onPress={() => console.log("play/pause")}
-            >
-              <GlassmorphismButtonView
-                buttonColor="black"
-                sfSymbol="play"
-                disabled={false}
-                textSize={width / 5.2 - 45}
-                style={{ borderRadius: width / 5 }}
-              />
-            </Pressable>
+            <SpotifyPlayPause>
+              {({ isPlaying, isLoading, isConnected, onPress }) => (
+                <Pressable
+                  style={styles.songInteractionButton}
+                  onPress={onPress}
+                  // disabled={isLoading || !isConnected}
+                >
+                  <GlassmorphismButtonView
+                    buttonColor="black"
+                    sfSymbol={isPlaying ? "pause" : "play"}
+                    disabled={false}
+                    textSize={width / 5.2 - 45}
+                    style={{
+                      borderRadius: width / 5,
+                      opacity: isLoading ? 0.5 : 1,
+                    }}
+                  />
+                  {isLoading && (
+                    <ActivityIndicator
+                      color="#FFFFFF"
+                      size="small"
+                      style={{ position: "absolute" }}
+                    />
+                  )}
+                </Pressable>
+              )}
+            </SpotifyPlayPause>
             {/* 'NEXT' Button */}
-            <Pressable
-              style={styles.songInteractionButton}
-              onPress={() => console.log("next")}
-            >
-              <GlassmorphismButtonView
-                buttonColor="white"
-                sfSymbol="forward.end"
-                disabled={false}
-                textSize={width / 5 - 55}
-                style={{ borderRadius: width / 5 }}
-              />
-            </Pressable>
+            <SpotifySkip direction="next">
+              {({ isConnected, onPress }) => (
+                <Pressable
+                  style={styles.songInteractionButton}
+                  onPress={onPress}
+                >
+                  <GlassmorphismButtonView
+                    buttonColor="white"
+                    sfSymbol="forward.end"
+                    disabled={false}
+                    textSize={width / 5 - 55}
+                    style={{ borderRadius: width / 5 }}
+                  />
+                </Pressable>
+              )}
+            </SpotifySkip>
           </ThemedView>
         </ThemedView>
       </ThemedView>

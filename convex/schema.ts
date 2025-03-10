@@ -14,7 +14,8 @@ const schema = defineSchema({
     isAnonymous: v.optional(v.boolean()),
     // other "users" fields...
     username: v.optional(v.string()),
-  }).index("by_username", ["username"]),
+  }).index("by_username", ["username"])
+    .index("by_phone", ["phone"]),
 
   daylists: defineTable({
     userId: v.string(),
@@ -24,6 +25,7 @@ const schema = defineSchema({
       v.object({
         id: v.string(),
         name: v.string(),
+        imageUrl: v.optional(v.string()),
         artists: v.array(
           v.object({
             name: v.string(),

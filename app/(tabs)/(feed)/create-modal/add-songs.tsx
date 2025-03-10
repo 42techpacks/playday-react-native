@@ -1,13 +1,12 @@
 import {
   View,
-  TextInput,
   StyleSheet,
   FlatList,
   Pressable,
   ActivityIndicator,
 } from "react-native";
 import { Text } from "react-native";
-import { Link, useRouter, useLocalSearchParams } from "expo-router";
+import { useRouter, useLocalSearchParams } from "expo-router";
 import { useState, useEffect, useMemo } from "react";
 import { useSpotifySearch } from "@/hooks/useSpotifyApis";
 import { useSpotifyAuth } from "@/hooks/useSpotifyAuth";
@@ -15,11 +14,10 @@ import { SpotifyTrack } from "@/lib/spotify";
 import SpotifyAuthButton from "@/components/spotify/spotify-auth-button";
 import GlassmorphismTextInput from "@/components/GlassmorphismTextInput";
 import GlassmorphismButtonView from "@/components/GlassmorphismButtonView";
+import { Doc } from "@/convex/_generated/dataModel";
 
-export type DaylistSong = {
-  id: string;
-  name: string;
-  artists: { name: string }[];
+// UI-specific extension of the Convex song type
+export type DaylistSong = Doc<"daylists">["songs"][number] & {
   selected?: boolean;
 };
 
@@ -36,7 +34,6 @@ export default function AddSongsScreen() {
   const {
     data: searchResults,
     isLoading: searchLoading,
-    error,
   } = useSpotifySearch(debouncedQuery);
 
   // Parse existing songs from params
@@ -73,6 +70,7 @@ export default function AddSongsScreen() {
       searchResults?.map((track) => ({
         id: track.id,
         name: track.name,
+        imageUrl: track.album.images[0]?.url,
         artists: track.artists.map((a) => ({ name: a.name })),
       })) || [],
     [searchResults],

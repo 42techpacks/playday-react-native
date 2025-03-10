@@ -40,7 +40,7 @@
       ],
       "expo-secure-store",
       [
-        "../expo-spotify-sdk/app.plugin.js",
+        "@42techpacks/expo-spotify-sdk",
         {
           "host": "spotify-login-callback",
           "scheme": "com-npckenny-musically",
